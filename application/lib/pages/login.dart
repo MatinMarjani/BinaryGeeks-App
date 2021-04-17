@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:application/util/app_url.dart';
 import 'package:application/main.dart';
-//import 'package:application/pages/signup.dart';
+import 'package:application/pages/signup.dart';
 
 class LoginPage extends StatefulWidget {
   @override
