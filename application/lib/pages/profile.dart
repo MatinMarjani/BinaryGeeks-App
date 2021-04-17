@@ -69,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
             headerSection(),
             profilePicture(),
             infoForm(),
-            // passForm(),
+            passForm(),
           ],
         ),
       ),
@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: <Widget>[
           changePass(),
-          //Submit2(),
+          Submit2(),
         ],
       ),
     );
@@ -371,5 +371,38 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ));
+  }
+
+  Container Submit2() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 40.0,
+      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      margin: EdgeInsets.only(top: 25.0),
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor:
+            MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+        onPressed: () {
+          if (!_formKey2.currentState.validate()) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Processing Data')));
+          } else {
+            setState(() {
+              //_isLoading = true;
+            });
+            updatePassword(
+              firstNameController.text,
+              lastNameController.text,
+            );
+          }
+        },
+        child: Text("تغییر گذرواژه", style: TextStyle(color: Colors.black)),
+      ),
+    );
+  }
+
+  updatePassword(String oldPass, newPass) {
+    //request
   }
 }
