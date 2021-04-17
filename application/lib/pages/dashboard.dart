@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-//import 'package:loginsignup/pages/widgets/myDrawer.dart';
-//import 'package:loginsignup/pages/widgets/myAppBar.dart';
+import 'package:application/pages/widgets/myDrawer.dart';
+import 'package:application/pages/widgets/myAppBar.dart';
+
 
 class DashBoard extends StatefulWidget {
   @override
@@ -14,10 +15,10 @@ class _DashBoardState extends State<DashBoard> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
-        //child: MyAppBar(),
+        child: MyAppBar(),
       ),
       body: Center(child: Text("داشبورد")),
-      //drawer: MyDrawer(),
+      drawer: MyDrawer(),
     );
   }
 }
