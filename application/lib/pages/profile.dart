@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: <Widget>[
           profileSection(),
-          //Submit(),
+          Submit(),
         ],
       ),
     );
@@ -264,4 +264,41 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Container Submit() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 40.0,
+      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      margin: EdgeInsets.only(top: 25.0),
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+        onPressed: () {
+          if (!_formKey.currentState.validate()) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Processing Data')));
+          } else {
+            setState(() {
+              //_isLoading = true;
+            });
+            updateProfile(
+              firstNameController.text,
+              lastNameController.text,
+              emailController.text,
+              phoneController.text,
+              universityController.text,
+              fieldOfStudyController.text,
+              entryYearController.text,
+            );
+          }
+        },
+        child: Text("ثبت تغییرات", style: TextStyle(color: Colors.black)),
+      ),
+    );
+  }
+
+  updateProfile(String first, last, email, phone, uni, field, year) {
+    //request
+  }
 }
