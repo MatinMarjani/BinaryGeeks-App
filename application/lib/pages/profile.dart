@@ -115,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
       key: _formKey2,
       child: Column(
         children: <Widget>[
-          //changePass(),
+          changePass(),
           //Submit2(),
         ],
       ),
@@ -300,5 +300,76 @@ class _ProfilePageState extends State<ProfilePage> {
 
   updateProfile(String first, last, email, phone, uni, field, year) {
     //request
+  }
+
+  Container changePass() {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 30),
+            TextFormField(
+              controller: oldPasswordController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              obscureText: true,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock, color: Colors.black),
+                labelText: "گذرواژه",
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(height: 30.0),
+            TextFormField(
+              controller: passwordController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              obscureText: true,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock, color: Colors.black),
+                labelText: "گذرواژه ی جدید",
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(height: 30.0),
+            TextFormField(
+              controller: passwordReController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                } else if (value != passwordController.text) {
+                  return 'تکرار گذرواژه غلط می باشد';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              obscureText: true,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock, color: Colors.black),
+                labelText: "تکرار گذرواژه ی جدید",
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        ));
   }
 }
