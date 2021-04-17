@@ -68,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: <Widget>[
             headerSection(),
             profilePicture(),
-            // infoForm(),
+            infoForm(),
             // passForm(),
           ],
         ),
@@ -99,10 +99,169 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Form infoForm() {
-    return Form();
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          profileSection(),
+          //Submit(),
+        ],
+      ),
+    );
   }
 
   Form passForm() {
-    return Form();
+    return Form(
+      key: _formKey2,
+      child: Column(
+        children: <Widget>[
+          //changePass(),
+          //Submit2(),
+        ],
+      ),
+    );
   }
+
+  Container profileSection() {
+    return Container(
+      //color: Colors.teal,
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: TextFormField(
+                  controller: firstNameController,
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.account_box_rounded, color: Colors.black),
+                    labelText: "نام",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(width: 5.0),
+              Flexible(
+                child: TextFormField(
+                  controller: lastNameController,
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.account_box_rounded, color: Colors.black),
+                    labelText: "نام خانوادگی",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
+          TextFormField(
+            controller: emailController,
+            cursorColor: Colors.black,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              icon: Icon(Icons.email, color: Colors.black),
+              labelText: "ایمیل",
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black)),
+              hintStyle: TextStyle(color: Colors.black),
+            ),
+          ),
+          SizedBox(height: 30),
+          TextFormField(
+            controller: phoneController,
+            cursorColor: Colors.black,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              icon: Icon(Icons.phone, color: Colors.black),
+              labelText: "تلفن همراه",
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black)),
+              hintStyle: TextStyle(color: Colors.black),
+            ),
+          ),
+          SizedBox(height: 30),
+          TextFormField(
+            controller: _controller,
+            cursorColor: Colors.black,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              suffixIcon: PopupMenuButton<String>(
+                icon: const Icon(Icons.arrow_drop_down),
+                onSelected: (String value) {
+                  _controller.text = value;
+                },
+                itemBuilder: (BuildContext context) {
+                  return items.map<PopupMenuItem<String>>((String value) {
+                    return new PopupMenuItem(
+                        child: new Text(value), value: value);
+                  }).toList();
+                },
+              ),
+              icon: Icon(Icons.accessibility_new_sharp, color: Colors.black),
+              labelText: "وضعیت",
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black)),
+              hintStyle: TextStyle(color: Colors.black),
+            ),
+          ),
+          SizedBox(height: 30),
+          TextFormField(
+            controller: universityController,
+            cursorColor: Colors.black,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              icon: Icon(Icons.school, color: Colors.black),
+              labelText: "دانشگاه",
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black)),
+              hintStyle: TextStyle(color: Colors.black),
+            ),
+          ),
+          SizedBox(height: 30),
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: TextFormField(
+                  controller: fieldOfStudyController,
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.school, color: Colors.black),
+                    labelText: "رشته تحصیلی",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(width: 5.0),
+              Flexible(
+                child: TextFormField(
+                  controller: entryYearController,
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.date_range, color: Colors.black),
+                    labelText: "سال ورود",
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
 }
