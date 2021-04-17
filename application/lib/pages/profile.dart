@@ -17,16 +17,16 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
   final TextEditingController universityController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController fieldOfStudyController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController entryYearController = new TextEditingController();
 
   final TextEditingController oldPasswordController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController passwordReController =
-  new TextEditingController();
+      new TextEditingController();
 
   final TextEditingController _controller = new TextEditingController();
   var items = [
@@ -68,8 +68,8 @@ class _ProfilePageState extends State<ProfilePage> {
           children: <Widget>[
             headerSection(),
             profilePicture(),
-            infoForm(),
-            passForm(),
+            // infoForm(),
+            // passForm(),
           ],
         ),
       ),
@@ -77,11 +77,25 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Container headerSection() {
-    return Container();
+    return Container(
+      margin: EdgeInsets.only(top: 0.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      child: Center(
+          child: Text("پروفایل من",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold))),
+    );
   }
 
   Container profilePicture() {
-    return Container();
+    return Container(
+        child: CircleAvatar(
+      maxRadius: 75,
+      backgroundColor: Colors.white,
+      child: Text("م"),
+    ));
   }
 
   Form infoForm() {
