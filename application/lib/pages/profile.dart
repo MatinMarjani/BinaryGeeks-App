@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
 import 'package:application/util/app_url.dart';
+import 'package:application/pages/login.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -20,6 +21,10 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
+
+  bool _isLoading = false;
+  bool _wrongInfo = false;
+  bool _wrongPass = false;
 
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -136,6 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
             profilePicture(),
             infoForm(),
             passForm(),
+            deleteBtn(),
           ],
         ),
       ),
@@ -183,6 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
       key: _formKey2,
       child: Column(
         children: <Widget>[
+          updatePassword_errorSection(),
           changePass(),
           Submit2(),
         ],
@@ -404,10 +411,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
     http.StreamedResponse response = await request.send();
 
-    print("Token $token");
-    print(request.body);
-    print(AppUrl.Update_Profile + id);
-
+    // print("Token $token");
+    // print(request.body);
+    // print(AppUrl.Update_Profile + id);
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
@@ -418,10 +424,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container changePass() {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
         child: Column(
           children: <Widget>[
-            SizedBox(height: 30),
             TextFormField(
               controller: oldPasswordController,
               validator: (value) {
@@ -516,7 +520,101 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  updatePassword(String oldPass, newPass) {
-    //request
+  updatePassword(String oldPass, newPass) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Delete_Profile + id + '/change-password');
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('PUT', url);
+    request.body = '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      log("yes?");
+       sharedPreferences.clear();
+       sharedPreferences.commit();
+      _wrongPass = false;
+       Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false);
+    }
+    else {
+    print(response.reasonPhrase);
+    _wrongPass = true;
+    }
   }
+
+  Container updatePassword_errorSection() {
+    if (_wrongPass)
+      return Container(
+      padding: EdgeInsets.only(right: 15.0, left : 15,  top: 20.0),
+        child: Text(
+          "رمز وارد شده غلط می باشد",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    return Container();
+  }
+
+
+  Container deleteBtn() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 40.0,
+      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      margin: EdgeInsets.only(top: 25.0),
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor:
+            MaterialStateProperty.all<Color>(Colors.red)),
+        onPressed: () {
+            setState(() {
+              //_isLoading = true;
+            });
+            deleteProfile();
+        },
+        child: Text("پاک کردن اکانت", style: TextStyle(color: Colors.black)),
+      ),
+    );
+  }
+
+  deleteProfile() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Update_Profile + id);
+
+    var headers = {
+      'Authorization': 'Token $token'
+    };
+    var request = http.Request('DELETE', url);
+    request.body = '''''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      sharedPreferences.clear();
+      sharedPreferences.commit();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false);
+    }
+    else {
+    print(response.reasonPhrase);
+    }
+  }
+
+
 }
