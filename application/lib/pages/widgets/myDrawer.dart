@@ -66,8 +66,6 @@ class _MyDrawerState extends State<MyDrawer> {
             leading: Icon(Icons.logout),
             onLongPress: () {
               logout();
-              sharedPreferences.clear();
-              sharedPreferences.commit();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage()),
@@ -86,6 +84,8 @@ class _MyDrawerState extends State<MyDrawer> {
     try {
       response =
           await http.get(url, headers: {'Authorization': 'Token $token'});
+      sharedPreferences.clear();
+      sharedPreferences.commit();
       print(response.body);
     } catch (e) {
       print(e);

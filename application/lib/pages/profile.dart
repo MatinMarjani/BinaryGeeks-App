@@ -1,7 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+import 'package:application/util/app_url.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -43,6 +50,59 @@ class _ProfilePageState extends State<ProfilePage> {
       body: profile(),
       drawer: MyDrawer(),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    log('Profile Init');
+    getProfile();
+  }
+
+  getProfile() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse = null;
+    var response;
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Get_Profile + id);
+
+    try {
+      log(' url : ' + AppUrl.Get_Profile + id);
+      log(token);
+      response =
+          await http.get(url, headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log('200');
+        //print(response.body);
+        jsonResponse = json.decode(response.body);
+        if (jsonResponse != null) {
+          setState(() {
+            //_isLoading = false;
+            firstNameController.text = jsonResponse['first_name'];
+            lastNameController.text = jsonResponse['last_name'];
+            emailController.text = jsonResponse['email'];
+            phoneController.text = jsonResponse['phone_number'];
+            universityController.text = jsonResponse['university'];
+            fieldOfStudyController.text = jsonResponse['field_of_study'];
+            entryYearController.text = jsonResponse['entry_year'];
+          });
+          //Set user Info from response.data to sharedPrefrences
+        }
+      } else {
+        log('!200');
+        setState(() {
+          //_isLoading = false;
+        });
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        //_isLoading = false;
+      });
+    }
   }
 
   Scaffold profile() {
@@ -93,8 +153,10 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
         child: CircleAvatar(
       maxRadius: 75,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
+      backgroundImage: NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
       child: Text("م"),
+
     ));
   }
 
@@ -382,7 +444,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
         onPressed: () {
           if (!_formKey2.currentState.validate()) {
             ScaffoldMessenger.of(context)
