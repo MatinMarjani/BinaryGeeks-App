@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
+import 'package:flutter/services.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
           await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
-        //print(response.body);
+        print(response.body);
         jsonResponse = json.decode(response.body);
         if (jsonResponse != null) {
           setState(() {
@@ -83,10 +85,14 @@ class _ProfilePageState extends State<ProfilePage> {
             firstNameController.text = jsonResponse['first_name'];
             lastNameController.text = jsonResponse['last_name'];
             emailController.text = jsonResponse['email'];
-            phoneController.text = jsonResponse['phone_number'];
-            universityController.text = jsonResponse['university'];
-            fieldOfStudyController.text = jsonResponse['field_of_study'];
-            entryYearController.text = jsonResponse['entry_year'];
+            if (jsonResponse['phone_number'] != null)
+              phoneController.text = jsonResponse['phone_number'].toString();
+            if (jsonResponse['university'] != "null")
+              universityController.text = jsonResponse['university'];
+            if (jsonResponse['field_of_study'] != "null")
+              fieldOfStudyController.text = jsonResponse['field_of_study'];
+            if (jsonResponse['entry_year'] != null)
+              entryYearController.text = jsonResponse['entry_year'].toString();
           });
           //Set user Info from response.data to sharedPrefrences
         }
@@ -154,9 +160,9 @@ class _ProfilePageState extends State<ProfilePage> {
         child: CircleAvatar(
       maxRadius: 75,
       backgroundColor: Colors.transparent,
-      backgroundImage: NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
+      backgroundImage:
+          NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
       child: Text("م"),
-
     ));
   }
 
@@ -241,6 +247,10 @@ class _ProfilePageState extends State<ProfilePage> {
             controller: phoneController,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
             decoration: InputDecoration(
               icon: Icon(Icons.phone, color: Colors.black),
               labelText: "تلفن همراه",
@@ -310,6 +320,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   controller: entryYearController,
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   decoration: InputDecoration(
                     icon: Icon(Icons.date_range, color: Colors.black),
                     labelText: "سال ورود",
@@ -360,8 +374,46 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  updateProfile(String first, last, email, phone, uni, field, year) {
-    //request
+  updateProfile(String first, last, email, phone, uni, field, year) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    if( phone.length == 0 )
+      phone = null;
+    if( uni.length == 0 )
+      uni = null;
+    if( field.length == 0 )
+      field = null;
+    if( year.length == 0 )
+      year = null;
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Update_Profile + id);
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+
+    var request =
+        http.Request('PUT', url);
+
+    request.body =
+        '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": $uni,\r\n    "field_of_study": $field, \r\n    "entry_year": "$year" \r\n}''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    print("Token $token");
+    print(request.body);
+    print(AppUrl.Update_Profile + id);
+
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   Container changePass() {
