@@ -10,10 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
-<<<<<<< Updated upstream
-=======
+
 import 'package:application/pages/widgets/alertDialog_widget.dart';
->>>>>>> Stashed changes
 import 'package:application/util/app_url.dart';
 import 'package:application/pages/login.dart';
 
@@ -35,18 +33,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
   final TextEditingController universityController =
-<<<<<<< Updated upstream
-      new TextEditingController();
-  final TextEditingController fieldOfStudyController =
-      new TextEditingController();
-  final TextEditingController entryYearController = new TextEditingController();
-
-  final TextEditingController oldPasswordController =
-      new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController passwordReController =
-      new TextEditingController();
-=======
   new TextEditingController();
   final TextEditingController fieldOfStudyController =
   new TextEditingController();
@@ -57,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController passwordReController =
   new TextEditingController();
->>>>>>> Stashed changes
+
 
   final TextEditingController _controller = new TextEditingController();
   var items = [
@@ -96,11 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
       log(' url : ' + AppUrl.Get_Profile + id);
       log(token);
       response =
-<<<<<<< Updated upstream
-          await http.get(url, headers: {'Authorization': 'Token $token'});
-=======
       await http.get(url, headers: {'Authorization': 'Token $token'});
->>>>>>> Stashed changes
       if (response.statusCode == 200) {
         log('200');
         print(response.body);
@@ -156,23 +138,15 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-<<<<<<< Updated upstream
-        child: ListView(
-=======
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView(
->>>>>>> Stashed changes
           children: <Widget>[
             headerSection(),
             profilePicture(),
             infoForm(),
             passForm(),
-<<<<<<< Updated upstream
-            deleteBtn(),
-=======
             DeleteForm(),
->>>>>>> Stashed changes
           ],
         ),
       ),
@@ -195,21 +169,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Container profilePicture() {
     return Container(
         child: CircleAvatar(
-<<<<<<< Updated upstream
-      maxRadius: 75,
-      backgroundColor: Colors.transparent,
-      backgroundImage:
-          NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
-      child: Text("م"),
-    ));
-=======
           maxRadius: 75,
           backgroundColor: Colors.transparent,
           backgroundImage:
           NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
           child: Text("م"),
         ));
->>>>>>> Stashed changes
   }
 
   Form infoForm() {
@@ -229,10 +194,7 @@ class _ProfilePageState extends State<ProfilePage> {
       key: _formKey2,
       child: Column(
         children: <Widget>[
-<<<<<<< Updated upstream
-=======
           passHeader(),
->>>>>>> Stashed changes
           updatePassword_errorSection(),
           changePass(),
           Submit2(),
@@ -393,25 +355,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container Submit() {
     return Container(
-<<<<<<< Updated upstream
-      width: MediaQuery.of(context).size.width,
-=======
       width: MediaQuery
           .of(context)
           .size
           .width,
->>>>>>> Stashed changes
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 25.0),
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor:
-<<<<<<< Updated upstream
-                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
-=======
             MaterialStateProperty.all<Color>(Colors.indigoAccent)),
->>>>>>> Stashed changes
         onPressed: () {
           if (!_formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -437,29 +391,20 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   updateProfile(String first, last, email, phone, uni, field, year) async {
-<<<<<<< Updated upstream
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    if( phone.length == 0 )
+    if (phone.length == 0)
       phone = null;
-    if( uni.length == 0 )
+    if (uni.length == 0)
       uni = null;
-    if( field.length == 0 )
+    if (field.length == 0)
       field = null;
-    if( year.length == 0 )
+    if (year.length == 0)
       year = null;
-=======
+
     setState(() {
       _isLoading = true;
     });
-
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    if (phone.length == 0) phone = null;
-    if (uni.length == 0) uni = null;
-    if (field.length == 0) field = null;
-    if (year.length == 0) year = null;
->>>>>>> Stashed changes
 
     var token = sharedPreferences.getString("token");
     var id = sharedPreferences.getInt("id").toString();
@@ -470,18 +415,12 @@ class _ProfilePageState extends State<ProfilePage> {
       'Content-Type': 'application/json'
     };
 
-<<<<<<< Updated upstream
     var request =
-        http.Request('PUT', url);
-
-    request.body =
-        '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": $uni,\r\n    "field_of_study": $field, \r\n    "entry_year": "$year" \r\n}''';
-=======
-    var request = http.Request('PUT', url);
+    http.Request('PUT', url);
 
     request.body =
     '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": $uni,\r\n    "field_of_study": $field, \r\n    "entry_year": "$year" \r\n}''';
->>>>>>> Stashed changes
+
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -495,8 +434,6 @@ class _ProfilePageState extends State<ProfilePage> {
     } else {
       print(response.reasonPhrase);
     }
-<<<<<<< Updated upstream
-=======
     setState(() {
       _isLoading = false;
     });
@@ -514,7 +451,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold))),
     );
->>>>>>> Stashed changes
   }
 
   Container changePass() {
@@ -588,25 +524,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container Submit2() {
     return Container(
-<<<<<<< Updated upstream
-      width: MediaQuery.of(context).size.width,
-=======
       width: MediaQuery
           .of(context)
           .size
           .width,
->>>>>>> Stashed changes
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 25.0),
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor:
-<<<<<<< Updated upstream
-                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
-=======
             MaterialStateProperty.all<Color>(Colors.indigoAccent)),
->>>>>>> Stashed changes
         onPressed: () {
           if (!_formKey2.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -627,13 +555,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   updatePassword(String oldPass, newPass) async {
-<<<<<<< Updated upstream
-=======
     setState(() {
       _isLoading = true;
     });
-
->>>>>>> Stashed changes
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     var token = sharedPreferences.getString("token");
@@ -645,41 +569,22 @@ class _ProfilePageState extends State<ProfilePage> {
       'Content-Type': 'application/json'
     };
     var request = http.Request('PUT', url);
-<<<<<<< Updated upstream
-    request.body = '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
-=======
     request.body =
     '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
->>>>>>> Stashed changes
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-<<<<<<< Updated upstream
-      log("yes?");
-       sharedPreferences.clear();
-       sharedPreferences.commit();
+      sharedPreferences.clear();
+      sharedPreferences.commit();
       _wrongPass = false;
-       Navigator.of(context).pushAndRemoveUntil(
+      Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
               (Route<dynamic> route) => false);
     }
     else {
-    print(response.reasonPhrase);
-    _wrongPass = true;
-    }
-=======
-      sharedPreferences.clear();
-      sharedPreferences.commit();
-      setState(() {
-        _wrongPass = false;
-      });
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
-    } else {
       print(response.reasonPhrase);
       setState(() {
         _wrongPass = true;
@@ -688,17 +593,12 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _isLoading = false;
     });
->>>>>>> Stashed changes
   }
 
   Container updatePassword_errorSection() {
     if (_wrongPass)
       return Container(
-<<<<<<< Updated upstream
-      padding: EdgeInsets.only(right: 15.0, left : 15,  top: 20.0),
-=======
         padding: EdgeInsets.only(right: 15.0, left: 15, top: 20.0),
->>>>>>> Stashed changes
         child: Text(
           "رمز وارد شده غلط می باشد",
           style: TextStyle(color: Colors.red),
@@ -707,56 +607,36 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container();
   }
 
-<<<<<<< Updated upstream
 
-  Container deleteBtn() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-=======
   Form DeleteForm() {
     return Form(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 150),
-            deleteBtn(),
-          ],
-        ));
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 150),
+          deleteBtn()
+        ],
+      ),
+    );
   }
 
   Container deleteBtn() {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
->>>>>>> Stashed changes
-      height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 25.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-<<<<<<< Updated upstream
-            backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.red)),
-        onPressed: () {
-            setState(() {
-              //_isLoading = true;
-            });
-            deleteProfile();
-        },
-        child: Text("پاک کردن اکانت", style: TextStyle(color: Colors.black)),
-=======
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
-        onPressed: () {
-          _showDialog(context);
-          setState(() {
-            //_isLoading = true;
-          });
-        },
-        child: Text(
-            "* پاک کردن اکانت *", style: TextStyle(color: Colors.black)),
->>>>>>> Stashed changes
-      ),
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        height: 40.0,
+        padding: EdgeInsets.symmetric(horizontal: 15.0),
+        margin: EdgeInsets.only(top: 25.0),
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+          onPressed: () {
+            _showDialog(context);
+          },
+          child: Text(
+              "پاک کردن اکانت", style: TextStyle(color: Colors.black)),
+        )
     );
   }
 
@@ -767,13 +647,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Update_Profile + id);
 
-<<<<<<< Updated upstream
-    var headers = {
-      'Authorization': 'Token $token'
-    };
-=======
     var headers = {'Authorization': 'Token $token'};
->>>>>>> Stashed changes
     var request = http.Request('DELETE', url);
     request.body = '''''';
     request.headers.addAll(headers);
@@ -787,34 +661,26 @@ class _ProfilePageState extends State<ProfilePage> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
               (Route<dynamic> route) => false);
-<<<<<<< Updated upstream
     }
     else {
-    print(response.reasonPhrase);
-    }
-  }
-
-
-=======
-    } else {
       print(response.reasonPhrase);
     }
   }
 
   _showDialog(BuildContext context) {
-    VoidCallback continueCallBack = () => {
-    Navigator.of(context).pop(),
-    deleteProfile()
-  };
-    BlurryDialog alert = BlurryDialog("خیر","آیا مطمین هستید؟ امکان بازگشت وجود ندارد",continueCallBack);
-
-
+    VoidCallback continueCallBack = () =>
+    {
+      Navigator.of(context).pop(),
+      deleteProfile()
+    };
+    BlurryDialog alert = BlurryDialog(
+        "خیر", "آیا مطمین هستید؟ امکان بازگشت وجود ندارد", continueCallBack);
     showDialog(
-    context: context,
-    builder: (BuildContext context) {
-    return alert;
-    },
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
->>>>>>> Stashed changes
+
 }
