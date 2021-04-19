@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
 
-
 class NewPostPage extends StatefulWidget {
   @override
   _NewPostPageState createState() => _NewPostPageState();
@@ -20,6 +19,27 @@ class _NewPostPageState extends State<NewPostPage> {
   int _currentStep = 0;
   StepperType stepperType = StepperType.vertical;
 
+  bool complete = false;
+
+  final TextEditingController titleController = new TextEditingController();
+  final TextEditingController authorController = new TextEditingController();
+  final TextEditingController publisherController = new TextEditingController();
+  final TextEditingController categoriesController =
+  new TextEditingController();
+  final TextEditingController priceController = new TextEditingController();
+  final TextEditingController provinceController = new TextEditingController();
+  final TextEditingController cityController = new TextEditingController();
+  final TextEditingController zoneController = new TextEditingController();
+  final TextEditingController statusController = new TextEditingController();
+  final TextEditingController descriptionController =
+  new TextEditingController();
+
+  var items = ["ریاضی", "علوم پایه", "مهندسی کامپیوتر", "معارف"];
+
+  var items1 = ["فروش", "خرید", "معاوضه", "اهدا"];
+
+  final _formKey1 = GlobalKey<FormState>();
+  final _formKey3 = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,31 +50,332 @@ class _NewPostPageState extends State<NewPostPage> {
       ),
       body: NewPost(),
       drawer: MyDrawer(),
-    );
-  }
-
-  Scaffold NewPost() {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        decoration: new BoxDecoration(
-          border: Border.all(width: 1, color: Colors.white54),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Colors.white54,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.8),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.list),
+      //   onPressed: switchStepsType,
+      // ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.check),
+        onPressed: () {
+          _formKey1.currentState.validate();
+          _formKey3.currentState.validate();
+        },
       ),
     );
   }
 
+  Container NewPost() {
+    return Container(
+      child: Column(
+        children: [
+          Expanded(
+            child: Stepper(
+              type: stepperType,
+              physics: ScrollPhysics(),
+              currentStep: _currentStep,
+              onStepTapped: (step) => tapped(step),
+              onStepContinue: continued,
+              onStepCancel: cancel,
+              steps: <Step>[
+                step_one(),
+                step_two(),
+                step_three(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
+  switchStepsType() {
+    setState(() =>
+    stepperType == StepperType.vertical
+        ? stepperType = StepperType.horizontal
+        : stepperType = StepperType.vertical);
+  }
+
+  tapped(int step) {
+    setState(() => _currentStep = step);
+  }
+
+  continued() {
+    _currentStep < 2
+        ? setState(() => _currentStep += 1)
+        : setState(() => complete = true);
+
+    if (_currentStep > 0) if (!_formKey1.currentState.validate()) {
+      setState(() => _currentStep = 0);
+    }
+
+    if (complete) if (!_formKey3.currentState.validate()) {
+      setState(() => _currentStep = 2);
+    }
+  }
+
+  cancel() {
+    _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
+  }
+
+  Step step_one() {
+    return Step(
+      title: new Text('مشخصات کتاب'),
+      content: Form(
+        key: _formKey1,
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              controller: titleController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.title, color: Colors.black),
+                labelText: "نام کتاب",
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: authorController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.assignment_ind, color: Colors.black),
+                labelText: "نویسنده",
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: publisherController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.print, color: Colors.black),
+                labelText: "ناشر",
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: categoriesController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                suffixIcon: PopupMenuButton<String>(
+                  icon: const Icon(Icons.arrow_drop_down),
+                  onSelected: (String value) {
+                    categoriesController.text = value;
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return items.map<PopupMenuItem<String>>((String value) {
+                      return new PopupMenuItem(
+                          child: new Text(value), value: value);
+                    }).toList();
+                  },
+                ),
+                icon: Icon(Icons.speaker_group, color: Colors.black),
+                labelText: "دسته بندی",
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
+      ),
+      isActive: _currentStep >= 0,
+      state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
+    );
+  }
+
+  Step step_two() {
+    return Step(
+      title: new Text('تصویر کتاب'),
+      content: Column(
+        children: <Widget>[
+          TextFormField(
+            decoration: InputDecoration(labelText: 'نام کتاب'),
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
+      isActive: _currentStep >= 0,
+      state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
+    );
+  }
+
+  Step step_three() {
+    return Step(
+      title: new Text('توضیحات'),
+      content: Form(
+        key: _formKey3,
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              controller: priceController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              decoration: InputDecoration(
+                icon: Icon(Icons.attach_money, color: Colors.black),
+                labelText: 'قیمت',
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                    controller: provinceController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الزامی است';
+                      }
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.map, color: Colors.black),
+                      labelText: "استان",
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)),
+                      hintStyle: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 5.0),
+                Flexible(
+                  child: TextFormField(
+                    controller: cityController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الزامی است';
+                      }
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.location_city, color: Colors.black),
+                      labelText: "شهر",
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)),
+                      hintStyle: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                    controller: zoneController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الزامی است';
+                      }
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.map, color: Colors.black),
+                      labelText: "منطقه",
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)),
+                      hintStyle: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 5.0),
+                Flexible(
+                  child: TextFormField(
+                    controller: statusController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'الزامی است';
+                      }
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      suffixIcon: PopupMenuButton<String>(
+                        icon: const Icon(Icons.arrow_drop_down),
+                        onSelected: (String value) {
+                          statusController.text = value;
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return items1
+                              .map<PopupMenuItem<String>>((String value) {
+                            return new PopupMenuItem(
+                                child: new Text(value), value: value);
+                          }).toList();
+                        },
+                      ),
+                      icon: Icon(Icons.speaker_group, color: Colors.black),
+                      labelText: "وضعیت",
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)),
+                      hintStyle: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
+      ),
+      isActive: _currentStep >= 0,
+      state: _currentStep >= 2 ? StepState.complete : StepState.disabled,
+    );
+  }
 }
