@@ -25,14 +25,14 @@ class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController authorController = new TextEditingController();
   final TextEditingController publisherController = new TextEditingController();
   final TextEditingController categoriesController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController priceController = new TextEditingController();
   final TextEditingController provinceController = new TextEditingController();
   final TextEditingController cityController = new TextEditingController();
   final TextEditingController zoneController = new TextEditingController();
   final TextEditingController statusController = new TextEditingController();
   final TextEditingController descriptionController =
-  new TextEditingController();
+      new TextEditingController();
 
   var items = ["ریاضی", "علوم پایه", "مهندسی کامپیوتر", "معارف"];
 
@@ -76,6 +76,45 @@ class _NewPostPageState extends State<NewPostPage> {
               onStepTapped: (step) => tapped(step),
               onStepContinue: continued,
               onStepCancel: cancel,
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return Row(
+                  children: <Widget>[
+                    SizedBox(height: 200),
+                    Container(
+                      child: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Colors.indigoAccent)),
+                        child: Text(
+                          "ادامه",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: (){
+                          log(_currentStep.toString());
+                          onStepContinue();
+                          },
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Container(
+                      child: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.red)),
+                        child: Text(
+                          "قبلی",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: (){
+                          log(_currentStep.toString());
+                          onStepCancel();
+                          },
+                      ),
+                    ),
+                  ],
+                );
+              },
               steps: <Step>[
                 step_one(),
                 step_two(),
@@ -89,8 +128,7 @@ class _NewPostPageState extends State<NewPostPage> {
   }
 
   switchStepsType() {
-    setState(() =>
-    stepperType == StepperType.vertical
+    setState(() => stepperType == StepperType.vertical
         ? stepperType = StepperType.horizontal
         : stepperType = StepperType.vertical);
   }
@@ -104,17 +142,22 @@ class _NewPostPageState extends State<NewPostPage> {
         ? setState(() => _currentStep += 1)
         : setState(() => complete = true);
 
-    if (_currentStep > 0) if (!_formKey1.currentState.validate()) {
+    if (_currentStep == 1 ) if (!_formKey1.currentState
+        .validate()) {
       setState(() => _currentStep = 0);
     }
 
-    if (complete) if (!_formKey3.currentState.validate()) {
+    if (complete) if (!_formKey3.currentState
+        .validate()) {
       setState(() => _currentStep = 2);
     }
   }
 
   cancel() {
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
+    if(_currentStep < 2) {
+      setState(() => complete = false);
+    }
   }
 
   Step step_one() {
