@@ -1,11 +1,15 @@
 import 'dart:developer';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+
+
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
@@ -33,6 +37,8 @@ class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController statusController = new TextEditingController();
   final TextEditingController descriptionController =
       new TextEditingController();
+
+  File _image;
 
   var items = ["ریاضی", "علوم پایه", "مهندسی کامپیوتر", "معارف"];
 
@@ -270,8 +276,41 @@ class _NewPostPageState extends State<NewPostPage> {
       title: new Text('تصویر کتاب'),
       content: Column(
         children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(labelText: 'نام کتاب'),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              height: 200.0,
+              padding: EdgeInsets.symmetric(horizontal: 0.0),
+              margin: EdgeInsets.only(top: 0.0),
+              child:           Center(
+                child: GestureDetector(
+                  onTap: () {
+                    _showPicker(context);
+                  },
+                  child: Container(
+                    child: _image != null
+                        ? ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.file(
+                        _image,
+                        width: 300,
+                        height: 300,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    )
+                        : Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(15)),
+                      width: 300,
+                      height: 300,
+                      child: Icon(
+                        Icons.camera_alt,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ),
           SizedBox(height: 20),
         ],
@@ -424,7 +463,58 @@ class _NewPostPageState extends State<NewPostPage> {
     );
   }
 
-  CreatePost(){
-    //request
+  CreatePost() async {
+
   }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('گالری'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('دوربین'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+  _imgFromCamera() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50
+    );
+    setState(() {
+      _image = image;
+    });
+  }
+
+  _imgFromGallery() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50
+    );
+    setState(() {
+      _image = image;
+    });
+  }
+
+
 }
