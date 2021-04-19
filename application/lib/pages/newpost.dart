@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -9,10 +10,11 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 
-
-
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+
+import 'package:application/util/app_url.dart';
+
 
 class NewPostPage extends StatefulWidget {
   @override
@@ -23,7 +25,10 @@ class _NewPostPageState extends State<NewPostPage> {
   int _currentStep = 0;
   StepperType stepperType = StepperType.vertical;
 
+  bool _isLoading = false;
+  bool _wrongInfo = false;
   bool complete = false;
+  bool created = false;
 
   final TextEditingController titleController = new TextEditingController();
   final TextEditingController authorController = new TextEditingController();
@@ -54,7 +59,11 @@ class _NewPostPageState extends State<NewPostPage> {
         preferredSize: const Size.fromHeight(50),
         child: MyAppBar(),
       ),
-      body: NewPost(),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+      ))
+          : NewPost(),
       drawer: MyDrawer(),
       // floatingActionButton: FloatingActionButton(
       //   child: Icon(Icons.list),
@@ -455,6 +464,25 @@ class _NewPostPageState extends State<NewPostPage> {
               ],
             ),
             SizedBox(height: 20),
+            TextFormField(
+              controller: descriptionController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.description, color: Colors.black),
+                labelText: 'توضیحات',
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+            created ? Text("YESSS") : SizedBox(height: 20),
           ],
         ),
       ),
@@ -464,6 +492,58 @@ class _NewPostPageState extends State<NewPostPage> {
   }
 
   CreatePost() async {
+    setState(() {
+      _isLoading = true;
+    });
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Add_Post);
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', url);
+
+    request.body =jsonEncode(<String, dynamic>{
+      "title": titleController.text,
+      "author": authorController.text,
+      "publisher": publisherController.text,
+      "categories": categoriesController.text,
+      "price": priceController.text,
+      "province": provinceController.text,
+      "city": cityController.text,
+      "zone": zoneController.text,
+      "status": statusController.text,
+      "description": descriptionController.text,
+      "is_active": true
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    log("Token $token");
+    log(request.body);
+    log(AppUrl.Add_Post);
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      setState(() {
+        created = true;
+      });
+    } else {
+      print(response.reasonPhrase);
+      setState(() {
+        created = false;
+      });
+    }
+    setState(() {
+      _isLoading = false;
+    });
 
   }
 
