@@ -90,10 +90,10 @@ class _NewPostPageState extends State<NewPostPage> {
                           "ادامه",
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: (){
+                        onPressed: () {
                           log(_currentStep.toString());
                           onStepContinue();
-                          },
+                        },
                       ),
                     ),
                     SizedBox(width: 20),
@@ -106,10 +106,10 @@ class _NewPostPageState extends State<NewPostPage> {
                           "قبلی",
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: (){
+                        onPressed: () {
                           log(_currentStep.toString());
                           onStepCancel();
-                          },
+                        },
                       ),
                     ),
                   ],
@@ -142,20 +142,22 @@ class _NewPostPageState extends State<NewPostPage> {
         ? setState(() => _currentStep += 1)
         : setState(() => complete = true);
 
-    if (_currentStep == 1 ) if (!_formKey1.currentState
-        .validate()) {
+    if (_currentStep == 1) if (!_formKey1.currentState.validate()) {
       setState(() => _currentStep = 0);
     }
 
-    if (complete) if (!_formKey3.currentState
-        .validate()) {
-      setState(() => _currentStep = 2);
+    if (complete) {
+      if (!_formKey3.currentState.validate()) {
+        setState(() => _currentStep = 2);
+      }else{
+        CreatePost();
+      }
     }
   }
 
   cancel() {
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
-    if(_currentStep < 2) {
+    if (_currentStep < 2) {
       setState(() => complete = false);
     }
   }
@@ -420,5 +422,9 @@ class _NewPostPageState extends State<NewPostPage> {
       isActive: _currentStep >= 0,
       state: _currentStep >= 2 ? StepState.complete : StepState.disabled,
     );
+  }
+
+  CreatePost(){
+    //request
   }
 }
