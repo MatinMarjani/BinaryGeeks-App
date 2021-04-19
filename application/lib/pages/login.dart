@@ -46,7 +46,9 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+        ))
             : ListView(
                 children: <Widget>[
                   headerSection(),

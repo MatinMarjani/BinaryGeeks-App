@@ -52,7 +52,9 @@ class _SignUpPageState extends State<SignUpPage> {
           ],
         ),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+        ))
             : ListView(
                 children: <Widget>[
                   headerSection(),

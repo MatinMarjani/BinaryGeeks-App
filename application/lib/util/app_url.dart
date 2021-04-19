@@ -18,4 +18,14 @@ class AppUrl {
   static const String Delete_Profile = baseURL + "/users/"; //DEL
   // +$id + '/change-password'
   static const String Change_Password = baseURL + "/users/"; //PUT
+
+  //Posts
+  static const String Add_Post = baseURL + "/posts"; //POST
+  static const String Get_Available_Categories = baseURL + "/categories"; //GET
+  static const String Get_Post = baseURL + "/posts/"; // + $id  //GET
+  static const String Update_Post = baseURL + "/posts/"; // + $id  //PUT
+  static const String Delete_Post = baseURL + "/posts/"; // + $id  //DEL
+  static const String Get_Post_Status = baseURL + "/posts/status"; // + $id  //DEL
+
+
 }

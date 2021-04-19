@@ -1,17 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
-
 import 'package:application/pages/widgets/alertDialog_widget.dart';
+
 import 'package:application/util/app_url.dart';
 import 'package:application/pages/login.dart';
 
@@ -139,7 +140,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+        ))
             : ListView(
                 children: <Widget>[
                   headerSection(),
@@ -182,6 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
       key: _formKey,
       child: Column(
         children: <Widget>[
+          errorSection(),
           profileSection(),
           Submit(),
         ],
@@ -201,6 +205,17 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
+  }
+
+  Container errorSection() {
+    if (_wrongInfo)
+      return Container(
+        child: Text(
+          "اطلاعات غلط می باشند",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    return Container();
   }
 
   Container profileSection() {
@@ -411,20 +426,26 @@ class _ProfilePageState extends State<ProfilePage> {
     var request = http.Request('PUT', url);
 
     request.body =
-        '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": $uni,\r\n    "field_of_study": $field, \r\n    "entry_year": "$year" \r\n}''';
+        '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}''';
 
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
-    // print("Token $token");
-    // print(request.body);
-    // print(AppUrl.Update_Profile + id);
+    log("Token $token");
+    log(request.body);
+    log(AppUrl.Update_Profile + id);
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
+      setState(() {
+        _wrongInfo = false;
+      });
     } else {
       print(response.reasonPhrase);
+      setState(() {
+        _wrongInfo = true;
+      });
     }
     setState(() {
       _isLoading = false;
