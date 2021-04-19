@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/cupertino.dart';

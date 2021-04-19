@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:application/pages/profile.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:application/util/app_url.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:application/util/app_url.dart';
 import 'package:application/pages/login.dart';
+import 'package:application/pages/newpost.dart';
 import 'package:application/main.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -59,6 +60,16 @@ class _MyDrawerState extends State<MyDrawer> {
                   MaterialPageRoute(
                       builder: (BuildContext context) => ProfilePage()),
                   (Route<dynamic> route) => false);
+            },
+          ),
+          ListTile(
+            title: Text("آگهی جدید"),
+            leading: Icon(Icons.create_new_folder_rounded),
+            onTap: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => NewPostPage()),
+                      (Route<dynamic> route) => false);
             },
           ),
           ListTile(
