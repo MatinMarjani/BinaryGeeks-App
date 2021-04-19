@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:application/pages/login.dart';
@@ -58,19 +61,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return DashBoard();
-  }
-
-  logout() async {
-    var response;
-    var url = Uri.parse(AppUrl.logout);
-    var token = sharedPreferences.getString("token");
-    try {
-      response =
-          await http.get(url, headers: {'Authorization': 'Token $token'});
-      print(response.body);
-    } catch (e) {
-      print(e);
-    }
   }
 
   setInfo() {

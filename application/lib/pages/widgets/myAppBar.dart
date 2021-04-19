@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -26,8 +26,6 @@ class _MyAppBarState extends State<MyAppBar> {
         TextButton(
           onPressed: () {
             logout();
-            sharedPreferences.clear();
-            sharedPreferences.commit();
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                     builder: (BuildContext context) => LoginPage()),
@@ -46,6 +44,8 @@ class _MyAppBarState extends State<MyAppBar> {
     try {
       response =
           await http.get(url, headers: {'Authorization': 'Token $token'});
+      sharedPreferences.clear();
+      sharedPreferences.commit();
       print(response.body);
     } catch (e) {
       print(e);

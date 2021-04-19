@@ -199,6 +199,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       //log(' url : ' + AppUrl.login);
+      log(data.toString());
       var url = Uri.parse(AppUrl.login);
       response = await http.post(url, body: data);
       //print(response.statusCode);

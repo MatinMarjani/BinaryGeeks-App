@@ -14,8 +14,8 @@ class AppUrl {
   //User Profile :
   // + $id
   static const String Get_Profile = baseURL + "/users/"; //Get
-  static const String Update_Profile = baseURL + "/users"; //PUT
-  static const String update_user = baseURL + "/users"; //DEL
+  static const String Update_Profile = baseURL + "/users/"; //PUT
+  static const String Delete_Profile = baseURL + "/users/"; //DEL
   // +$id + '/change-password'
-  static const String delete_user = baseURL + "/users"; //PUT
+  static const String Change_Password = baseURL + "/users/"; //PUT
 }

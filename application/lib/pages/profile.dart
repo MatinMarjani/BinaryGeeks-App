@@ -1,7 +1,19 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:ffi';
+import 'package:flutter/services.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+
+import 'package:application/pages/widgets/alertDialog_widget.dart';
+import 'package:application/util/app_url.dart';
+import 'package:application/pages/login.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -12,21 +24,26 @@ class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
 
+  bool _isLoading = false;
+  bool _wrongInfo = false;
+  bool _wrongPass = false;
+
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
   final TextEditingController universityController =
-      new TextEditingController();
+  new TextEditingController();
   final TextEditingController fieldOfStudyController =
-      new TextEditingController();
+  new TextEditingController();
   final TextEditingController entryYearController = new TextEditingController();
 
   final TextEditingController oldPasswordController =
-      new TextEditingController();
+  new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController passwordReController =
-      new TextEditingController();
+  new TextEditingController();
+
 
   final TextEditingController _controller = new TextEditingController();
   var items = [
@@ -43,6 +60,63 @@ class _ProfilePageState extends State<ProfilePage> {
       body: profile(),
       drawer: MyDrawer(),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    log('Profile Init');
+    getProfile();
+  }
+
+  getProfile() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse = null;
+    var response;
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Get_Profile + id);
+
+    try {
+      log(' url : ' + AppUrl.Get_Profile + id);
+      log(token);
+      response =
+      await http.get(url, headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log('200');
+        print(response.body);
+        jsonResponse = json.decode(response.body);
+        if (jsonResponse != null) {
+          setState(() {
+            //_isLoading = false;
+            firstNameController.text = jsonResponse['first_name'];
+            lastNameController.text = jsonResponse['last_name'];
+            emailController.text = jsonResponse['email'];
+            if (jsonResponse['phone_number'] != null)
+              phoneController.text = jsonResponse['phone_number'].toString();
+            if (jsonResponse['university'] != "null")
+              universityController.text = jsonResponse['university'];
+            if (jsonResponse['field_of_study'] != "null")
+              fieldOfStudyController.text = jsonResponse['field_of_study'];
+            if (jsonResponse['entry_year'] != null)
+              entryYearController.text = jsonResponse['entry_year'].toString();
+          });
+          //Set user Info from response.data to sharedPrefrences
+        }
+      } else {
+        log('!200');
+        setState(() {
+          //_isLoading = false;
+        });
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        //_isLoading = false;
+      });
+    }
   }
 
   Scaffold profile() {
@@ -64,12 +138,15 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        child: ListView(
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView(
           children: <Widget>[
             headerSection(),
             profilePicture(),
             infoForm(),
             passForm(),
+            DeleteForm(),
           ],
         ),
       ),
@@ -92,10 +169,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Container profilePicture() {
     return Container(
         child: CircleAvatar(
-      maxRadius: 75,
-      backgroundColor: Colors.white,
-      child: Text("م"),
-    ));
+          maxRadius: 75,
+          backgroundColor: Colors.transparent,
+          backgroundImage:
+          NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
+          child: Text("م"),
+        ));
   }
 
   Form infoForm() {
@@ -115,6 +194,8 @@ class _ProfilePageState extends State<ProfilePage> {
       key: _formKey2,
       child: Column(
         children: <Widget>[
+          passHeader(),
+          updatePassword_errorSection(),
           changePass(),
           Submit2(),
         ],
@@ -179,6 +260,10 @@ class _ProfilePageState extends State<ProfilePage> {
             controller: phoneController,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
             decoration: InputDecoration(
               icon: Icon(Icons.phone, color: Colors.black),
               labelText: "تلفن همراه",
@@ -248,6 +333,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   controller: entryYearController,
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   decoration: InputDecoration(
                     icon: Icon(Icons.date_range, color: Colors.black),
                     labelText: "سال ورود",
@@ -266,14 +355,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container Submit() {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 25.0),
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+            MaterialStateProperty.all<Color>(Colors.indigoAccent)),
         onPressed: () {
           if (!_formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -298,16 +390,73 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  updateProfile(String first, last, email, phone, uni, field, year) {
-    //request
+  updateProfile(String first, last, email, phone, uni, field, year) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    if (phone.length == 0)
+      phone = null;
+    if (uni.length == 0)
+      uni = null;
+    if (field.length == 0)
+      field = null;
+    if (year.length == 0)
+      year = null;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Update_Profile + id);
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+
+    var request =
+    http.Request('PUT', url);
+
+    request.body =
+    '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": $uni,\r\n    "field_of_study": $field, \r\n    "entry_year": "$year" \r\n}''';
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    // print("Token $token");
+    // print(request.body);
+    // print(AppUrl.Update_Profile + id);
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Container passHeader() {
+    return Container(
+      margin: EdgeInsets.only(top: 0.0),
+      // padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
+      child: Center(
+          child: Text("تغییر گذرواژه",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold))),
+    );
   }
 
   Container changePass() {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
         child: Column(
           children: <Widget>[
-            SizedBox(height: 30),
             TextFormField(
               controller: oldPasswordController,
               validator: (value) {
@@ -375,7 +524,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container Submit2() {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 25.0),
@@ -402,7 +554,133 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  updatePassword(String oldPass, newPass) {
-    //request
+  updatePassword(String oldPass, newPass) async {
+    setState(() {
+      _isLoading = true;
+    });
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Delete_Profile + id + '/change-password');
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('PUT', url);
+    request.body =
+    '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      sharedPreferences.clear();
+      sharedPreferences.commit();
+      _wrongPass = false;
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false);
+    }
+    else {
+      print(response.reasonPhrase);
+      setState(() {
+        _wrongPass = true;
+      });
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
+
+  Container updatePassword_errorSection() {
+    if (_wrongPass)
+      return Container(
+        padding: EdgeInsets.only(right: 15.0, left: 15, top: 20.0),
+        child: Text(
+          "رمز وارد شده غلط می باشد",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    return Container();
+  }
+
+
+  Form DeleteForm() {
+    return Form(
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 150),
+          deleteBtn()
+        ],
+      ),
+    );
+  }
+
+  Container deleteBtn() {
+    return Container(
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        height: 40.0,
+        padding: EdgeInsets.symmetric(horizontal: 15.0),
+        margin: EdgeInsets.only(top: 25.0),
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+          onPressed: () {
+            _showDialog(context);
+          },
+          child: Text(
+              "پاک کردن اکانت", style: TextStyle(color: Colors.black)),
+        )
+    );
+  }
+
+  deleteProfile() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Update_Profile + id);
+
+    var headers = {'Authorization': 'Token $token'};
+    var request = http.Request('DELETE', url);
+    request.body = '''''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      sharedPreferences.clear();
+      sharedPreferences.commit();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false);
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  _showDialog(BuildContext context) {
+    VoidCallback continueCallBack = () =>
+    {
+      Navigator.of(context).pop(),
+      deleteProfile()
+    };
+    BlurryDialog alert = BlurryDialog(
+        "خیر", "آیا مطمین هستید؟ امکان بازگشت وجود ندارد", continueCallBack);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }
