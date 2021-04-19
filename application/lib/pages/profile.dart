@@ -33,17 +33,16 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
   final TextEditingController universityController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController fieldOfStudyController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController entryYearController = new TextEditingController();
 
   final TextEditingController oldPasswordController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController passwordReController =
-  new TextEditingController();
-
+      new TextEditingController();
 
   final TextEditingController _controller = new TextEditingController();
   var items = [
@@ -70,6 +69,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
     var response;
@@ -82,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
       log(' url : ' + AppUrl.Get_Profile + id);
       log(token);
       response =
-      await http.get(url, headers: {'Authorization': 'Token $token'});
+          await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
         print(response.body);
@@ -106,17 +108,15 @@ class _ProfilePageState extends State<ProfilePage> {
         }
       } else {
         log('!200');
-        setState(() {
-          //_isLoading = false;
-        });
         print(response.body);
       }
     } catch (e) {
       print(e);
-      setState(() {
-        //_isLoading = false;
-      });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Scaffold profile() {
@@ -141,14 +141,14 @@ class _ProfilePageState extends State<ProfilePage> {
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView(
-          children: <Widget>[
-            headerSection(),
-            profilePicture(),
-            infoForm(),
-            passForm(),
-            DeleteForm(),
-          ],
-        ),
+                children: <Widget>[
+                  headerSection(),
+                  profilePicture(),
+                  infoForm(),
+                  passForm(),
+                  DeleteForm(),
+                ],
+              ),
       ),
     );
   }
@@ -169,12 +169,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Container profilePicture() {
     return Container(
         child: CircleAvatar(
-          maxRadius: 75,
-          backgroundColor: Colors.transparent,
-          backgroundImage:
+      maxRadius: 75,
+      backgroundColor: Colors.transparent,
+      backgroundImage:
           NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
-          child: Text("م"),
-        ));
+      child: Text("م"),
+    ));
   }
 
   Form infoForm() {
@@ -355,17 +355,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container Submit() {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 25.0),
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
         onPressed: () {
           if (!_formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -393,14 +390,10 @@ class _ProfilePageState extends State<ProfilePage> {
   updateProfile(String first, last, email, phone, uni, field, year) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    if (phone.length == 0)
-      phone = null;
-    if (uni.length == 0)
-      uni = null;
-    if (field.length == 0)
-      field = null;
-    if (year.length == 0)
-      year = null;
+    if (phone.length == 0) phone = null;
+    if (uni.length == 0) uni = null;
+    if (field.length == 0) field = null;
+    if (year.length == 0) year = null;
 
     setState(() {
       _isLoading = true;
@@ -415,11 +408,10 @@ class _ProfilePageState extends State<ProfilePage> {
       'Content-Type': 'application/json'
     };
 
-    var request =
-    http.Request('PUT', url);
+    var request = http.Request('PUT', url);
 
     request.body =
-    '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": $uni,\r\n    "field_of_study": $field, \r\n    "entry_year": "$year" \r\n}''';
+        '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": $uni,\r\n    "field_of_study": $field, \r\n    "entry_year": "$year" \r\n}''';
 
     request.headers.addAll(headers);
 
@@ -456,85 +448,82 @@ class _ProfilePageState extends State<ProfilePage> {
   Container changePass() {
     return Container(
         child: Column(
-          children: <Widget>[
-            TextFormField(
-              controller: oldPasswordController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'الزامی است';
-                }
-                return null;
-              },
-              cursorColor: Colors.black,
-              obscureText: true,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: Colors.black),
-                labelText: "گذرواژه",
-                border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
-              ),
-            ),
-            SizedBox(height: 30.0),
-            TextFormField(
-              controller: passwordController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'الزامی است';
-                }
-                return null;
-              },
-              cursorColor: Colors.black,
-              obscureText: true,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: Colors.black),
-                labelText: "گذرواژه ی جدید",
-                border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
-              ),
-            ),
-            SizedBox(height: 30.0),
-            TextFormField(
-              controller: passwordReController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'الزامی است';
-                } else if (value != passwordController.text) {
-                  return 'تکرار گذرواژه غلط می باشد';
-                }
-                return null;
-              },
-              cursorColor: Colors.black,
-              obscureText: true,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: Colors.black),
-                labelText: "تکرار گذرواژه ی جدید",
-                border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
-              ),
-            ),
-          ],
-        ));
+      children: <Widget>[
+        TextFormField(
+          controller: oldPasswordController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'الزامی است';
+            }
+            return null;
+          },
+          cursorColor: Colors.black,
+          obscureText: true,
+          style: TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+            icon: Icon(Icons.lock, color: Colors.black),
+            labelText: "گذرواژه",
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black)),
+            hintStyle: TextStyle(color: Colors.black),
+          ),
+        ),
+        SizedBox(height: 30.0),
+        TextFormField(
+          controller: passwordController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'الزامی است';
+            }
+            return null;
+          },
+          cursorColor: Colors.black,
+          obscureText: true,
+          style: TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+            icon: Icon(Icons.lock, color: Colors.black),
+            labelText: "گذرواژه ی جدید",
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black)),
+            hintStyle: TextStyle(color: Colors.black),
+          ),
+        ),
+        SizedBox(height: 30.0),
+        TextFormField(
+          controller: passwordReController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'الزامی است';
+            } else if (value != passwordController.text) {
+              return 'تکرار گذرواژه غلط می باشد';
+            }
+            return null;
+          },
+          cursorColor: Colors.black,
+          obscureText: true,
+          style: TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+            icon: Icon(Icons.lock, color: Colors.black),
+            labelText: "تکرار گذرواژه ی جدید",
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black)),
+            hintStyle: TextStyle(color: Colors.black),
+          ),
+        ),
+      ],
+    ));
   }
 
   Container Submit2() {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 25.0),
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
         onPressed: () {
           if (!_formKey2.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -570,7 +559,7 @@ class _ProfilePageState extends State<ProfilePage> {
     };
     var request = http.Request('PUT', url);
     request.body =
-    '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
+        '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -582,9 +571,8 @@ class _ProfilePageState extends State<ProfilePage> {
       _wrongPass = false;
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
-    }
-    else {
+          (Route<dynamic> route) => false);
+    } else {
       print(response.reasonPhrase);
       setState(() {
         _wrongPass = true;
@@ -610,20 +598,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Form DeleteForm() {
     return Form(
       child: Column(
-        children: <Widget>[
-          SizedBox(height: 150),
-          deleteBtn()
-        ],
+        children: <Widget>[SizedBox(height: 150), deleteBtn()],
       ),
     );
   }
 
   Container deleteBtn() {
     return Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        width: MediaQuery.of(context).size.width,
         height: 40.0,
         padding: EdgeInsets.symmetric(horizontal: 15.0),
         margin: EdgeInsets.only(top: 25.0),
@@ -633,10 +615,8 @@ class _ProfilePageState extends State<ProfilePage> {
           onPressed: () {
             _showDialog(context);
           },
-          child: Text(
-              "پاک کردن اکانت", style: TextStyle(color: Colors.black)),
-        )
-    );
+          child: Text("پاک کردن اکانت", style: TextStyle(color: Colors.black)),
+        ));
   }
 
   deleteProfile() async {
@@ -659,19 +639,15 @@ class _ProfilePageState extends State<ProfilePage> {
       sharedPreferences.commit();
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
-    }
-    else {
+          (Route<dynamic> route) => false);
+    } else {
       print(response.reasonPhrase);
     }
   }
 
   _showDialog(BuildContext context) {
-    VoidCallback continueCallBack = () =>
-    {
-      Navigator.of(context).pop(),
-      deleteProfile()
-    };
+    VoidCallback continueCallBack =
+        () => {Navigator.of(context).pop(), deleteProfile()};
     BlurryDialog alert = BlurryDialog(
         "خیر", "آیا مطمین هستید؟ امکان بازگشت وجود ندارد", continueCallBack);
     showDialog(
@@ -681,5 +657,4 @@ class _ProfilePageState extends State<ProfilePage> {
       },
     );
   }
-
 }
