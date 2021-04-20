@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
-
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
@@ -140,9 +140,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-        ))
+            ? Center(
+                child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+              ))
             : ListView(
                 children: <Widget>[
                   headerSection(),
