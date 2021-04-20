@@ -35,15 +35,18 @@ class PostCard extends StatelessWidget {
         padding: const EdgeInsets.all(5),
         child: Row(
           children: <Widget>[
-            Image.network(
-              url,
-              width: 150,
-              height: 150,
+            Container(
+              child:  Image.network(
+                url,
+                width: 150,
+                height: 150,
+              ),
             ),
             SizedBox(width: 20),
             Column(
               children: <Widget>[
-                Text(title),
+                Text(title,
+                style: ,),
                 Text(author),
                 Text(category),
                 Text(price),
