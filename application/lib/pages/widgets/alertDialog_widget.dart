@@ -19,13 +19,16 @@ class BlurryDialog extends StatelessWidget {
           title: new Text(title,style: textStyle,),
           content: new Text(content, style: textStyle,),
           actions: <Widget>[
-            new FlatButton(
-              child: new Text("بله"),
+            new TextButton(
+              child: new Text("بله",style:TextStyle (color: Colors.white)),
+              style: ButtonStyle(
+                  backgroundColor:
+                  MaterialStateProperty.all<Color>(Colors.red)),
               onPressed: () {
                 continueCallBack();
               },
             ),
-            new FlatButton(
+            new TextButton(
               child: Text("خیر"),
               onPressed: () {
                 Navigator.of(context).pop();
