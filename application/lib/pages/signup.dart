@@ -11,6 +11,38 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:application/main.dart';
 import 'package:application/pages/login.dart';
 
+class FirstNameFieldValidator {
+  static String validate(String value) {
+    if (value == null || value.isEmpty)
+      return 'الزامی است';
+    return null;
+  }
+}
+
+class LastNameFieldValidator {
+  static String validate(String value) {
+    if (value == null || value.isEmpty)
+      return 'الزامی است';
+    return null;
+  }
+}
+
+class EmailFieldValidator {
+  static String validate(String value) {
+    if (value == null || value.isEmpty)
+      return 'الزامی است';
+    return null;
+  }
+}
+
+class PasswordFieldValidator {
+  static String validate(String value) {
+    if (value == null || value.isEmpty)
+      return 'الزامی است';
+    return null;
+  }
+}
+
 class SignUpPage extends StatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -100,12 +132,7 @@ class _SignUpPageState extends State<SignUpPage> {
         children: <Widget>[
           TextFormField(
             controller: firstNameController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الزامی است';
-              }
-              return null;
-            },
+            validator: FirstNameFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
@@ -119,12 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
           SizedBox(height: 30.0),
           TextFormField(
             controller: lastNameController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الزامی است';
-              }
-              return null;
-            },
+            validator: LastNameFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
@@ -138,12 +160,7 @@ class _SignUpPageState extends State<SignUpPage> {
           SizedBox(height: 30.0),
           TextFormField(
             controller: emailController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الزامی است';
-              }
-              return null;
-            },
+            validator: EmailFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
@@ -157,12 +174,7 @@ class _SignUpPageState extends State<SignUpPage> {
           SizedBox(height: 30.0),
           TextFormField(
             controller: passwordController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الزامی است';
-              }
-              return null;
-            },
+            validator: PasswordFieldValidator.validate,
             cursorColor: Colors.black,
             obscureText: true,
             style: TextStyle(color: Colors.black),
