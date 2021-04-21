@@ -11,6 +11,22 @@ import 'package:application/util/app_url.dart';
 import 'package:application/main.dart';
 import 'package:application/pages/signup.dart';
 
+class EmailFieldValidator {
+  static String validate(String value) {
+    if (value == null || value.isEmpty)
+        return 'الزامی است';
+    return null;
+  }
+}
+
+class PasswordFieldValidator {
+  static String validate(String value) {
+    if (value == null || value.isEmpty)
+      return 'الزامی است';
+    return null;
+  }
+}
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -94,12 +110,7 @@ class _LoginPageState extends State<LoginPage> {
         children: <Widget>[
           TextFormField(
             controller: emailController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الزامی است';
-              }
-              return null;
-            },
+            validator: EmailFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
@@ -113,12 +124,7 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(height: 30.0),
           TextFormField(
             controller: passwordController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الزامی است';
-              }
-              return null;
-            },
+            validator: PasswordFieldValidator.validate,
             cursorColor: Colors.black,
             obscureText: true,
             style: TextStyle(color: Colors.black),
