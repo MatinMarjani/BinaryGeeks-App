@@ -52,18 +52,63 @@ class _DashBoardState extends State<DashBoard> {
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          new PostCard("title", "author", "category", "price", "province",
+          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
               "description"),
           SizedBox(
             height: 20,
           ),
-          new PostCard(
-              "1", "author", "category", "price", "province", "description"),
+          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
+              "description"),
           SizedBox(
             height: 20,
           ),
-          new PostCard(
-              "2", "author", "category", "price", "province", "description"),
+          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
+              "description"),
+          SizedBox(
+            height: 20,
+          ),
+          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
+              "description"),
           SizedBox(
             height: 20,
           ),
