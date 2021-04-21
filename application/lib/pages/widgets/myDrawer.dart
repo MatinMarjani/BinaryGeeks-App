@@ -59,7 +59,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       child: Text(firstNameController.text[0]),
                     )),
                 ListTile(
-                  title: Text("داشبور"),
+                  title: Text("داشبورد"),
                   leading: Icon(Icons.home),
                   onTap: () {
                     Navigator.of(context).pushAndRemoveUntil(
