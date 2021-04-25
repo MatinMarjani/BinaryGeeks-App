@@ -28,6 +28,11 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false;
   bool _wrongInfo = false;
   bool _wrongPass = false;
+  bool _successful = false;
+  bool _updatePass = false;
+
+  bool phoneError = false;
+  bool emailError = false;
 
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -46,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
       new TextEditingController();
 
   final TextEditingController _controller = new TextEditingController();
+
   var items = [
     'دانشجو',
   ];
@@ -72,7 +78,10 @@ class _ProfilePageState extends State<ProfilePage> {
   getProfile() async {
     setState(() {
       _isLoading = true;
+      phoneError = false;
+      emailError = false;
     });
+
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
     var response;
@@ -187,6 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: <Widget>[
           errorSection(),
+          successSection(),
           profileSection(),
           Submit(),
         ],
@@ -201,6 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           passHeader(),
           updatePassword_errorSection(),
+          updatePassword_success(),
           changePass(),
           Submit2(),
         ],
@@ -211,9 +222,37 @@ class _ProfilePageState extends State<ProfilePage> {
   Container errorSection() {
     if (_wrongInfo)
       return Container(
+        child: Column(children: <Widget>[
+          Container(
+            alignment: Alignment.centerRight,
+            child: emailError
+                ? Text(
+                    "* ایمیل تکراری است",
+                    style: TextStyle(color: Colors.red),
+                  )
+                : null,
+          ),
+          Container(
+            alignment: Alignment.centerRight,
+            child: phoneError
+                ? Text(
+                    "* شماره موبایل تکراری است",
+                    style: TextStyle(color: Colors.red),
+                  )
+                : null,
+          ),
+        ]),
+      );
+    return Container();
+  }
+
+  Container successSection() {
+    if (_successful)
+      return Container(
+        alignment: Alignment.centerRight,
         child: Text(
-          "اطلاعات غلط می باشند",
-          style: TextStyle(color: Colors.red),
+          "موفقیت آمیز",
+          style: TextStyle(color: Colors.green),
         ),
       );
     return Container();
@@ -222,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Container profileSection() {
     return Container(
       //color: Colors.teal,
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
           Row(
@@ -261,6 +300,12 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(height: 30),
           TextFormField(
             controller: emailController,
+            validator: ProfileEmailFieldValidator.validate,
+            onChanged: (content) {
+              setState(() {
+                emailError = false;
+              });
+            },
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
@@ -275,6 +320,12 @@ class _ProfilePageState extends State<ProfilePage> {
           TextFormField(
             controller: phoneController,
             cursorColor: Colors.black,
+            validator: ProfilePhoneFieldValidator.validate,
+            onChanged: (content) {
+              setState(() {
+                phoneError = false;
+              });
+            },
             style: TextStyle(color: Colors.black),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
@@ -384,9 +435,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
-            setState(() {
-              //_isLoading = true;
-            });
             updateProfile(
               firstNameController.text,
               lastNameController.text,
@@ -419,38 +467,56 @@ class _ProfilePageState extends State<ProfilePage> {
     var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Update_Profile + id);
 
+    var response;
     var headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json'
     };
-
-    var request = http.Request('PUT', url);
-
-    request.body =
-        '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}''';
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
+    String data =
+        '{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}';
+    var jsonResponse = null;
 
     log("Token $token");
-    log(request.body);
+    log(data.toString());
     log(AppUrl.Update_Profile + id);
 
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+    try {
+      response = await http.put(url, body: data, headers: headers);
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        setState(() {
+          _isLoading = false;
+          _wrongInfo = false;
+          _successful = true;
+        });
+      } else {
+        jsonResponse = await json.decode(response.body);
+        print(response.statusCode);
+        print(jsonResponse);
+        if (jsonResponse['phone_number'].toString() ==
+            '[user with this phone number already exists.]') {
+          setState(() {
+            phoneError = true;
+          });
+        }
+        if (jsonResponse['email'].toString() ==
+            '[user with this email already exists.]') {
+          setState(() {
+            emailError = true;
+          });
+        }
+        setState(() {
+          _isLoading = false;
+          _wrongInfo = true;
+          _successful = false;
+        });
+      }
+    } catch (e) {
+      print(e);
       setState(() {
-        _wrongInfo = false;
-      });
-    } else {
-      print(response.reasonPhrase);
-      setState(() {
-        _wrongInfo = true;
+        _isLoading = false;
       });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   Container passHeader() {
@@ -590,7 +656,10 @@ class _ProfilePageState extends State<ProfilePage> {
       print(await response.stream.bytesToString());
       sharedPreferences.clear();
       sharedPreferences.commit();
-      _wrongPass = false;
+      setState(() {
+        _updatePass = true;
+        _wrongPass = false;
+      });
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
           (Route<dynamic> route) => false);
@@ -598,6 +667,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print(response.reasonPhrase);
       setState(() {
         _wrongPass = true;
+        _updatePass = false;
       });
     }
     setState(() {
@@ -612,6 +682,18 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Text(
           "رمز وارد شده غلط می باشد",
           style: TextStyle(color: Colors.red),
+        ),
+      );
+    return Container();
+  }
+
+  Container updatePassword_success() {
+    if (_updatePass)
+      return Container(
+        alignment: Alignment.centerRight,
+        child: Text(
+          "موفقیت آمیز",
+          style: TextStyle(color: Colors.green),
         ),
       );
     return Container();
@@ -678,5 +760,25 @@ class _ProfilePageState extends State<ProfilePage> {
         return alert;
       },
     );
+  }
+}
+
+class ProfilePhoneFieldValidator {
+  static String validate(String value) {
+    String pattern = r'^(?:0|98)9?[0-9]{10}$';
+    RegExp regExp = new RegExp(pattern);
+    if (!regExp.hasMatch(value)) return 'شماره موبایل درست را وارد کنید';
+
+    return null;
+  }
+}
+
+class ProfileEmailFieldValidator {
+  static String validate(String value) {
+    String pattern =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    RegExp regExp = new RegExp(pattern);
+    if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
+    return null;
   }
 }
