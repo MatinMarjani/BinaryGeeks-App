@@ -552,11 +552,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
-              //_isLoading = true;
+              _isLoading = true;
             });
             updatePassword(
-              firstNameController.text,
-              lastNameController.text,
+              oldPasswordController.text,
+              passwordController.text,
             );
           }
         },
