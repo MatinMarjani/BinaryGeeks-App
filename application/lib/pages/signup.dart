@@ -90,7 +90,6 @@ class _SignUpPageState extends State<SignUpPage> {
             : ListView(
                 children: <Widget>[
                   headerSection(),
-                  errorSection(),
                   signupForm(),
                   buttonSection1(),
                 ],
@@ -117,6 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
       key: _formKey,
       child: Column(
         children: <Widget>[
+          errorSection(),
           textSection(),
           Submit(),
         ],
@@ -127,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Container textSection() {
     return Container(
       //color: Colors.teal,
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
           TextFormField(
@@ -262,10 +262,11 @@ class _SignUpPageState extends State<SignUpPage> {
   Container errorSection() {
     if (_wrongInfo)
       return Container(
+        alignment: Alignment.centerRight,
         child: Text(
-          "اطلاعات وارد شده غلط می باشند.",
+          "* ایمیل تکراری است",
           style: TextStyle(color: Colors.red),
-        ),
+        )
       );
     return Container();
   }
@@ -294,7 +295,7 @@ class _SignUpPageState extends State<SignUpPage> {
         log('200');
         //print(response.body);
         jsonResponse = json.decode(response.body);
-        //print(jsonResponse);
+        print(jsonResponse);
 
         if (jsonResponse != null) {
           setState(() {
@@ -315,9 +316,17 @@ class _SignUpPageState extends State<SignUpPage> {
         }
       } else {
         log('!200');
+        jsonResponse = json.decode(response.body);
+        print(jsonResponse);
+        if (jsonResponse['email'].toString() ==
+            '[user with this email already exists.]') {
+          setState(() {
+            _wrongInfo = true;
+          });
+        }
         setState(() {
           _isLoading = false;
-          _wrongInfo = true;
+          // _wrongInfo = true;
         });
       }
     } catch (e) {
