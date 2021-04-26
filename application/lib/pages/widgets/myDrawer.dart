@@ -31,12 +31,15 @@ class _MyDrawerState extends State<MyDrawer> {
   final TextEditingController fieldOfStudyController =
       new TextEditingController();
   final TextEditingController entryYearController = new TextEditingController();
+  final TextEditingController imageController = new TextEditingController();
+
 
   SharedPreferences sharedPreferences;
 
   var token;
 
   bool _isLoading = false;
+  bool _noImage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ))
           : ListView(
               children: <Widget>[
-                UserAccountsDrawerHeader(
+                !_noImage ? UserAccountsDrawerHeader(
                     accountName: Text(
                       firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
                       style: TextStyle(),
@@ -56,8 +59,21 @@ class _MyDrawerState extends State<MyDrawer> {
                     accountEmail: Text(emailController.text ?? " "),
                     currentAccountPicture: CircleAvatar(
                       backgroundColor: Colors.white,
-                      child: Text(firstNameController.text[0]),
-                    )),
+                      backgroundImage:
+                      NetworkImage('http://37.152.176.11' + imageController.text),
+                    )
+                )
+                :UserAccountsDrawerHeader(
+                    accountName: Text(
+                      firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
+                      style: TextStyle(),
+                    ),
+                    accountEmail: Text(emailController.text ?? " "),
+                    currentAccountPicture: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Text(firstNameController.text[0])
+                    )
+                ),
                 ListTile(
                   title: Text("داشبورد"),
                   leading: Icon(Icons.home),
@@ -149,6 +165,13 @@ class _MyDrawerState extends State<MyDrawer> {
               fieldOfStudyController.text = jsonResponse['field_of_study'];
             if (jsonResponse['entry_year'] != null)
               entryYearController.text = jsonResponse['entry_year'].toString();
+            if (jsonResponse['profile_image'] != null){
+              imageController.text = jsonResponse['profile_image'].toString();
+              _noImage = false;
+              log(imageController.text);
+            } else {
+              _noImage = true;
+            }
           });
           //Set user Info from response.data to sharedPrefrences
         }
