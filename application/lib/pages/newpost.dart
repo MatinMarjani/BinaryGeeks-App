@@ -15,7 +15,6 @@ import 'package:application/pages/widgets/myAppBar.dart';
 
 import 'package:application/util/app_url.dart';
 
-
 class NewPostPage extends StatefulWidget {
   @override
   _NewPostPageState createState() => _NewPostPageState();
@@ -60,9 +59,10 @@ class _NewPostPageState extends State<NewPostPage> {
         child: MyAppBar(),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-      ))
+          ? Center(
+              child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+            ))
           : NewPost(),
       drawer: MyDrawer(),
       // floatingActionButton: FloatingActionButton(
@@ -164,7 +164,7 @@ class _NewPostPageState extends State<NewPostPage> {
     if (complete) {
       if (!_formKey3.currentState.validate()) {
         setState(() => _currentStep = 2);
-      }else{
+      } else {
         CreatePost();
       }
     }
@@ -286,40 +286,40 @@ class _NewPostPageState extends State<NewPostPage> {
       content: Column(
         children: <Widget>[
           Container(
-              width: MediaQuery.of(context).size.width,
-              height: 200.0,
-              padding: EdgeInsets.symmetric(horizontal: 0.0),
-              margin: EdgeInsets.only(top: 0.0),
-              child:           Center(
-                child: GestureDetector(
-                  onTap: () {
-                    _showPicker(context);
-                  },
-                  child: Container(
-                    child: _image != null
-                        ? ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.file(
-                        _image,
-                        width: 300,
-                        height: 300,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    )
-                        : Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(15)),
-                      width: 300,
-                      height: 300,
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
+            width: MediaQuery.of(context).size.width,
+            height: 200.0,
+            padding: EdgeInsets.symmetric(horizontal: 0.0),
+            margin: EdgeInsets.only(top: 0.0),
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  _showPicker(context);
+                },
+                child: Container(
+                  child: _image != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.file(
+                            _image,
+                            width: 300,
+                            height: 300,
+                            fit: BoxFit.fitHeight,
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(15)),
+                          width: 300,
+                          height: 300,
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: Colors.grey[800],
+                          ),
+                        ),
                 ),
               ),
+            ),
           ),
           SizedBox(height: 20),
         ],
@@ -501,14 +501,14 @@ class _NewPostPageState extends State<NewPostPage> {
     var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Add_Post);
 
+    var response;
+
     var headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json'
     };
 
-    var request = http.Request('POST', url);
-
-    request.body =jsonEncode(<String, dynamic>{
+    var body = jsonEncode(<String, dynamic>{
       "title": titleController.text,
       "author": authorController.text,
       "publisher": publisherController.text,
@@ -522,29 +522,69 @@ class _NewPostPageState extends State<NewPostPage> {
       "is_active": true
     });
 
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
+    var jsonResponse = null;
 
     log("Token $token");
-    log(request.body);
+    log(body.toString());
     log(AppUrl.Add_Post);
 
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      setState(() {
-        created = true;
-      });
-    } else {
-      print(response.reasonPhrase);
-      setState(() {
-        created = false;
-      });
+    try {
+      response = await http.post(url, body: body.toString(), headers: headers);
+      if (response.statusCode == 200) {
+        log("200");
+        print(response.body);
+        jsonResponse = json.decode(response.body);
+        print(jsonResponse["post"]["id"]);
+        post_Image(jsonResponse["post"]["id"].toString());
+        setState(() {
+          _isLoading = false;
+          created = true;
+        });
+      } else {
+        print(response.body);
+        setState(() {
+          _isLoading = false;
+          created = false;
+        });
+      }
+    } catch (e) {
+      log(e);
     }
+
     setState(() {
       _isLoading = false;
     });
+  }
 
+  post_Image(String id) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var url = Uri.parse(AppUrl.Update_Post + id);
+
+    var headers = {'Authorization': 'Token $token'};
+    var request = http.MultipartRequest('PUT', url);
+
+    log("Token $token");
+    log(url.toString());
+
+    try {
+      request.files
+          .add(await http.MultipartFile.fromPath('image', _image.path));
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        log("post image added");
+        print(await response.stream.bytesToString());
+      } else {
+        print(await response.stream.bytesToString());
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      log(e);
+    }
   }
 
   void _showPicker(context) {
@@ -574,14 +614,12 @@ class _NewPostPageState extends State<NewPostPage> {
               ),
             ),
           );
-        }
-    );
+        });
   }
 
   _imgFromCamera() async {
     File image = await ImagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 50
-    );
+        source: ImageSource.camera, imageQuality: 50);
     setState(() {
       _image = image;
     });
@@ -589,12 +627,9 @@ class _NewPostPageState extends State<NewPostPage> {
 
   _imgFromGallery() async {
     File image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50
-    );
+        source: ImageSource.gallery, imageQuality: 50);
     setState(() {
       _image = image;
     });
   }
-
-
 }

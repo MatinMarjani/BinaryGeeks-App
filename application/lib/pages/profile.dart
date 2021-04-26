@@ -562,9 +562,9 @@ class _ProfilePageState extends State<ProfilePage> {
     var url = Uri.parse(AppUrl.Update_Profile + id);
 
     var headers = {
-      'Authorization': 'Token 6b4cac033c74de710d1f53dbc503e30a84bb0343a1c503ee15f3467051c74e8a'
+      'Authorization': 'Token $token'
     };
-    var request = http.MultipartRequest('PUT', Uri.parse('http://37.152.176.11/users/36'));
+    var request = http.MultipartRequest('PUT', url);
     try {
       request.files.add(
           await http.MultipartFile.fromPath('profile_image', _image.path));
