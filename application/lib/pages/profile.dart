@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter/services.dart';
+import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,14 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false;
   bool _wrongInfo = false;
   bool _wrongPass = false;
+  bool _successful = false;
+  bool _updatePass = false;
+
+  bool phoneError = false;
+  bool emailError = false;
+  bool _noImage = true;
+
+  File _image;
 
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -44,8 +53,10 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController passwordReController =
       new TextEditingController();
+  final TextEditingController imageController = new TextEditingController();
 
   final TextEditingController _controller = new TextEditingController();
+
   var items = [
     'دانشجو',
   ];
@@ -72,7 +83,10 @@ class _ProfilePageState extends State<ProfilePage> {
   getProfile() async {
     setState(() {
       _isLoading = true;
+      phoneError = false;
+      emailError = false;
     });
+
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
     var response;
@@ -104,6 +118,13 @@ class _ProfilePageState extends State<ProfilePage> {
               fieldOfStudyController.text = jsonResponse['field_of_study'];
             if (jsonResponse['entry_year'] != null)
               entryYearController.text = jsonResponse['entry_year'].toString();
+            if (jsonResponse['profile_image'] != null) {
+              imageController.text = jsonResponse['profile_image'].toString();
+              _noImage = false;
+              log(imageController.text);
+            } else {
+              _noImage = true;
+            }
           });
           //Set user Info from response.data to sharedPrefrences
         }
@@ -172,13 +193,95 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container profilePicture() {
     return Container(
-        child: CircleAvatar(
-      maxRadius: 75,
-      backgroundColor: Colors.transparent,
-      backgroundImage:
-          NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
-      child: Text("م"),
-    ));
+      width: MediaQuery.of(context).size.width,
+      height: 200.0,
+      padding: EdgeInsets.symmetric(horizontal: 0.0),
+      margin: EdgeInsets.only(top: 0.0),
+      child: Center(
+        child: GestureDetector(
+            onTap: () {
+              _showPicker(context);
+            },
+            child: Container(
+                child: _image != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(500.0),
+                        child: Image.file(
+                          _image,
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      )
+                    : _noImage
+                        ? Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(500)),
+                            width: 200,
+                            height: 200,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.grey[800],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(500.0),
+                            child: Image.network(
+                              'http://37.152.176.11' + imageController.text,
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ))),
+      ),
+    );
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('گالری'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('دوربین'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _imgFromCamera() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  _imgFromGallery() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
   }
 
   Form infoForm() {
@@ -187,6 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: <Widget>[
           errorSection(),
+          successSection(),
           profileSection(),
           Submit(),
         ],
@@ -201,6 +305,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           passHeader(),
           updatePassword_errorSection(),
+          updatePassword_success(),
           changePass(),
           Submit2(),
         ],
@@ -211,9 +316,37 @@ class _ProfilePageState extends State<ProfilePage> {
   Container errorSection() {
     if (_wrongInfo)
       return Container(
+        child: Column(children: <Widget>[
+          Container(
+            alignment: Alignment.centerRight,
+            child: emailError
+                ? Text(
+                    "* ایمیل تکراری است",
+                    style: TextStyle(color: Colors.red),
+                  )
+                : null,
+          ),
+          Container(
+            alignment: Alignment.centerRight,
+            child: phoneError
+                ? Text(
+                    "* شماره موبایل تکراری است",
+                    style: TextStyle(color: Colors.red),
+                  )
+                : null,
+          ),
+        ]),
+      );
+    return Container();
+  }
+
+  Container successSection() {
+    if (_successful)
+      return Container(
+        alignment: Alignment.centerRight,
         child: Text(
-          "اطلاعات غلط می باشند",
-          style: TextStyle(color: Colors.red),
+          "موفقیت آمیز",
+          style: TextStyle(color: Colors.green),
         ),
       );
     return Container();
@@ -222,7 +355,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Container profileSection() {
     return Container(
       //color: Colors.teal,
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
           Row(
@@ -261,6 +394,12 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(height: 30),
           TextFormField(
             controller: emailController,
+            validator: ProfileEmailFieldValidator.validate,
+            onChanged: (content) {
+              setState(() {
+                emailError = false;
+              });
+            },
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
@@ -275,6 +414,12 @@ class _ProfilePageState extends State<ProfilePage> {
           TextFormField(
             controller: phoneController,
             cursorColor: Colors.black,
+            validator: ProfilePhoneFieldValidator.validate,
+            onChanged: (content) {
+              setState(() {
+                phoneError = false;
+              });
+            },
             style: TextStyle(color: Colors.black),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
@@ -384,9 +529,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
-            setState(() {
-              //_isLoading = true;
-            });
             updateProfile(
               firstNameController.text,
               lastNameController.text,
@@ -420,37 +562,76 @@ class _ProfilePageState extends State<ProfilePage> {
     var url = Uri.parse(AppUrl.Update_Profile + id);
 
     var headers = {
+      'Authorization': 'Token 6b4cac033c74de710d1f53dbc503e30a84bb0343a1c503ee15f3467051c74e8a'
+    };
+    var request = http.MultipartRequest('PUT', Uri.parse('http://37.152.176.11/users/36'));
+    try {
+      request.files.add(
+          await http.MultipartFile.fromPath('profile_image', _image.path));
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response1 = await request.send();
+
+      if (response1.statusCode == 200) {
+        print(await response1.stream.bytesToString());
+      }
+      else {
+        print(response1.reasonPhrase);
+      }
+    } catch(e){
+
+    }
+    var response;
+    headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json'
     };
 
-    var request = http.Request('PUT', url);
-
-    request.body =
-        '''{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}''';
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
+    String data =
+        '{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}';
+    var jsonResponse = null;
 
     log("Token $token");
-    log(request.body);
+    log(data.toString());
     log(AppUrl.Update_Profile + id);
 
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+    try {
+      response = await http.put(url, body: data, headers: headers);
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        setState(() {
+          _isLoading = false;
+          _wrongInfo = false;
+          _successful = true;
+        });
+      } else {
+        jsonResponse = await json.decode(response.body);
+        print(response.statusCode);
+        print(jsonResponse);
+        if (jsonResponse['phone_number'].toString() ==
+            '[user with this phone number already exists.]') {
+          setState(() {
+            phoneError = true;
+          });
+        }
+        if (jsonResponse['email'].toString() ==
+            '[user with this email already exists.]') {
+          setState(() {
+            emailError = true;
+          });
+        }
+        setState(() {
+          _isLoading = false;
+          _wrongInfo = true;
+          _successful = false;
+        });
+      }
+    } catch (e) {
+      print(e);
       setState(() {
-        _wrongInfo = false;
-      });
-    } else {
-      print(response.reasonPhrase);
-      setState(() {
-        _wrongInfo = true;
+        _isLoading = false;
       });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   Container passHeader() {
@@ -552,11 +733,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
-              //_isLoading = true;
+              _isLoading = true;
             });
             updatePassword(
-              firstNameController.text,
-              lastNameController.text,
+              oldPasswordController.text,
+              passwordController.text,
             );
           }
         },
@@ -590,7 +771,10 @@ class _ProfilePageState extends State<ProfilePage> {
       print(await response.stream.bytesToString());
       sharedPreferences.clear();
       sharedPreferences.commit();
-      _wrongPass = false;
+      setState(() {
+        _updatePass = true;
+        _wrongPass = false;
+      });
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
           (Route<dynamic> route) => false);
@@ -598,6 +782,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print(response.reasonPhrase);
       setState(() {
         _wrongPass = true;
+        _updatePass = false;
       });
     }
     setState(() {
@@ -612,6 +797,18 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Text(
           "رمز وارد شده غلط می باشد",
           style: TextStyle(color: Colors.red),
+        ),
+      );
+    return Container();
+  }
+
+  Container updatePassword_success() {
+    if (_updatePass)
+      return Container(
+        alignment: Alignment.centerRight,
+        child: Text(
+          "موفقیت آمیز",
+          style: TextStyle(color: Colors.green),
         ),
       );
     return Container();
@@ -678,5 +875,25 @@ class _ProfilePageState extends State<ProfilePage> {
         return alert;
       },
     );
+  }
+}
+
+class ProfilePhoneFieldValidator {
+  static String validate(String value) {
+    String pattern = r'^(?:0|98)9?[0-9]{10}$';
+    RegExp regExp = new RegExp(pattern);
+    if (!regExp.hasMatch(value)) return 'شماره موبایل درست را وارد کنید';
+
+    return null;
+  }
+}
+
+class ProfileEmailFieldValidator {
+  static String validate(String value) {
+    String pattern =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    RegExp regExp = new RegExp(pattern);
+    if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
+    return null;
   }
 }
