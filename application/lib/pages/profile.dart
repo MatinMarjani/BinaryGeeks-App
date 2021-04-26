@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter/services.dart';
+import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool phoneError = false;
   bool emailError = false;
+  bool _noImage = true;
+
+  File _image;
 
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -49,6 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController passwordController = new TextEditingController();
   final TextEditingController passwordReController =
       new TextEditingController();
+  final TextEditingController imageController = new TextEditingController();
 
   final TextEditingController _controller = new TextEditingController();
 
@@ -113,6 +118,13 @@ class _ProfilePageState extends State<ProfilePage> {
               fieldOfStudyController.text = jsonResponse['field_of_study'];
             if (jsonResponse['entry_year'] != null)
               entryYearController.text = jsonResponse['entry_year'].toString();
+            if (jsonResponse['profile_image'] != null) {
+              imageController.text = jsonResponse['profile_image'].toString();
+              _noImage = false;
+              log(imageController.text);
+            } else {
+              _noImage = true;
+            }
           });
           //Set user Info from response.data to sharedPrefrences
         }
@@ -181,13 +193,95 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container profilePicture() {
     return Container(
-        child: CircleAvatar(
-      maxRadius: 75,
-      backgroundColor: Colors.transparent,
-      backgroundImage:
-          NetworkImage('https://www.woolha.com/media/2020/03/eevee.png'),
-      child: Text("م"),
-    ));
+      width: MediaQuery.of(context).size.width,
+      height: 200.0,
+      padding: EdgeInsets.symmetric(horizontal: 0.0),
+      margin: EdgeInsets.only(top: 0.0),
+      child: Center(
+        child: GestureDetector(
+            onTap: () {
+              _showPicker(context);
+            },
+            child: Container(
+                child: _image != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(500.0),
+                        child: Image.file(
+                          _image,
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      )
+                    : _noImage
+                        ? Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(500)),
+                            width: 200,
+                            height: 200,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.grey[800],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(500.0),
+                            child: Image.network(
+                              'http://37.152.176.11' + imageController.text,
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ))),
+      ),
+    );
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('گالری'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('دوربین'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _imgFromCamera() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  _imgFromGallery() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
   }
 
   Form infoForm() {
@@ -467,11 +561,32 @@ class _ProfilePageState extends State<ProfilePage> {
     var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Update_Profile + id);
 
-    var response;
     var headers = {
+      'Authorization': 'Token 6b4cac033c74de710d1f53dbc503e30a84bb0343a1c503ee15f3467051c74e8a'
+    };
+    var request = http.MultipartRequest('PUT', Uri.parse('http://37.152.176.11/users/36'));
+    try {
+      request.files.add(
+          await http.MultipartFile.fromPath('profile_image', _image.path));
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response1 = await request.send();
+
+      if (response1.statusCode == 200) {
+        print(await response1.stream.bytesToString());
+      }
+      else {
+        print(response1.reasonPhrase);
+      }
+    } catch(e){
+
+    }
+    var response;
+    headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json'
     };
+
     String data =
         '{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}';
     var jsonResponse = null;
