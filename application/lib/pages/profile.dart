@@ -289,7 +289,6 @@ class _ProfilePageState extends State<ProfilePage> {
       key: _formKey,
       child: Column(
         children: <Widget>[
-          errorSection(),
           successSection(),
           profileSection(),
           Submit(),
@@ -304,40 +303,12 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: <Widget>[
           passHeader(),
-          updatePassword_errorSection(),
           updatePassword_success(),
           changePass(),
           Submit2(),
         ],
       ),
     );
-  }
-
-  Container errorSection() {
-    if (_wrongInfo)
-      return Container(
-        child: Column(children: <Widget>[
-          Container(
-            alignment: Alignment.centerRight,
-            child: emailError
-                ? Text(
-                    "* ایمیل تکراری است",
-                    style: TextStyle(color: Colors.red),
-                  )
-                : null,
-          ),
-          Container(
-            alignment: Alignment.centerRight,
-            child: phoneError
-                ? Text(
-                    "* شماره موبایل تکراری است",
-                    style: TextStyle(color: Colors.red),
-                  )
-                : null,
-          ),
-        ]),
-      );
-    return Container();
   }
 
   Container successSection() {
@@ -407,6 +378,7 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.blueAccent),
               labelText: "ایمیل",
+              errorText: emailError ? 'ایمیل تکراری است' : null,
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
@@ -431,6 +403,7 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: InputDecoration(
               icon: Icon(Icons.phone, color: Colors.blueAccent),
               labelText: "تلفن همراه",
+              errorText: phoneError ? 'شماره موبایل تکراری است' : null,
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
@@ -691,6 +664,7 @@ class _ProfilePageState extends State<ProfilePage> {
           decoration: InputDecoration(
             icon: Icon(Icons.lock, color: Colors.blueAccent),
             labelText: "گذرواژه",
+            errorText: _wrongPass ? 'رمز وارد شده غلط می باشد' : null,
             border: OutlineInputBorder(
                 // borderSide: BorderSide(color: Colors.black)),
                 borderRadius: BorderRadius.circular(22.0)),
@@ -832,18 +806,6 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _isLoading = false;
     });
-  }
-
-  Container updatePassword_errorSection() {
-    if (_wrongPass)
-      return Container(
-        padding: EdgeInsets.only(right: 15.0, left: 15, top: 20.0),
-        child: Text(
-          "رمز وارد شده غلط می باشد",
-          style: TextStyle(color: Colors.red),
-        ),
-      );
-    return Container();
   }
 
   Container updatePassword_success() {
