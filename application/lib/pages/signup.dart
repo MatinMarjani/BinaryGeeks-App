@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -29,8 +30,14 @@ class LastNameFieldValidator {
 
 class EmailFieldValidator {
   static String validate(String value) {
+    String pattern =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    RegExp regExp = new RegExp(pattern);
+
     if (value == null || value.isEmpty)
       return 'الزامی است';
+    if (!regExp.hasMatch(value))
+      return 'ایمیل را درست وارد کنید';
     return null;
   }
 }
@@ -50,6 +57,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
+  bool _wrongEmail = false;
   bool _wrongInfo = false;
 
   final TextEditingController firstNameController = new TextEditingController();
@@ -68,33 +76,20 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 50, horizontal: 40),
+        margin: EdgeInsets.symmetric(vertical: 00, horizontal: 10),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        decoration: new BoxDecoration(
-          border: Border.all(width: 1, color: Colors.white54),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Colors.white54,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.8),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
         child: _isLoading
             ? Center(child: CircularProgressIndicator(
           valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
         ))
-            : ListView(
-                children: <Widget>[
-                  headerSection(),
-                  errorSection(),
-                  signupForm(),
-                  buttonSection1(),
-                ],
-              ),
+            : Center( child : ListView(
+          children: <Widget>[
+            headerSection(),
+            signupForm(),
+            buttonSection1(),
+          ],
+        ),
+        )
       ),
     );
   }
@@ -102,12 +97,13 @@ class _SignUpPageState extends State<SignUpPage> {
   Container headerSection() {
     return Container(
       margin: EdgeInsets.only(top: 0.0),
-      padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+      // padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+      padding: EdgeInsetsDirectional.only(bottom: 100,top: 20),
       child: Center(
-          child: Text("ثبت نام",
+          child: Text("ساخت اکانت جدید",
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 30.0,
+                  fontSize: 25.0,
                   fontWeight: FontWeight.bold))),
     );
   }
@@ -117,6 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
       key: _formKey,
       child: Column(
         children: <Widget>[
+          errorSection(),
           textSection(),
           Submit(),
         ],
@@ -127,7 +124,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Container textSection() {
     return Container(
       //color: Colors.teal,
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
           TextFormField(
@@ -136,42 +133,43 @@ class _SignUpPageState extends State<SignUpPage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.account_box_rounded, color: Colors.black),
+              icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
               labelText: "نام",
-              border: UnderlineInputBorder(
+              border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 10.0),
           TextFormField(
             controller: lastNameController,
             validator: LastNameFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.account_box_rounded, color: Colors.black),
+              icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
               labelText: "نام خانوادگی",
-              border: UnderlineInputBorder(
+              border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 10.0),
           TextFormField(
             controller: emailController,
             validator: EmailFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.black),
+              icon: Icon(Icons.email, color: Colors.blueAccent),
               labelText: "ایمیل",
-              border: UnderlineInputBorder(
+              errorText: _wrongEmail ? 'ایمیل تکراری است' : null,
+              border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 10.0),
           TextFormField(
             controller: passwordController,
             validator: PasswordFieldValidator.validate,
@@ -179,14 +177,14 @@ class _SignUpPageState extends State<SignUpPage> {
             obscureText: true,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.black),
+              icon: Icon(Icons.lock, color: Colors.blueAccent),
               labelText: "گذرواژه",
-              border: UnderlineInputBorder(
+              border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 10.0),
           TextFormField(
             controller: passwordReController,
             validator: (value) {
@@ -201,9 +199,9 @@ class _SignUpPageState extends State<SignUpPage> {
             obscureText: true,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.black),
+              icon: Icon(Icons.lock, color: Colors.blueAccent),
               labelText: "تکرار گذرواژه",
-              border: UnderlineInputBorder(
+              border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black)),
               hintStyle: TextStyle(color: Colors.black),
             ),
@@ -217,12 +215,9 @@ class _SignUpPageState extends State<SignUpPage> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 25.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+      padding: EdgeInsets.symmetric(horizontal: 55.0),
+      margin: EdgeInsets.only(top: 10.0),
+      child: RaisedButton(
         onPressed: () {
           if (!_formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -235,26 +230,60 @@ class _SignUpPageState extends State<SignUpPage> {
                 firstNameController.text, lastNameController.text);
           }
         },
-        child: Text("ثبت نام", style: TextStyle(color: Colors.black)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30.0)
+          ),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text(
+              "ثبت نام",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   Container buttonSection1() {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 30.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 15.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.black38)),
-        onPressed: () {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
-        },
-        child: Text("ورود", style: TextStyle(color: Colors.black)),
+      // width: MediaQuery.of(context).size.width,
+      // height: 30.0,
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      margin: EdgeInsets.only(top: 12.0),
+      child: Center(
+          child :
+          RichText(
+            text: TextSpan(
+              text: 'قبلا اکانت ساخته اید؟ ',
+              style: TextStyle(fontSize: 15, color: Colors.black),
+              children: <TextSpan>[
+                TextSpan(
+                    text: 'وارد شوید ',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => LoginPage()),
+                                (Route<dynamic> route) => false);
+                      },
+                    style: TextStyle(
+                      color: Colors.blue,
+                    )),
+              ],
+            ),
+          )
       ),
     );
   }
@@ -262,10 +291,11 @@ class _SignUpPageState extends State<SignUpPage> {
   Container errorSection() {
     if (_wrongInfo)
       return Container(
+        alignment: Alignment.centerRight,
         child: Text(
-          "اطلاعات وارد شده غلط می باشند.",
+          "* There was a problem",
           style: TextStyle(color: Colors.red),
-        ),
+        )
       );
     return Container();
   }
@@ -294,11 +324,12 @@ class _SignUpPageState extends State<SignUpPage> {
         log('200');
         //print(response.body);
         jsonResponse = json.decode(response.body);
-        //print(jsonResponse);
+        print(jsonResponse);
 
         if (jsonResponse != null) {
           setState(() {
             _isLoading = false;
+            _wrongEmail = false;
             _wrongInfo = false;
           });
           sharedPreferences.setString("token", jsonResponse['token']);
@@ -307,18 +338,24 @@ class _SignUpPageState extends State<SignUpPage> {
           log(' token : ' + sharedPreferences.getString("token"));
           log(' id : ' + sharedPreferences.getInt("id").toString());
 
-          //Set user Info from response.data to sharedPrefrences
-
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (BuildContext context) => MainPage()),
               (Route<dynamic> route) => false);
         }
       } else {
         log('!200');
-        setState(() {
-          _isLoading = false;
-          _wrongInfo = true;
-        });
+        jsonResponse = json.decode(response.body);
+        print(jsonResponse);
+        if (jsonResponse['email'].toString() ==
+            '[user with this email already exists.]') {
+          setState(() {
+            _wrongEmail = true;
+          });
+        }else {
+          setState(() {
+            _wrongInfo = true;
+          });
+        }
       }
     } catch (e) {
       print(e);
@@ -326,5 +363,8 @@ class _SignUpPageState extends State<SignUpPage> {
         _isLoading = false;
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
