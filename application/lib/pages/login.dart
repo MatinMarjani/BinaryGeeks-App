@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -13,16 +14,19 @@ import 'package:application/pages/signup.dart';
 
 class EmailFieldValidator {
   static String validate(String value) {
-    if (value == null || value.isEmpty)
-        return 'الزامی است';
+    String pattern =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    RegExp regExp = new RegExp(pattern);
+
+    if (value == null || value.isEmpty) return 'الزامی است';
+    if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
     return null;
   }
 }
 
 class PasswordFieldValidator {
   static String validate(String value) {
-    if (value == null || value.isEmpty)
-      return 'الزامی است';
+    if (value == null || value.isEmpty) return 'الزامی است';
     return null;
   }
 }
@@ -46,32 +50,22 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 50, horizontal: 40),
-        padding: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-        decoration: new BoxDecoration(
-          border: Border.all(width: 1, color: Colors.white54),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Colors.white54,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.8),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+        margin: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-        ))
-            : ListView(
-                children: <Widget>[
-                  headerSection(),
-                  errorSection(),
-                  loginForm(),
-                  buttonSection1(),
-                ],
+            ? Center(
+                child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+              ))
+            : Center(
+                child: ListView(
+                  children: <Widget>[
+                    headerSection(),
+                    errorSection(),
+                    loginForm(),
+                    buttonSection1(),
+                  ],
+                ),
               ),
       ),
     );
@@ -80,12 +74,13 @@ class _LoginPageState extends State<LoginPage> {
   Container headerSection() {
     return Container(
       margin: EdgeInsets.only(top: 0.0),
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+      // padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+      padding: EdgeInsetsDirectional.only(bottom: 40, top: 150),
       child: Center(
           child: Text("ورود",
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 30.0,
+                  color: Colors.blueAccent,
+                  fontSize: 25.0,
                   fontWeight: FontWeight.bold))),
     );
   }
@@ -93,11 +88,13 @@ class _LoginPageState extends State<LoginPage> {
   Form loginForm() {
     return Form(
       key: _formKey,
-      child: Column(
-        children: <Widget>[
-          textSection(),
-          Submit(),
-        ],
+      child: Center(
+        child:Column(
+          children: <Widget>[
+            textSection(),
+            Submit(),
+          ],
+        ),
       ),
     );
   }
@@ -105,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
   Container textSection() {
     return Container(
       //color: Colors.teal,
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
           TextFormField(
@@ -114,14 +111,15 @@ class _LoginPageState extends State<LoginPage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.black),
+              icon: Icon(Icons.email, color: Colors.blueAccent),
               labelText: "ایمیل",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
+              border: OutlineInputBorder(
+                  // borderSide: BorderSide(color: Colors.black)),
+                  borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 10.0),
           TextFormField(
             controller: passwordController,
             validator: PasswordFieldValidator.validate,
@@ -129,10 +127,11 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: true,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.black),
+              icon: Icon(Icons.lock, color: Colors.blueAccent),
               labelText: "گذرواژه",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
+              border: OutlineInputBorder(
+                  // borderSide: BorderSide(color: Colors.black)),
+                  borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
@@ -144,13 +143,10 @@ class _LoginPageState extends State<LoginPage> {
   Container Submit() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 25.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+      height: 60.0,
+      padding: EdgeInsets.symmetric(horizontal: 120.0),
+      margin: EdgeInsets.only(top: 10.0),
+      child: RaisedButton(
         onPressed: () {
           if (!_formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -162,28 +158,58 @@ class _LoginPageState extends State<LoginPage> {
             signIn(emailController.text, passwordController.text);
           }
         },
-        child: Text("ورود", style: TextStyle(color: Colors.black)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30.0)),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text(
+              "ورود",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   Container buttonSection1() {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 30.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 15.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.black38)),
-        onPressed: () {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                  builder: (BuildContext context) => SignUpPage()),
-              (Route<dynamic> route) => false);
-        },
-        child: Text("ثبت نام", style: TextStyle(color: Colors.black)),
-      ),
+      // width: MediaQuery.of(context).size.width,
+      // height: 30.0,
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      margin: EdgeInsets.only(top: 12.0),
+      child: Center(
+          child: RichText(
+        text: TextSpan(
+          text: 'اکانت ندارید؟ ',
+          style: TextStyle(fontSize: 15, color: Colors.black),
+          children: <TextSpan>[
+            TextSpan(
+                text: 'ثبت نام',
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => SignUpPage()),
+                        (Route<dynamic> route) => false);
+                  },
+                style: TextStyle(
+                  color: Colors.blue,
+                )),
+          ],
+        ),
+      )),
     );
   }
 
@@ -191,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_wrongInfo)
       return Container(
         child: Text(
-          "ایمیل یا رمز وارد شده غلط می باشد",
+          "* ایمیل یا رمز وارد شده غلط می باشد",
           style: TextStyle(color: Colors.red),
         ),
       );

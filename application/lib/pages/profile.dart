@@ -143,23 +143,23 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Scaffold profile() {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        decoration: new BoxDecoration(
-          border: Border.all(width: 1, color: Colors.white54),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Colors.white54,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.8),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+        // margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        // decoration: new BoxDecoration(
+        //   border: Border.all(width: 1, color: Colors.white54),
+        //   borderRadius: BorderRadius.all(Radius.circular(20)),
+        //   color: Colors.white54,
+        //   boxShadow: [
+        //     BoxShadow(
+        //       color: Colors.grey.withOpacity(0.8),
+        //       spreadRadius: 5,
+        //       blurRadius: 7,
+        //       offset: Offset(0, 3), // changes position of shadow
+        //     ),
+        //   ],
+        // ),
         child: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
@@ -180,12 +180,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: EdgeInsets.only(top: 30.0),
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: Center(
           child: Text("پروفایل من",
               style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.blueAccent,
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold))),
     );
@@ -193,10 +193,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container profilePicture() {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      // width: MediaQuery.of(context).size.width,
       height: 200.0,
-      padding: EdgeInsets.symmetric(horizontal: 0.0),
-      margin: EdgeInsets.only(top: 0.0),
+      padding: EdgeInsets.symmetric(horizontal: 0.0,vertical: 0.0),
+      margin: EdgeInsets.only(top: 0.0,bottom: 20),
       child: Center(
         child: GestureDetector(
             onTap: () {
@@ -289,7 +289,6 @@ class _ProfilePageState extends State<ProfilePage> {
       key: _formKey,
       child: Column(
         children: <Widget>[
-          errorSection(),
           successSection(),
           profileSection(),
           Submit(),
@@ -304,40 +303,12 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: <Widget>[
           passHeader(),
-          updatePassword_errorSection(),
           updatePassword_success(),
           changePass(),
           Submit2(),
         ],
       ),
     );
-  }
-
-  Container errorSection() {
-    if (_wrongInfo)
-      return Container(
-        child: Column(children: <Widget>[
-          Container(
-            alignment: Alignment.centerRight,
-            child: emailError
-                ? Text(
-                    "* ایمیل تکراری است",
-                    style: TextStyle(color: Colors.red),
-                  )
-                : null,
-          ),
-          Container(
-            alignment: Alignment.centerRight,
-            child: phoneError
-                ? Text(
-                    "* شماره موبایل تکراری است",
-                    style: TextStyle(color: Colors.red),
-                  )
-                : null,
-          ),
-        ]),
-      );
-    return Container();
   }
 
   Container successSection() {
@@ -366,10 +337,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.account_box_rounded, color: Colors.black),
+                    icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
                     labelText: "نام",
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)),
+                    border: OutlineInputBorder(
+                        // borderSide: BorderSide(color: Colors.black)),
+                        borderRadius: BorderRadius.circular(22.0)),
                     hintStyle: TextStyle(color: Colors.black),
                   ),
                 ),
@@ -381,17 +353,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.account_box_rounded, color: Colors.black),
+                    // icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
                     labelText: "نام خانوادگی",
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)),
+                    border: OutlineInputBorder(
+                        // borderSide: BorderSide(color: Colors.black)),
+                        borderRadius: BorderRadius.circular(22.0)),
                     hintStyle: TextStyle(color: Colors.black),
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 10),
           TextFormField(
             controller: emailController,
             validator: ProfileEmailFieldValidator.validate,
@@ -403,14 +376,16 @@ class _ProfilePageState extends State<ProfilePage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.black),
+              icon: Icon(Icons.email, color: Colors.blueAccent),
               labelText: "ایمیل",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
+              errorText: emailError ? 'ایمیل تکراری است' : null,
+              border: OutlineInputBorder(
+                  // borderSide: BorderSide(color: Colors.black)),
+                  borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 10),
           TextFormField(
             controller: phoneController,
             cursorColor: Colors.black,
@@ -426,14 +401,16 @@ class _ProfilePageState extends State<ProfilePage> {
               FilteringTextInputFormatter.digitsOnly
             ],
             decoration: InputDecoration(
-              icon: Icon(Icons.phone, color: Colors.black),
+              icon: Icon(Icons.phone, color: Colors.blueAccent),
               labelText: "تلفن همراه",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
+              errorText: phoneError ? 'شماره موبایل تکراری است' : null,
+              border: OutlineInputBorder(
+                  // borderSide: BorderSide(color: Colors.black)),
+                  borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 10),
           TextFormField(
             controller: _controller,
             cursorColor: Colors.black,
@@ -451,27 +428,29 @@ class _ProfilePageState extends State<ProfilePage> {
                   }).toList();
                 },
               ),
-              icon: Icon(Icons.accessibility_new_sharp, color: Colors.black),
+              icon: Icon(Icons.accessibility_new_sharp, color: Colors.blueAccent),
               labelText: "وضعیت",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
+              border: OutlineInputBorder(
+                  // borderSide: BorderSide(color: Colors.black)),
+                  borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 10),
           TextFormField(
             controller: universityController,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.school, color: Colors.black),
+              icon: Icon(Icons.school, color: Colors.blueAccent),
               labelText: "دانشگاه",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
+              border: OutlineInputBorder(
+                  // borderSide: BorderSide(color: Colors.black)),
+                  borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 10),
           Row(
             children: <Widget>[
               Flexible(
@@ -480,10 +459,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.school, color: Colors.black),
+                    icon: Icon(Icons.school, color: Colors.blueAccent),
                     labelText: "رشته تحصیلی",
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)),
+                    border: OutlineInputBorder(
+                        // borderSide: BorderSide(color: Colors.black)),
+                        borderRadius: BorderRadius.circular(22.0)),
                     hintStyle: TextStyle(color: Colors.black),
                   ),
                 ),
@@ -499,10 +479,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     FilteringTextInputFormatter.digitsOnly
                   ],
                   decoration: InputDecoration(
-                    icon: Icon(Icons.date_range, color: Colors.black),
+                    icon: Icon(Icons.date_range, color: Colors.blueAccent),
                     labelText: "سال ورود",
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)),
+                    border: OutlineInputBorder(
+                        // borderSide: BorderSide(color: Colors.black)),
+                        borderRadius: BorderRadius.circular(22.0)),
                     hintStyle: TextStyle(color: Colors.black),
                   ),
                 ),
@@ -517,18 +498,18 @@ class _ProfilePageState extends State<ProfilePage> {
   Container Submit() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 25.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+      height: 60.0,
+      padding: EdgeInsets.symmetric(horizontal: 110.0),
+      margin: EdgeInsets.only(top: 10.0),
+      child: RaisedButton(
         onPressed: () {
           if (!_formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
+            setState(() {
+              _isLoading = true;
+            });
             updateProfile(
               firstNameController.text,
               lastNameController.text,
@@ -540,7 +521,27 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         },
-        child: Text("ثبت تغییرات", style: TextStyle(color: Colors.black)),
+        shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30.0)),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text(
+              "ثبت تغییرات",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -552,10 +553,6 @@ class _ProfilePageState extends State<ProfilePage> {
     if (uni.length == 0) uni = null;
     if (field.length == 0) field = null;
     if (year.length == 0) year = null;
-
-    setState(() {
-      _isLoading = true;
-    });
 
     var token = sharedPreferences.getString("token");
     var id = sharedPreferences.getInt("id").toString();
@@ -579,7 +576,7 @@ class _ProfilePageState extends State<ProfilePage> {
         print(response1.reasonPhrase);
       }
     } catch(e){
-
+      // log("Update Profile photo: " + e);
     }
     var response;
     headers = {
@@ -636,13 +633,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container passHeader() {
     return Container(
-      margin: EdgeInsets.only(top: 0.0),
+      margin: EdgeInsets.only(top: 0.0,bottom: 00),
       // padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
       child: Center(
-          child: Text("تغییر گذرواژه",
+          child: Text("تغییر گذرواژه :",
               style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.blueAccent,
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold))),
     );
@@ -650,6 +647,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container changePass() {
     return Container(
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
         child: Column(
       children: <Widget>[
         TextFormField(
@@ -664,14 +662,16 @@ class _ProfilePageState extends State<ProfilePage> {
           obscureText: true,
           style: TextStyle(color: Colors.black),
           decoration: InputDecoration(
-            icon: Icon(Icons.lock, color: Colors.black),
+            icon: Icon(Icons.lock, color: Colors.blueAccent),
             labelText: "گذرواژه",
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black)),
+            errorText: _wrongPass ? 'رمز وارد شده غلط می باشد' : null,
+            border: OutlineInputBorder(
+                // borderSide: BorderSide(color: Colors.black)),
+                borderRadius: BorderRadius.circular(22.0)),
             hintStyle: TextStyle(color: Colors.black),
           ),
         ),
-        SizedBox(height: 30.0),
+        SizedBox(height: 10.0),
         TextFormField(
           controller: passwordController,
           validator: (value) {
@@ -684,14 +684,15 @@ class _ProfilePageState extends State<ProfilePage> {
           obscureText: true,
           style: TextStyle(color: Colors.black),
           decoration: InputDecoration(
-            icon: Icon(Icons.lock, color: Colors.black),
+            icon: Icon(Icons.lock, color: Colors.blueAccent),
             labelText: "گذرواژه ی جدید",
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black)),
+            border: OutlineInputBorder(
+                // borderSide: BorderSide(color: Colors.black)),
+                borderRadius: BorderRadius.circular(22.0)),
             hintStyle: TextStyle(color: Colors.black),
           ),
         ),
-        SizedBox(height: 30.0),
+        SizedBox(height: 10.0),
         TextFormField(
           controller: passwordReController,
           validator: (value) {
@@ -706,10 +707,11 @@ class _ProfilePageState extends State<ProfilePage> {
           obscureText: true,
           style: TextStyle(color: Colors.black),
           decoration: InputDecoration(
-            icon: Icon(Icons.lock, color: Colors.black),
+            icon: Icon(Icons.lock, color: Colors.blueAccent),
             labelText: "تکرار گذرواژه ی جدید",
-            border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black)),
+            border: OutlineInputBorder(
+                // borderSide: BorderSide(color: Colors.black)),
+                borderRadius: BorderRadius.circular(22.0)),
             hintStyle: TextStyle(color: Colors.black),
           ),
         ),
@@ -720,13 +722,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Container Submit2() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 25.0),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.indigoAccent)),
+      height: 60.0,
+      padding: EdgeInsets.symmetric(horizontal: 110.0),
+      margin: EdgeInsets.only(top: 10.0),
+      child: RaisedButton(
         onPressed: () {
           if (!_formKey2.currentState.validate()) {
             ScaffoldMessenger.of(context)
@@ -741,15 +740,34 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         },
-        child: Text("تغییر گذرواژه", style: TextStyle(color: Colors.black)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child:Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30.0)
+          ),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text(
+              "تغییر گذرواژه",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   updatePassword(String oldPass, newPass) async {
-    setState(() {
-      _isLoading = true;
-    });
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     var token = sharedPreferences.getString("token");
@@ -790,18 +808,6 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  Container updatePassword_errorSection() {
-    if (_wrongPass)
-      return Container(
-        padding: EdgeInsets.only(right: 15.0, left: 15, top: 20.0),
-        child: Text(
-          "رمز وارد شده غلط می باشد",
-          style: TextStyle(color: Colors.red),
-        ),
-      );
-    return Container();
-  }
-
   Container updatePassword_success() {
     if (_updatePass)
       return Container(
@@ -828,13 +834,33 @@ class _ProfilePageState extends State<ProfilePage> {
         height: 40.0,
         padding: EdgeInsets.symmetric(horizontal: 15.0),
         margin: EdgeInsets.only(top: 25.0),
-        child: ElevatedButton(
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+        child: RaisedButton(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+          padding: EdgeInsets.all(0.0),
           onPressed: () {
             _showDialog(context);
           },
-          child: Text("پاک کردن اکانت", style: TextStyle(color: Colors.black)),
+          child: Ink(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.red, Colors.yellow],
+                  begin: Alignment.center,
+                  // end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(30.0)
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                "پاک کردن اکانت",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white
+                ),
+              ),
+            ),
+          ),
         ));
   }
 

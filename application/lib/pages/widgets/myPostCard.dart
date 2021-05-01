@@ -24,9 +24,9 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       borderOnForeground: true,
-      elevation: 5,
+      elevation: 1,
       margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-      color: Colors.white70,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -40,13 +40,14 @@ class PostCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(15)),
                   width: 100,
                   height: 120,
-                  // color: Colors.blue,
-                  child: Image.network(
-                    url,
-                    width: 100,
-                    height: 120,
+                  child: Icon(
+                    Icons.flip_camera_ios_outlined,
+                    color: Colors.grey[800],
                   ),
                 ),
               ],
