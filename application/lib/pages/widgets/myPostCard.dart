@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 
 class PostCard extends StatelessWidget {
   String title;
@@ -8,8 +10,7 @@ class PostCard extends StatelessWidget {
   String price;
   String province;
   String description;
-
-  String url = "https://wallpaperaccess.com/full/832966.jpg";
+  String Image_url = "https://wallpaperaccess.com/full/832966.jpg";
 
   PostCard(
     this.title,
@@ -22,6 +23,9 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var formatter = new NumberFormat("###,###");
+    price = formatter.format(int.parse(price));
+
     return Card(
       borderOnForeground: true,
       elevation: 1,
@@ -35,22 +39,16 @@ class PostCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(15)),
-                  width: 100,
-                  height: 120,
-                  child: Icon(
-                    Icons.flip_camera_ios_outlined,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(15)),
+              width: 100,
+              height: 120,
+              child: Icon(
+                Icons.flip_camera_ios_outlined,
+                color: Colors.grey[800],
+              ),
             ),
             SizedBox(width: 15),
             Expanded(
