@@ -52,6 +52,9 @@ class _MyDrawerState extends State<MyDrawer> {
           : ListView(
               children: <Widget>[
                 !_noImage ? UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
                     accountName: Text(
                       firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
                       style: TextStyle(),
@@ -64,6 +67,9 @@ class _MyDrawerState extends State<MyDrawer> {
                     )
                 )
                 :UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
                     accountName: Text(
                       firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
                       style: TextStyle(),
@@ -76,7 +82,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
                 ListTile(
                   title: Text("داشبورد"),
-                  leading: Icon(Icons.home),
+                  leading: Icon(Icons.home, color: Colors.blueAccent),
                   onTap: () {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
@@ -86,7 +92,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
                 ListTile(
                   title: Text("پروفایل"),
-                  leading: Icon(Icons.account_box_rounded),
+                  leading: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
                   onTap: () {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
@@ -96,7 +102,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
                 ListTile(
                   title: Text("آگهی جدید"),
-                  leading: Icon(Icons.create_new_folder_rounded),
+                  leading: Icon(Icons.create_new_folder_rounded, color: Colors.blueAccent),
                   onTap: () {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
@@ -106,7 +112,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
                 ListTile(
                   title: Text("خروج"),
-                  leading: Icon(Icons.logout),
+                  leading: Icon(Icons.logout, color: Colors.blueAccent),
                   onLongPress: () {
                     logout();
                     Navigator.of(context).pushAndRemoveUntil(
