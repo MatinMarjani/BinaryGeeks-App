@@ -78,6 +78,11 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     log('Profile Init');
     getProfile();
+    setState(() {
+      MyAppBar.appBarTitle =
+          Text("BookTrader", style: TextStyle(color: Colors.white));
+      MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
+    });
   }
 
   getProfile() async {

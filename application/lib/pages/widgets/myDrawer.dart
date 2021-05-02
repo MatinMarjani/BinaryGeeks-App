@@ -84,30 +84,27 @@ class _MyDrawerState extends State<MyDrawer> {
                   title: Text("داشبورد"),
                   leading: Icon(Icons.home, color: Colors.blueAccent),
                   onTap: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => MainPage()),
-                        (Route<dynamic> route) => false);
+                    Navigator.push(context, new MaterialPageRoute(
+                        builder: (context) => MainPage()
+                    ));
                   },
                 ),
                 ListTile(
                   title: Text("پروفایل"),
                   leading: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
                   onTap: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => ProfilePage()),
-                        (Route<dynamic> route) => false);
+                    Navigator.push(context, new MaterialPageRoute(
+                        builder: (context) => ProfilePage()
+                    ));
                   },
                 ),
                 ListTile(
                   title: Text("آگهی جدید"),
                   leading: Icon(Icons.create_new_folder_rounded, color: Colors.blueAccent),
                   onTap: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => NewPostPage()),
-                        (Route<dynamic> route) => false);
+                    Navigator.push(context, new MaterialPageRoute(
+                        builder: (context) => NewPostPage()
+                    ));
                   },
                 ),
                 ListTile(

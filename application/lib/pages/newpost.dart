@@ -52,6 +52,17 @@ class _NewPostPageState extends State<NewPostPage> {
   final _formKey3 = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      MyAppBar.appBarTitle =
+          Text("BookTrader", style: TextStyle(color: Colors.white));
+      MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(

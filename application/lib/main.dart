@@ -10,6 +10,9 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'package:application/pages/widgets/myDrawer.dart';
+import 'package:application/pages/widgets/myAppBar.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -47,6 +50,11 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     checkLoginStatus();
     setInfo();
+    setState(() {
+      MyAppBar.appBarTitle =
+          Text("BookTrader", style: TextStyle(color: Colors.white));
+      MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
+    });
   }
 
   checkLoginStatus() async {

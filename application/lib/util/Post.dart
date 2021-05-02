@@ -5,7 +5,7 @@ class Post {
   String author;
   String publisher;
   int price;
-  double province;
+  String province;
   String city;
   String zone;
   String status;
