@@ -22,13 +22,20 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   List<Post> myPost = [];
+  final TextEditingController _searchQuery = new TextEditingController();
+  String _searchText = "";
 
   void initState() {
     super.initState();
-    log("Dashboard init");
-    //getPosts();
+    log("SearchPage init");
     MyAppBar.appBarTitle = TextField(
-      // controller: _searchQuery,
+      controller: _searchQuery,
+      onSubmitted: (value) {
+        if (_searchQuery.text != "" || _searchQuery.text != null) {
+          myPost.clear();
+          getPosts(_searchQuery.text);
+        }
+      },
       style: TextStyle(
         color: Colors.white,
       ),
@@ -42,7 +49,6 @@ class _SearchPageState extends State<SearchPage> {
       Icons.close,
       color: Colors.white,
     );
-
   }
 
   @override
@@ -55,64 +61,75 @@ class _SearchPageState extends State<SearchPage> {
       body: Container(
         margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: Text("search"),
+        child: ListView(
+          children: <Widget>[
+            Posts(),
+          ],
+        ),
       ),
       drawer: MyDrawer(),
     );
   }
 
-  Container Posts() {
-    return Container(
-      child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description"),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description"),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
-              "description"),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description"),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description"),
-        ],
-      ),
-    );
+  Widget Posts() {
+    if (myPost.length == 0) return Text("nothing");
+    List<Widget> list = new List<Widget>();
+    for (var i = 0; i < myPost.length; i++) {
+      if( myPost[i].title == null )
+        myPost[i].title = " ";
+      if( myPost[i].author == null )
+        myPost[i].author = " ";
+      if( myPost[i].categories == null )
+        myPost[i].categories = " ";
+      if( myPost[i].price == null )
+        myPost[i].price = 0;
+      if( myPost[i].province == null )
+        myPost[i].province = " ";
+      if( myPost[i].description == null )
+        myPost[i].description = " ";
+
+      list.add(PostCard(myPost[i].title, myPost[i].author, myPost[i].categories,
+          myPost[i].price.toString(), myPost[i].province, myPost[i].description));
+    }
+    return Column(
+        children: list);
   }
 
-  getPosts() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    var jsonResponse = null;
+  getPosts(String contains) async {
+    var jsonResponse;
     var response;
 
-    var token = sharedPreferences.getString("token");
-    var id = sharedPreferences.getInt("id").toString();
-    var url = Uri.parse("??????");
+    var url = Uri.parse(AppUrl.Search + "?contains=" + contains);
+    log(AppUrl.Search + "?contains=" + contains);
 
     try {
-      response =
-      await http.get(url, headers: {'Authorization': 'Token $token'});
+      response = await http.get(url);
       if (response.statusCode == 200) {
         log('200');
-        print(response.body);
-        jsonResponse = json.decode(response.body);
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
         if (jsonResponse != null) {
           setState(() {
             //_isLoading = false;
+            for (var i in jsonResponse) {
+              myPost.add(Post(
+                i["id"],
+                i["title"],
+                i["author"],
+                i["publisher"],
+                i["price"],
+                i["province"],
+                i["city"],
+                i["zone"],
+                i["status"],
+                i["description"],
+                i["is_active"],
+                i["image"],
+                //url
+                i["categories"],
+                i["created_at"],
+              ));
+            }
           });
         }
       } else {
@@ -120,30 +137,8 @@ class _SearchPageState extends State<SearchPage> {
         print(response.body);
       }
     } catch (e) {
+      log("error");
       print(e);
-    }
-
-    response = await http.get(url);
-    final extractedData = json.decode(response.body);
-    List posts = extractedData['post'];
-    for (var i in posts) {
-      myPost.add(Post(
-        i["id"],
-        i["title"],
-        i["author"],
-        i["publisher"],
-        i["price"],
-        i["province"],
-        i["city"],
-        i["zone"],
-        i["status"],
-        i["description"],
-        i["is_active"],
-        i["image"],
-        //url
-        i["categories"],
-        i["created_at"],
-      ));
     }
   }
 }
