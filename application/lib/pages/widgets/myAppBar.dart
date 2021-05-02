@@ -24,10 +24,7 @@ class _MyAppBarState extends State<MyAppBar> {
   Widget appBarTitle =
       Text("BookTrader", style: TextStyle(color: Colors.white));
   Icon actionIcon = Icon(Icons.search, color: Colors.white);
-  final TextEditingController _searchQuery = new TextEditingController();
-  bool _IsSearching;
 
-  // String _searchText = "";
 
   _MyAppBarState(
     this.appBarTitle,
@@ -37,7 +34,6 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   void initState() {
     super.initState();
-    // _IsSearching = false;
     // init();
   }
 
@@ -51,9 +47,6 @@ class _MyAppBarState extends State<MyAppBar> {
           icon: actionIcon,
           onPressed: () {
             if (this.actionIcon.icon == Icons.search) {
-              setState(() {
-                _IsSearching = true;
-              });
               Navigator.push(context,
                   new MaterialPageRoute(builder: (context) => SearchPage()));
             } else {
@@ -64,7 +57,6 @@ class _MyAppBarState extends State<MyAppBar> {
                 );
                 this.appBarTitle =
                     Text("BookTrader", style: TextStyle(color: Colors.white));
-                _IsSearching = false;
                 Navigator.pop(context);
                 // _searchQuery.clear();
               });
