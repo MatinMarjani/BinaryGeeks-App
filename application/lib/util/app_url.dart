@@ -27,5 +27,8 @@ class AppUrl {
   static const String Delete_Post = baseURL + "/posts/"; // + $id  //DEL
   static const String Get_Post_Status = baseURL + "/posts/status"; // + $id  //DEL
 
+  //Search$Filter
+  static const String Search = baseURL + "/api/filter/"; //+params  //GET
+
 
 }
