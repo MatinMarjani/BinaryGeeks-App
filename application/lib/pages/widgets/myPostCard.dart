@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class PostCard extends StatelessWidget {
   String title;
   String author;
@@ -10,21 +9,21 @@ class PostCard extends StatelessWidget {
   String price;
   String province;
   String description;
-  String Image_url = "https://wallpaperaccess.com/full/832966.jpg";
+  String Image_url;
 
-  PostCard(
-    this.title,
-    this.author,
-    this.category,
-    this.price,
-    this.province,
-    this.description,
-  );
+  bool _noImage = true;
+
+  PostCard(this.title, this.author, this.category, this.price, this.province,
+      this.description, this.Image_url);
 
   @override
   Widget build(BuildContext context) {
     var formatter = new NumberFormat("###,###");
     price = formatter.format(int.parse(price));
+
+    if( Image_url == null ) _noImage = true;
+    else { _noImage = false; }
+
 
     return Card(
       borderOnForeground: true,
@@ -39,6 +38,7 @@ class PostCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            _noImage ?
             Container(
               decoration: BoxDecoration(
                   color: Colors.grey[100],
@@ -48,6 +48,15 @@ class PostCard extends StatelessWidget {
               child: Icon(
                 Icons.flip_camera_ios_outlined,
                 color: Colors.grey[800],
+              ),
+            )
+            : ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: Image.network(
+                Image_url,
+                width: 100,
+                height: 120,
+                fit: BoxFit.fitHeight,
               ),
             ),
             SizedBox(width: 15),

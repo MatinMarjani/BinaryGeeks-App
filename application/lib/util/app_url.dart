@@ -13,19 +13,19 @@ class AppUrl {
 
   //User Profile :
   // + $id
-  static const String Get_Profile = baseURL + "/users/"; //Get
-  static const String Update_Profile = baseURL + "/users/"; //PUT
-  static const String Delete_Profile = baseURL + "/users/"; //DEL
+  static const String Get_Profile = baseURL + "/api/users/"; //Get
+  static const String Update_Profile = baseURL + "/api/users/"; //PUT
+  static const String Delete_Profile = baseURL + "/api/users/"; //DEL
   // +$id + '/change-password'
-  static const String Change_Password = baseURL + "/users/"; //PUT
+  static const String Change_Password = baseURL + "/api/users/"; //PUT
 
   //Posts
-  static const String Add_Post = baseURL + "/posts"; //POST
-  static const String Get_Available_Categories = baseURL + "/categories"; //GET
-  static const String Get_Post = baseURL + "/posts/"; // + $id  //GET
-  static const String Update_Post = baseURL + "/posts/"; // + $id  //PUT
-  static const String Delete_Post = baseURL + "/posts/"; // + $id  //DEL
-  static const String Get_Post_Status = baseURL + "/posts/status"; // + $id  //DEL
+  static const String Add_Post = baseURL + "/api/posts"; //POST
+  static const String Get_Available_Categories = baseURL + "/api/categories"; //GET
+  static const String Get_Post = baseURL + "/api/posts/"; // + $id  //GET
+  static const String Update_Post = baseURL + "/api/posts/"; // + $id  //PUT
+  static const String Delete_Post = baseURL + "/api/posts/"; // + $id  //DEL
+  static const String Get_Post_Status = baseURL + "/api/posts/status"; // + $id  //DEL
 
   //Search$Filter
   static const String Search = baseURL + "/api/filter/"; //+params  //GET

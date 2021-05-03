@@ -89,7 +89,7 @@ class _SearchPageState extends State<SearchPage> {
         myPost[i].description = " ";
 
       list.add(PostCard(myPost[i].title, myPost[i].author, myPost[i].categories,
-          myPost[i].price.toString(), myPost[i].province, myPost[i].description));
+          myPost[i].price.toString(), myPost[i].province, myPost[i].description, myPost[i].image));
     }
     return Column(
         children: list);
@@ -111,7 +111,7 @@ class _SearchPageState extends State<SearchPage> {
         if (jsonResponse != null) {
           setState(() {
             //_isLoading = false;
-            for (var i in jsonResponse) {
+            for (var i in jsonResponse["results"]) {
               myPost.add(Post(
                 i["id"],
                 i["title"],
