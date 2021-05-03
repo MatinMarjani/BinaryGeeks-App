@@ -175,7 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   headerSection(),
                   profilePicture(),
                   infoForm(),
-                  passForm(),
+                  changePass_Modal_btn(),
                   DeleteForm(),
                 ],
               ),
@@ -636,6 +636,23 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Container changePass_Modal_btn() {
+    return Container(
+      child: IconButton(
+        icon: Icon(Icons.security, color: Colors.blueAccent),
+        onPressed: () {
+          changePass_Modal(context);
+        }
+      )
+    );
+  }
+
+  void changePass_Modal(context) {
+    showModalBottomSheet(context: context, builder: (BuildContext bc) {
+        return passForm();
+    });
+  }
+
   Container passHeader() {
     return Container(
       margin: EdgeInsets.only(top: 0.0,bottom: 00),
@@ -835,10 +852,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container deleteBtn() {
     return Container(
-        width: MediaQuery.of(context).size.width,
+        // width: MediaQuery.of(context).size.width,
         height: 40.0,
         padding: EdgeInsets.symmetric(horizontal: 15.0),
-        margin: EdgeInsets.only(top: 25.0),
+        margin: EdgeInsets.only(top: 25.0,bottom: 10),
         child: RaisedButton(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
           padding: EdgeInsets.all(0.0),
