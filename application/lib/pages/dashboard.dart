@@ -57,65 +57,62 @@ class _DashBoardState extends State<DashBoard> {
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
+          PostCard(
+            "owner_id",
+            "owner_email",
+            "owner_profile_image",
+            "id",
+            "title",
+            "author",
+            "publisher",
+            "1000",
+            "province",
+            "city",
+            "zone",
+            "status",
+            "description",
+            true,
+            null,
+            "categories",
+            "created_at",
           ),
-          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
+          PostCard(
+            "owner_id",
+            "owner_email",
+            "owner_profile_image",
+            "id",
+            "title",
+            "author",
+            "publisher",
+            "10000",
+            "province",
+            "city",
+            "zone",
+            "status",
+            "description",
+            true,
+            null,
+            "categories",
+            "created_at",
           ),
-          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("فیزیک 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 1", "فرامرزی", "دانشگاهی", "25000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
-          ),
-          PostCard("ریاضی 2", "فرامرزی", "دانشگاهی", "35000", "تهران",
-              "description", null),
-          SizedBox(
-            height: 20,
+          PostCard(
+            "owner_id",
+            "owner_email",
+            "owner_profile_image",
+            "id",
+            "title",
+            "author",
+            "publisher",
+            "100000",
+            "province",
+            "10000",
+            "zone",
+            "status",
+            "description",
+            true,
+            null,
+            "categories",
+            "created_at",
           ),
         ],
       ),
@@ -155,24 +152,5 @@ class _DashBoardState extends State<DashBoard> {
     response = await http.get(url);
     final extractedData = json.decode(response.body);
     List posts = extractedData['post'];
-    for (var i in posts) {
-      myPost.add(Post(
-        i["id"],
-        i["title"],
-        i["author"],
-        i["publisher"],
-        i["price"],
-        i["province"],
-        i["city"],
-        i["zone"],
-        i["status"],
-        i["description"],
-        i["is_active"],
-        i["image"],
-        //url
-        i["categories"],
-        i["created_at"],
-      ));
-    }
   }
 }
