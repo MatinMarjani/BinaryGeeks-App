@@ -57,7 +57,7 @@ class _DashBoardState extends State<DashBoard> {
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          PostCard( Post(0, "owner_email", null, 0, "title", "author", "publisher", 1500000, "province", "city", "zone", "status", "description", true, null, "categories", "created_at") ),
+          PostCard( Post(0, "owner_email", null, 0, "title", "author", "publisher", 1500000, "province", "city", "zone", "status", "description", true, null, "categories", "") ),
         ],
       ),
     );
