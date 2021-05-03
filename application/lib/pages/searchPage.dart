@@ -75,24 +75,34 @@ class _SearchPageState extends State<SearchPage> {
     if (myPost.length == 0) return Text("nothing");
     List<Widget> list = new List<Widget>();
     for (var i = 0; i < myPost.length; i++) {
-      if( myPost[i].title == null )
-        myPost[i].title = " ";
-      if( myPost[i].author == null )
-        myPost[i].author = " ";
-      if( myPost[i].categories == null )
-        myPost[i].categories = " ";
-      if( myPost[i].price == null )
-        myPost[i].price = 0;
-      if( myPost[i].province == null )
-        myPost[i].province = " ";
-      if( myPost[i].description == null )
-        myPost[i].description = " ";
+      if (myPost[i].title == null) myPost[i].title = " ";
+      if (myPost[i].author == null) myPost[i].author = " ";
+      if (myPost[i].categories == null) myPost[i].categories = " ";
+      if (myPost[i].price == null) myPost[i].price = 0;
+      if (myPost[i].province == null) myPost[i].province = " ";
+      if (myPost[i].description == null) myPost[i].description = " ";
 
-      list.add(PostCard(myPost[i].title, myPost[i].author, myPost[i].categories,
-          myPost[i].price.toString(), myPost[i].province, myPost[i].description, myPost[i].image));
+      list.add(PostCard(
+        myPost[i].owner_id.toString(),
+        myPost[i].owner_email,
+        myPost[i].owner_profile_image,
+        myPost[i].id.toString(),
+        myPost[i].title,
+        myPost[i].author,
+        myPost[i].publisher,
+        myPost[i].price.toString(),
+        myPost[i].province,
+        myPost[i].city,
+        myPost[i].zone,
+        myPost[i].status,
+        myPost[i].description,
+        myPost[i].is_active,
+        myPost[i].image,
+        myPost[i].categories,
+        myPost[i].created_at,
+      ));
     }
-    return Column(
-        children: list);
+    return Column(children: list);
   }
 
   getPosts(String contains) async {
@@ -113,6 +123,9 @@ class _SearchPageState extends State<SearchPage> {
             //_isLoading = false;
             for (var i in jsonResponse["results"]) {
               myPost.add(Post(
+                i["owner"]["id"],
+                i["owner"]["email"],
+                i["owner"]["profile_image"],
                 i["id"],
                 i["title"],
                 i["author"],
