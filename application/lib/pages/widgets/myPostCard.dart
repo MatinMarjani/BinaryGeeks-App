@@ -1,60 +1,35 @@
 import 'dart:ui';
+import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class PostCard extends StatelessWidget {
-  String owner_id;
-  String owner_email;
-  String owner_profile_image;
-  String id;
-  String title;
-  String author;
-  String publisher;
-  String price;
-  String province;
-  String city;
-  String zone;
-  String status;
-  String description;
-  bool is_active;
-  String image; //url
-  String categories;
-  String created_at;
+import 'package:application/pages/PostPage.dart';
+import 'package:application/util/Post.dart';
 
+
+class PostCard extends StatelessWidget {
+
+  Post post;
+  String price;
   bool _noImage = true;
 
-  PostCard(
-    this.owner_id,
-    this.owner_email,
-    this.owner_profile_image,
-    this.id,
-    this.title,
-    this.author,
-    this.publisher,
-    this.price,
-    this.province,
-    this.city,
-    this.zone,
-    this.status,
-    this.description,
-    this.is_active,
-    this.image, //url
-    this.categories,
-    this.created_at,
-  );
+  PostCard(this.post);
 
   @override
   Widget build(BuildContext context) {
-    var formatter = new NumberFormat("###,###");
-    price = formatter.format(int.parse(price));
-    if (image == null)
+    var formatter = new NumberFormat('###,###');
+    if (post.image == null)
       _noImage = true;
     else {
       _noImage = false;
     }
 
     return GestureDetector(
-        onTap: (){},
+        onTap: (){
+          Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => PostPage(post)));
+        },
         child: Card(
           borderOnForeground: true,
           elevation: 1,
@@ -82,7 +57,7 @@ class PostCard extends StatelessWidget {
                     : ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child: Image.network(
-                          image,
+                          post.image,
                           width: 100,
                           height: 120,
                           fit: BoxFit.fitHeight,
@@ -96,21 +71,21 @@ class PostCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
-                          title,
+                          post.title,
                           style: TextStyle(fontSize: 18.0),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
-                          author,
+                          post.author,
                           style: TextStyle(fontSize: 15.0),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
-                          categories,
+                          post.categories,
                           style: TextStyle(fontSize: 13.0),
                         ),
                       ),
@@ -123,14 +98,14 @@ class PostCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                       child: Text(
-                        price,
+                        formatter.format(post.price),
                         style: TextStyle(fontSize: 15.0, color: Colors.green),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                       child: Text(
-                        province,
+                        post.province,
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),

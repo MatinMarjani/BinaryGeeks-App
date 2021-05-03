@@ -83,23 +83,7 @@ class _SearchPageState extends State<SearchPage> {
       if (myPost[i].description == null) myPost[i].description = " ";
 
       list.add(PostCard(
-        myPost[i].owner_id.toString(),
-        myPost[i].owner_email,
-        myPost[i].owner_profile_image,
-        myPost[i].id.toString(),
-        myPost[i].title,
-        myPost[i].author,
-        myPost[i].publisher,
-        myPost[i].price.toString(),
-        myPost[i].province,
-        myPost[i].city,
-        myPost[i].zone,
-        myPost[i].status,
-        myPost[i].description,
-        myPost[i].is_active,
-        myPost[i].image,
-        myPost[i].categories,
-        myPost[i].created_at,
+        myPost[i]
       ));
     }
     return Column(children: list);
