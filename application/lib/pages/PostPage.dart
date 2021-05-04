@@ -34,8 +34,8 @@ class _PostPageState extends State<PostPage> {
   void initState() {
     super.initState();
     setState(() {
-      MyAppBar.appBarTitle =
-          Text("BookTrader", style: TextStyle(color: Colors.white));
+      MyAppBar.appBarTitle = Text("BookTrader",
+          style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
   }
@@ -58,8 +58,8 @@ class _PostPageState extends State<PostPage> {
               ))
             : ListView(
                 children: <Widget>[
-                  _Header(),
                   _BannerImage(),
+                  _Header(),
                   _MainBody(),
                 ],
               ),
@@ -69,57 +69,53 @@ class _PostPageState extends State<PostPage> {
   }
 
   Container _Header() {
-
     String date = "";
     String time2 = "";
     String time = "";
-    try{
+    try {
       date = widget.post.created_at.split('T')[0] ?? "";
       time2 = widget.post.created_at.split('T')[1] ?? "";
       time = time2.split(".")[0] ?? "";
-    }catch(e) {
-
-    }
+    } catch (e) {}
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            widget.post.title,
-            style: TextStyle(fontSize: 30.0),
-          ),
-          Text(
-            widget.post.author,
-            style: TextStyle(fontSize: 20.0),
-          ),
-          Text(
-            widget.post.publisher,
-            style: TextStyle(fontSize: 15.0),
-          ),
-          SizedBox(height: 10),
           Row(
             children: <Widget>[
               Expanded(
-                  child: Text(
-                    date,
-                    style: TextStyle(fontSize: 15.0),
-                  ),
+                child: Text(
+                  time,
+                  style: TextStyle(fontSize: 12.0, fontFamily: 'myfont'),
+                ),
               ),
               Text(
-                time,
-                style: TextStyle(fontSize: 15.0),
+                date,
+                style: TextStyle(fontSize: 12.0, fontFamily: 'myfont'),
               ),
             ],
           ),
           SizedBox(height: 10),
+          Text(
+            widget.post.title,
+            style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
+          ),
+          Text(
+            widget.post.author,
+            style: TextStyle(fontSize: 20.0, fontFamily: 'myfont'),
+          ),
+          SizedBox(height: 10),
+          Text(
+            widget.post.publisher,
+            style: TextStyle(fontSize: 15.0, fontFamily: 'myfont'),
+          ),
         ],
       ),
     );
   }
 
   Container _BannerImage() {
-    if(widget.post.image == null)
-      _noImage = true;
+    if (widget.post.image == null) _noImage = true;
     return Container(
       height: 300.0,
       padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
@@ -181,12 +177,14 @@ class _PostPageState extends State<PostPage> {
                 controller: priceH,
                 textAlign: TextAlign.right,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
               Flexible(
                   child: TextFormField(
                 controller: price,
                 textAlign: TextAlign.left,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
             ],
           ),
@@ -197,12 +195,14 @@ class _PostPageState extends State<PostPage> {
                 controller: provinceH,
                 textAlign: TextAlign.right,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
               Flexible(
                   child: TextFormField(
                 controller: province,
                 textAlign: TextAlign.left,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
             ],
           ),
@@ -213,12 +213,14 @@ class _PostPageState extends State<PostPage> {
                 controller: cityH,
                 textAlign: TextAlign.right,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
               Flexible(
                   child: TextFormField(
                 controller: city,
                 textAlign: TextAlign.left,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
             ],
           ),
@@ -229,19 +231,21 @@ class _PostPageState extends State<PostPage> {
                 controller: zoneH,
                 textAlign: TextAlign.right,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
               Flexible(
                   child: TextFormField(
                 controller: zone,
                 textAlign: TextAlign.left,
                 enabled: false,
+                style: TextStyle(fontFamily: 'myfont'),
               )),
             ],
           ),
-          SizedBox(height:30),
+          SizedBox(height: 30),
           Text(
             "توضیحات : ",
-            style: TextStyle(fontSize: 30.0),
+            style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
           ),
           TextField(
             controller: description,
@@ -249,6 +253,7 @@ class _PostPageState extends State<PostPage> {
             textAlign: TextAlign.right,
             keyboardType: TextInputType.multiline,
             maxLines: null,
+            style: TextStyle(fontFamily: 'myfont'),
           ),
           SizedBox(height: 50)
         ],

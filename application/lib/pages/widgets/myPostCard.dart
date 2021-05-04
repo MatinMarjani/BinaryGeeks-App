@@ -72,21 +72,21 @@ class PostCard extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
                           post.title,
-                          style: TextStyle(fontSize: 18.0),
+                          style: TextStyle(fontSize: 18.0, fontFamily: 'myfont'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
                           post.author,
-                          style: TextStyle(fontSize: 15.0),
+                          style: TextStyle(fontSize: 15.0, fontFamily: 'myfont'),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
                           post.categories,
-                          style: TextStyle(fontSize: 13.0),
+                          style: TextStyle(fontSize: 13.0, fontFamily: 'myfont'),
                         ),
                       ),
                     ],
@@ -99,14 +99,14 @@ class PostCard extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                       child: Text(
                         formatter.format(post.price),
-                        style: TextStyle(fontSize: 15.0, color: Colors.green),
+                        style: TextStyle(fontSize: 15.0, color: Colors.green, fontFamily: 'myfont'),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                       child: Text(
                         post.province,
-                        style: TextStyle(fontSize: 14.0),
+                        style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
                       ),
                     ),
                   ],

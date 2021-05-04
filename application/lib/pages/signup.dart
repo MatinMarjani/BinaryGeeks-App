@@ -14,16 +14,14 @@ import 'package:application/pages/login.dart';
 
 class FirstNameFieldValidator {
   static String validate(String value) {
-    if (value == null || value.isEmpty)
-      return 'الزامی است';
+    if (value == null || value.isEmpty) return 'الزامی است';
     return null;
   }
 }
 
 class LastNameFieldValidator {
   static String validate(String value) {
-    if (value == null || value.isEmpty)
-      return 'الزامی است';
+    if (value == null || value.isEmpty) return 'الزامی است';
     return null;
   }
 }
@@ -34,18 +32,15 @@ class EmailFieldValidator {
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
     RegExp regExp = new RegExp(pattern);
 
-    if (value == null || value.isEmpty)
-      return 'الزامی است';
-    if (!regExp.hasMatch(value))
-      return 'ایمیل را درست وارد کنید';
+    if (value == null || value.isEmpty) return 'الزامی است';
+    if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
     return null;
   }
 }
 
 class PasswordFieldValidator {
   static String validate(String value) {
-    if (value == null || value.isEmpty)
-      return 'الزامی است';
+    if (value == null || value.isEmpty) return 'الزامی است';
     return null;
   }
 }
@@ -76,21 +71,22 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 00, horizontal: 10),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-        ))
-            : Center( child : ListView(
-          children: <Widget>[
-            headerSection(),
-            signupForm(),
-            buttonSection1(),
-          ],
-        ),
-        )
-      ),
+          margin: EdgeInsets.symmetric(vertical: 00, horizontal: 10),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child: _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                ))
+              : Center(
+                  child: ListView(
+                    children: <Widget>[
+                      headerSection(),
+                      signupForm(),
+                      buttonSection1(),
+                    ],
+                  ),
+                )),
     );
   }
 
@@ -98,12 +94,13 @@ class _SignUpPageState extends State<SignUpPage> {
     return Container(
       margin: EdgeInsets.only(top: 0.0),
       // padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      padding: EdgeInsetsDirectional.only(bottom: 40,top: 80),
+      padding: EdgeInsetsDirectional.only(bottom: 40, top: 80),
       child: Center(
           child: Text("ساخت اکانت جدید",
               style: TextStyle(
                   color: Colors.blueAccent,
                   fontSize: 25.0,
+                  fontFamily: 'myfont',
                   fontWeight: FontWeight.bold))),
     );
   }
@@ -131,14 +128,20 @@ class _SignUpPageState extends State<SignUpPage> {
             controller: firstNameController,
             validator: FirstNameFieldValidator.validate,
             cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'myfont',
+            ),
             decoration: InputDecoration(
               icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
               labelText: "نام",
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black),
                   borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'myfont',
+              ),
             ),
           ),
           SizedBox(height: 10.0),
@@ -146,14 +149,20 @@ class _SignUpPageState extends State<SignUpPage> {
             controller: lastNameController,
             validator: LastNameFieldValidator.validate,
             cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'myfont',
+            ),
             decoration: InputDecoration(
               icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
               labelText: "نام خانوادگی",
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'myfont',
+              ),
             ),
           ),
           SizedBox(height: 10.0),
@@ -161,7 +170,10 @@ class _SignUpPageState extends State<SignUpPage> {
             controller: emailController,
             validator: EmailFieldValidator.validate,
             cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'myfont',
+            ),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.blueAccent),
               labelText: "ایمیل",
@@ -169,7 +181,10 @@ class _SignUpPageState extends State<SignUpPage> {
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'myfont',
+              ),
             ),
           ),
           SizedBox(height: 10.0),
@@ -178,14 +193,20 @@ class _SignUpPageState extends State<SignUpPage> {
             validator: PasswordFieldValidator.validate,
             cursorColor: Colors.black,
             obscureText: true,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'myfont',
+            ),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.blueAccent),
               labelText: "گذرواژه",
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'myfont',
+              ),
             ),
           ),
           SizedBox(height: 10.0),
@@ -201,14 +222,20 @@ class _SignUpPageState extends State<SignUpPage> {
             },
             cursorColor: Colors.black,
             obscureText: true,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'myfont',
+            ),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.blueAccent),
               labelText: "تکرار گذرواژه",
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'myfont',
+              ),
             ),
           ),
         ],
@@ -235,16 +262,17 @@ class _SignUpPageState extends State<SignUpPage> {
                 firstNameController.text, lastNameController.text);
           }
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
         padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+              gradient: LinearGradient(
+                colors: [Color(0xff374ABE), Color(0xff64B6FF)],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
-              borderRadius: BorderRadius.circular(30.0)
-          ),
+              borderRadius: BorderRadius.circular(30.0)),
           child: Container(
             constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
             alignment: Alignment.center,
@@ -252,8 +280,9 @@ class _SignUpPageState extends State<SignUpPage> {
               "ثبت نام",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white
+                fontSize: 20,
+                color: Colors.white,
+                fontFamily: 'myfont',
               ),
             ),
           ),
@@ -269,40 +298,45 @@ class _SignUpPageState extends State<SignUpPage> {
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       margin: EdgeInsets.only(top: 12.0),
       child: Center(
-          child :
-          RichText(
-            text: TextSpan(
-              text: 'قبلا اکانت ساخته اید؟ ',
-              style: TextStyle(fontSize: 15, color: Colors.black),
-              children: <TextSpan>[
-                TextSpan(
-                    text: 'وارد شوید ',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (BuildContext context) => LoginPage()),
-                                (Route<dynamic> route) => false);
-                      },
-                    style: TextStyle(
-                      color: Colors.blue,
-                    )),
-              ],
-            ),
-          )
-      ),
+          child: RichText(
+        text: TextSpan(
+          text: 'قبلا اکانت ساخته اید؟ ',
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.black,
+            fontFamily: 'myfont',
+          ),
+          children: <TextSpan>[
+            TextSpan(
+                text: 'وارد شوید ',
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => LoginPage()),
+                        (Route<dynamic> route) => false);
+                  },
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontFamily: 'myfont',
+                )),
+          ],
+        ),
+      )),
     );
   }
 
   Container errorSection() {
     if (_wrongInfo)
       return Container(
-        alignment: Alignment.centerRight,
-        child: Text(
-          "* There was a problem",
-          style: TextStyle(color: Colors.red),
-        )
-      );
+          alignment: Alignment.centerRight,
+          child: Text(
+            "* There was a problem",
+            style: TextStyle(
+              color: Colors.red,
+              fontFamily: 'myfont',
+            ),
+          ));
     return Container();
   }
 
@@ -357,7 +391,7 @@ class _SignUpPageState extends State<SignUpPage> {
           setState(() {
             _wrongEmail = true;
           });
-        }else {
+        } else {
           setState(() {
             _wrongInfo = true;
           });

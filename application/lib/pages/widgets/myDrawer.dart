@@ -33,7 +33,6 @@ class _MyDrawerState extends State<MyDrawer> {
   final TextEditingController entryYearController = new TextEditingController();
   final TextEditingController imageController = new TextEditingController();
 
-
   SharedPreferences sharedPreferences;
 
   var token;
@@ -51,64 +50,89 @@ class _MyDrawerState extends State<MyDrawer> {
             ))
           : ListView(
               children: <Widget>[
-                !_noImage ? UserAccountsDrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                    ),
-                    accountName: Text(
-                      firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
-                      style: TextStyle(),
-                    ),
-                    accountEmail: Text(emailController.text ?? " "),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      backgroundImage:
-                      NetworkImage('http://37.152.176.11' + imageController.text),
-                    )
-                )
-                :UserAccountsDrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                    ),
-                    accountName: Text(
-                      firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
-                      style: TextStyle(),
-                    ),
-                    accountEmail: Text(emailController.text ?? " "),
-                    currentAccountPicture: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Text(firstNameController.text[0])
-                    )
-                ),
+                !_noImage
+                    ? UserAccountsDrawerHeader(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                        ),
+                        accountName: Text(
+                          firstNameController.text ??
+                              " " + " " + lastNameController.text ??
+                              " ",
+                          style: TextStyle(fontFamily: 'myfont'),
+                        ),
+                        accountEmail: Text(
+                          emailController.text ?? " ",
+                          style: TextStyle(fontFamily: 'myfont'),
+                        ),
+                        currentAccountPicture: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: NetworkImage(
+                              'http://37.152.176.11' + imageController.text),
+                        ))
+                    : UserAccountsDrawerHeader(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                        ),
+                        accountName: Text(
+                          firstNameController.text ??
+                              " " + " " + lastNameController.text ??
+                              " ",
+                          style: TextStyle(fontFamily: 'myfont'),
+                        ),
+                        accountEmail: Text(
+                          emailController.text ?? " ",
+                          style: TextStyle(fontFamily: 'myfont'),
+                        ),
+                        currentAccountPicture: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Text(firstNameController.text[0]))),
                 ListTile(
-                  title: Text("داشبورد"),
+                  title: Text(
+                    "داشبورد",
+                    style: TextStyle(fontFamily: 'myfont'),
+                  ),
                   leading: Icon(Icons.home, color: Colors.blueAccent),
                   onTap: () {
-                    Navigator.push(context, new MaterialPageRoute(
-                        builder: (context) => MainPage()
-                    ));
+                    Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => MainPage()));
                   },
                 ),
                 ListTile(
-                  title: Text("پروفایل"),
-                  leading: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
+                  title: Text(
+                    "پروفایل",
+                    style: TextStyle(fontFamily: 'myfont'),
+                  ),
+                  leading:
+                      Icon(Icons.account_box_rounded, color: Colors.blueAccent),
                   onTap: () {
-                    Navigator.push(context, new MaterialPageRoute(
-                        builder: (context) => ProfilePage()
-                    ));
+                    Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => ProfilePage()));
                   },
                 ),
                 ListTile(
-                  title: Text("آگهی جدید"),
-                  leading: Icon(Icons.create_new_folder_rounded, color: Colors.blueAccent),
+                  title: Text(
+                    "آگهی جدید",
+                    style: TextStyle(fontFamily: 'myfont'),
+                  ),
+                  leading: Icon(Icons.create_new_folder_rounded,
+                      color: Colors.blueAccent),
                   onTap: () {
-                    Navigator.push(context, new MaterialPageRoute(
-                        builder: (context) => NewPostPage()
-                    ));
+                    Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => NewPostPage()));
                   },
                 ),
                 ListTile(
-                  title: Text("خروج"),
+                  title: Text(
+                    "خروج",
+                    style: TextStyle(fontFamily: 'myfont'),
+                  ),
                   leading: Icon(Icons.logout, color: Colors.blueAccent),
                   onLongPress: () {
                     logout();
@@ -135,7 +159,6 @@ class _MyDrawerState extends State<MyDrawer> {
     setState(() {
       _isLoading = true;
     });
-
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse = null;
@@ -168,7 +191,7 @@ class _MyDrawerState extends State<MyDrawer> {
               fieldOfStudyController.text = jsonResponse['field_of_study'];
             if (jsonResponse['entry_year'] != null)
               entryYearController.text = jsonResponse['entry_year'].toString();
-            if (jsonResponse['profile_image'] != null){
+            if (jsonResponse['profile_image'] != null) {
               imageController.text = jsonResponse['profile_image'].toString();
               _noImage = false;
               log(imageController.text);
@@ -196,10 +219,10 @@ class _MyDrawerState extends State<MyDrawer> {
     var url = Uri.parse(AppUrl.logout);
     var token = sharedPreferences.getString("token");
     try {
-      response =
-          await http.get(url, headers: {'Authorization': 'Token $token'});
       sharedPreferences.clear();
       sharedPreferences.commit();
+      response =
+          await http.get(url, headers: {'Authorization': 'Token $token'});
       print(response.body);
     } catch (e) {
       print(e);
