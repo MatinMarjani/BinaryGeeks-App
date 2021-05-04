@@ -18,7 +18,7 @@ class EmailFieldValidator {
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
     RegExp regExp = new RegExp(pattern);
 
-    if (value == null || value.isEmpty) return 'الزامی است';
+    if (value == null || value.isEmpty) return ' الزامی است';
     if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
     return null;
   }
