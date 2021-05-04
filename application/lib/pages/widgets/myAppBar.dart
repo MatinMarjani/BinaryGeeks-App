@@ -12,7 +12,7 @@ import 'package:application/pages/searchPage.dart';
 
 class MyAppBar extends StatefulWidget {
   static Widget appBarTitle =
-      Text("BookTrader", style: TextStyle(color: Colors.white));
+      Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
   static Icon actionIcon = Icon(Icons.search, color: Colors.white);
 
   @override
@@ -22,7 +22,7 @@ class MyAppBar extends StatefulWidget {
 class _MyAppBarState extends State<MyAppBar> {
   SharedPreferences sharedPreferences;
   Widget appBarTitle =
-      Text("BookTrader", style: TextStyle(color: Colors.white));
+      Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
   Icon actionIcon = Icon(Icons.search, color: Colors.white);
 
 
@@ -56,7 +56,7 @@ class _MyAppBarState extends State<MyAppBar> {
                   color: Colors.white,
                 );
                 this.appBarTitle =
-                    Text("BookTrader", style: TextStyle(color: Colors.white));
+                    Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
                 Navigator.pop(context);
                 // _searchQuery.clear();
               });
@@ -65,20 +65,5 @@ class _MyAppBarState extends State<MyAppBar> {
         ),
       ],
     );
-  }
-
-  logout() async {
-    var response;
-    var url = Uri.parse(AppUrl.logout);
-    var token = sharedPreferences.getString("token");
-    try {
-      response =
-          await http.get(url, headers: {'Authorization': 'Token $token'});
-      sharedPreferences.clear();
-      sharedPreferences.commit();
-      print(response.body);
-    } catch (e) {
-      print(e);
-    }
   }
 }

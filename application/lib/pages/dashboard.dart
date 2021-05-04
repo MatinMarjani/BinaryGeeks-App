@@ -28,7 +28,7 @@ class _DashBoardState extends State<DashBoard> {
     log("Dashboard init");
     setState(() {
       MyAppBar.appBarTitle =
-          Text("BookTrader", style: TextStyle(color: Colors.white));
+          Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
     //getPosts();

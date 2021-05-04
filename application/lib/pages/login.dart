@@ -81,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(
                   color: Colors.blueAccent,
                   fontSize: 25.0,
+                  fontFamily: 'myfont',
                   fontWeight: FontWeight.bold))),
     );
   }
@@ -89,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
     return Form(
       key: _formKey,
       child: Center(
-        child:Column(
+        child: Column(
           children: <Widget>[
             textSection(),
             Submit(),
@@ -109,14 +110,14 @@ class _LoginPageState extends State<LoginPage> {
             controller: emailController,
             validator: EmailFieldValidator.validate,
             cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.blueAccent),
               labelText: "ایمیل",
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             ),
           ),
           SizedBox(height: 10.0),
@@ -125,14 +126,14 @@ class _LoginPageState extends State<LoginPage> {
             validator: PasswordFieldValidator.validate,
             cursorColor: Colors.black,
             obscureText: true,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.blueAccent),
               labelText: "گذرواژه",
               border: OutlineInputBorder(
                   // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             ),
           ),
         ],
@@ -175,7 +176,11 @@ class _LoginPageState extends State<LoginPage> {
             child: Text(
               "ورود",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontFamily: 'myfont',
+              ),
             ),
           ),
         ),
@@ -193,7 +198,11 @@ class _LoginPageState extends State<LoginPage> {
           child: RichText(
         text: TextSpan(
           text: 'اکانت ندارید؟ ',
-          style: TextStyle(fontSize: 15, color: Colors.black),
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.black,
+            fontFamily: 'myfont',
+          ),
           children: <TextSpan>[
             TextSpan(
                 text: 'ثبت نام',
@@ -206,6 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 style: TextStyle(
                   color: Colors.blue,
+                  fontFamily: 'myfont',
                 )),
           ],
         ),

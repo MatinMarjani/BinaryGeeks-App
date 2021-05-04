@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+import 'package:application/pages/dashboard.dart';
 
 import 'package:application/util/app_url.dart';
 
@@ -55,8 +56,8 @@ class _NewPostPageState extends State<NewPostPage> {
   void initState() {
     // TODO: implement initState
     setState(() {
-      MyAppBar.appBarTitle =
-          Text("BookTrader", style: TextStyle(color: Colors.white));
+      MyAppBar.appBarTitle = Text("BookTrader",
+          style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
     super.initState();
@@ -76,10 +77,6 @@ class _NewPostPageState extends State<NewPostPage> {
             ))
           : NewPost(),
       drawer: MyDrawer(),
-      // floatingActionButton: FloatingActionButton(
-      //   child: Icon(Icons.list),
-      //   onPressed: switchStepsType,
-      // ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.check),
         onPressed: () {
@@ -114,7 +111,8 @@ class _NewPostPageState extends State<NewPostPage> {
                                 Colors.indigoAccent)),
                         child: Text(
                           "ادامه",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: Colors.white, fontFamily: 'myfont'),
                         ),
                         onPressed: () {
                           log(_currentStep.toString());
@@ -130,7 +128,8 @@ class _NewPostPageState extends State<NewPostPage> {
                                 MaterialStateProperty.all<Color>(Colors.red)),
                         child: Text(
                           "قبلی",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: Colors.white, fontFamily: 'myfont'),
                         ),
                         onPressed: () {
                           log(_currentStep.toString());
@@ -204,13 +203,13 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 icon: Icon(Icons.title, color: Colors.black),
                 labelText: "نام کتاب",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               ),
             ),
             SizedBox(height: 20),
@@ -223,13 +222,13 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 icon: Icon(Icons.assignment_ind, color: Colors.black),
                 labelText: "نویسنده",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               ),
             ),
             SizedBox(height: 20),
@@ -242,13 +241,13 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 icon: Icon(Icons.print, color: Colors.black),
                 labelText: "ناشر",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               ),
             ),
             SizedBox(height: 20),
@@ -261,7 +260,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 suffixIcon: PopupMenuButton<String>(
                   icon: const Icon(Icons.arrow_drop_down),
@@ -279,7 +278,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 labelText: "دسته بندی",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               ),
             ),
             SizedBox(height: 20),
@@ -293,7 +292,10 @@ class _NewPostPageState extends State<NewPostPage> {
 
   Step step_two() {
     return Step(
-      title: new Text('تصویر کتاب'),
+      title: new Text(
+        'تصویر کتاب',
+        style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+      ),
       content: Column(
         children: <Widget>[
           Container(
@@ -342,7 +344,10 @@ class _NewPostPageState extends State<NewPostPage> {
 
   Step step_three() {
     return Step(
-      title: new Text('توضیحات'),
+      title: new Text(
+        'توضیحات',
+        style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+      ),
       content: Form(
         key: _formKey3,
         child: Column(
@@ -356,7 +361,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
@@ -366,7 +371,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 labelText: 'قیمت',
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               ),
             ),
             SizedBox(height: 20),
@@ -382,13 +387,14 @@ class _NewPostPageState extends State<NewPostPage> {
                       return null;
                     },
                     cursorColor: Colors.black,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
                       icon: Icon(Icons.map, color: Colors.black),
                       labelText: "استان",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
-                      hintStyle: TextStyle(color: Colors.black),
+                      hintStyle:
+                          TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     ),
                   ),
                 ),
@@ -403,13 +409,14 @@ class _NewPostPageState extends State<NewPostPage> {
                       return null;
                     },
                     cursorColor: Colors.black,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
                       icon: Icon(Icons.location_city, color: Colors.black),
                       labelText: "شهر",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
-                      hintStyle: TextStyle(color: Colors.black),
+                      hintStyle:
+                          TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     ),
                   ),
                 ),
@@ -428,13 +435,14 @@ class _NewPostPageState extends State<NewPostPage> {
                       return null;
                     },
                     cursorColor: Colors.black,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
                       icon: Icon(Icons.map, color: Colors.black),
                       labelText: "منطقه",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
-                      hintStyle: TextStyle(color: Colors.black),
+                      hintStyle:
+                          TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     ),
                   ),
                 ),
@@ -449,7 +457,7 @@ class _NewPostPageState extends State<NewPostPage> {
                       return null;
                     },
                     cursorColor: Colors.black,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
                       suffixIcon: PopupMenuButton<String>(
                         icon: const Icon(Icons.arrow_drop_down),
@@ -468,7 +476,8 @@ class _NewPostPageState extends State<NewPostPage> {
                       labelText: "وضعیت",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
-                      hintStyle: TextStyle(color: Colors.black),
+                      hintStyle:
+                          TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     ),
                   ),
                 ),
@@ -484,16 +493,15 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 icon: Icon(Icons.description, color: Colors.black),
                 labelText: 'توضیحات',
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               ),
             ),
-            created ? Text("YESSS") : SizedBox(height: 20),
           ],
         ),
       ),
@@ -550,6 +558,9 @@ class _NewPostPageState extends State<NewPostPage> {
         setState(() {
           _isLoading = false;
           created = true;
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => DashBoard()),
+              (Route<dynamic> route) => false);
         });
       } else {
         print(response.body);

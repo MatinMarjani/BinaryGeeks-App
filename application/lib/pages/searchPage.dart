@@ -36,13 +36,11 @@ class _SearchPageState extends State<SearchPage> {
           getPosts(_searchQuery.text);
         }
       },
-      style: TextStyle(
-        color: Colors.white,
-      ),
+      style: TextStyle(color: Colors.white, fontFamily: 'myfont'),
       decoration: InputDecoration(
           prefixIcon: Icon(Icons.search, color: Colors.white),
           hintText: "جست و جو",
-          hintStyle: TextStyle(color: Colors.white)),
+          hintStyle: TextStyle(color: Colors.white, fontFamily: 'myfont')),
     );
 
     MyAppBar.actionIcon = Icon(
@@ -82,9 +80,7 @@ class _SearchPageState extends State<SearchPage> {
       if (myPost[i].province == null) myPost[i].province = " ";
       if (myPost[i].description == null) myPost[i].description = " ";
 
-      list.add(PostCard(
-        myPost[i]
-      ));
+      list.add(PostCard(myPost[i]));
     }
     return Column(children: list);
   }

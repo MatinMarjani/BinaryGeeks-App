@@ -9,7 +9,7 @@ class BlurryDialog extends StatelessWidget {
   VoidCallback continueCallBack;
 
   BlurryDialog(this.title, this.content, this.continueCallBack);
-  TextStyle textStyle = TextStyle (color: Colors.black);
+  TextStyle textStyle = TextStyle (color: Colors.black, fontFamily: 'myfont');
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class BlurryDialog extends StatelessWidget {
           content: new Text(content, style: textStyle,),
           actions: <Widget>[
             new TextButton(
-              child: new Text("بله",style:TextStyle (color: Colors.white)),
+              child: new Text("بله",style:TextStyle (color: Colors.white, fontFamily: 'myfont')),
               style: ButtonStyle(
                   backgroundColor:
                   MaterialStateProperty.all<Color>(Colors.red)),
@@ -29,7 +29,7 @@ class BlurryDialog extends StatelessWidget {
               },
             ),
             new TextButton(
-              child: Text("خیر"),
+              child: Text("خیر",style:TextStyle (fontFamily: 'myfont')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
