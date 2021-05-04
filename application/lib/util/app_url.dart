@@ -26,6 +26,7 @@ class AppUrl {
   static const String Update_Post = baseURL + "/api/posts/"; // + $id  //PUT
   static const String Delete_Post = baseURL + "/api/posts/"; // + $id  //DEL
   static const String Get_Post_Status = baseURL + "/api/posts/status"; // + $id  //DEL
+  static const String Get_My_Posts = baseURL + "/api/posts/myposts"; //Headers token //GET
 
   //Search$Filter
   static const String Search = baseURL + "/api/filter/"; //+params  //GET

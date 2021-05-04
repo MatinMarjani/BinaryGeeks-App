@@ -72,7 +72,12 @@ flutter:
   fonts:
      - family: myfont
        fonts:
-         - asset: fonts/Yekan.ttf
+         - asset: fonts/IRANSansWeb_Light.ttf
+         - asset: fonts/IRANSansWeb_Medium.ttf
+         - asset: fonts/IRANSansWeb_UltraLight.ttf
+         - asset: fonts/IRANSansWeb.ttf
+         - asset: fonts/IRANSansWeb_Black.ttf
+         - asset: fonts/IRANSansWeb_Bold.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
