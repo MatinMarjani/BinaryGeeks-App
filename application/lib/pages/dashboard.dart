@@ -31,7 +31,7 @@ class _DashBoardState extends State<DashBoard> {
           Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
-    //getPosts();
+    getPosts();
   }
 
   @override
@@ -52,37 +52,61 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  Container Posts() {
-    return Container(
-      child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          PostCard( Post(0, "owner_email", null, 0, "title", "author", "publisher", 1500000, "province", "city", "zone", "status", "description", true, null, "categories", "") ),
-        ],
-      ),
-    );
+  Widget Posts() {
+    if (myPost.length == 0) return Text("nothing");
+    List<Widget> list = new List<Widget>();
+    for (var i = 0; i < myPost.length; i++) {
+      if (myPost[i].title == null) myPost[i].title = " ";
+      if (myPost[i].author == null) myPost[i].author = " ";
+      if (myPost[i].categories == null) myPost[i].categories = " ";
+      if (myPost[i].price == null) myPost[i].price = 0;
+      if (myPost[i].province == null) myPost[i].province = " ";
+      if (myPost[i].description == null) myPost[i].description = " ";
+
+      list.add(PostCard(myPost[i]));
+    }
+    return Column(children: list);
   }
 
   getPosts() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    var jsonResponse = null;
+    var jsonResponse;
     var response;
 
+    var url = Uri.parse(AppUrl.Get_My_Posts);
+    log(AppUrl.Get_My_Posts);
     var token = sharedPreferences.getString("token");
-    var id = sharedPreferences.getInt("id").toString();
-    var url = Uri.parse("??????");
 
     try {
-      response =
-          await http.get(url, headers: {'Authorization': 'Token $token'});
+      response = await http.get(url,headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
-        print(response.body);
-        jsonResponse = json.decode(response.body);
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
         if (jsonResponse != null) {
           setState(() {
-            //_isLoading = false;
+            for (var i in jsonResponse["results"]) {
+              myPost.add(Post(
+                i["owner"]["id"],
+                i["owner"]["email"],
+                i["owner"]["profile_image"],
+                i["id"],
+                i["title"],
+                i["author"],
+                i["publisher"],
+                i["price"],
+                i["province"],
+                i["city"],
+                i["zone"],
+                i["status"],
+                i["description"],
+                i["is_active"],
+                i["image"],
+                //url
+                i["categories"],
+                i["created_at"],
+              ));
+            }
           });
         }
       } else {
@@ -90,11 +114,8 @@ class _DashBoardState extends State<DashBoard> {
         print(response.body);
       }
     } catch (e) {
+      log("error");
       print(e);
     }
-
-    response = await http.get(url);
-    final extractedData = json.decode(response.body);
-    List posts = extractedData['post'];
   }
 }
