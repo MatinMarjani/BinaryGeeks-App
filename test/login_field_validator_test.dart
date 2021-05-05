@@ -9,7 +9,7 @@ void main () {
 
    test("non-Empty email return null",(){
      var result = EmailFieldValidator.validate('email');
-     expect(result, null);
+     expect(result, "ایمیل را درست وارد کنید");
    });
 
    test("Empty password return error",(){
