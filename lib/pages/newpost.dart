@@ -77,13 +77,6 @@ class _NewPostPageState extends State<NewPostPage> {
             ))
           : NewPost(),
       drawer: MyDrawer(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.check),
-        onPressed: () {
-          _formKey1.currentState.validate();
-          _formKey3.currentState.validate();
-        },
-      ),
     );
   }
 
