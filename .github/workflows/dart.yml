@@ -4,8 +4,9 @@ name: Dart
 
 on:
   push:
-    branches:
-      - dev
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
 
     # on: push    # Default will running for every branch.
 
