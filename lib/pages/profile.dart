@@ -15,51 +15,221 @@ import 'package:application/pages/widgets/myAppBar.dart';
 import 'package:application/pages/widgets/alertDialog_widget.dart';
 
 import 'package:application/util/app_url.dart';
+import 'package:application/util/ProfileUtils.dart';
 import 'package:application/pages/login.dart';
 
+
 class ProfilePage extends StatefulWidget {
+  final _formKey = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
+
+  final Color mainColor = Colors.blueAccent;
+  final String myFont = 'myFont';
+
+  bool _isLoading = false;
+  bool _wrongPass = false;
+  bool _successful = false;
+  bool _updatePass = false;
+  bool phoneError = false;
+  bool emailError = false;
+  bool _noImage = true;
+  File _image;
+  var items = [
+    'دانشجو',
+  ];
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final _formKey = GlobalKey<FormState>();
-  final _formKey2 = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    log('Profile Init');
+    getProfile();
+    setState(() {
+      MyAppBar.appBarTitle = Text("BookTrader",
+          style: TextStyle(color: Colors.white, fontFamily: widget.myFont));
+      MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
+    });
+  }
 
-  bool _isLoading = false;
-  bool _wrongInfo = false;
-  bool _wrongPass = false;
-  bool _successful = false;
-  bool _updatePass = false;
+  getProfile() async {
+    setState(() {
+      widget._isLoading = true;
+      widget.phoneError = false;
+      widget.emailError = false;
+    });
 
-  bool phoneError = false;
-  bool emailError = false;
-  bool _noImage = true;
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse;
+    var response;
 
-  File _image;
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Get_Profile + id);
 
-  final TextEditingController firstNameController = new TextEditingController();
-  final TextEditingController lastNameController = new TextEditingController();
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController phoneController = new TextEditingController();
-  final TextEditingController universityController =
-      new TextEditingController();
-  final TextEditingController fieldOfStudyController =
-      new TextEditingController();
-  final TextEditingController entryYearController = new TextEditingController();
+    try {
+      response =
+      await http.get(url, headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log('200');
+        print(response.body);
+        jsonResponse = json.decode(response.body);
+        if (jsonResponse != null) {
+          setState(() {
+            ProfileControllers.firstNameController.text = jsonResponse['first_name'];
+            ProfileControllers.lastNameController.text = jsonResponse['last_name'];
+            ProfileControllers.emailController.text = jsonResponse['email'];
+            if (jsonResponse['phone_number'] != null)
+              ProfileControllers.phoneController.text = jsonResponse['phone_number'].toString();
+            if (jsonResponse['university'] != "null")
+              ProfileControllers.universityController.text = jsonResponse['university'];
+            if (jsonResponse['field_of_study'] != "null")
+              ProfileControllers.fieldOfStudyController.text = jsonResponse['field_of_study'];
+            if (jsonResponse['entry_year'] != null)
+              ProfileControllers.entryYearController.text = jsonResponse['entry_year'].toString();
+            if (jsonResponse['profile_image'] != null) {
+              ProfileControllers.imageController.text = jsonResponse['profile_image'].toString();
+              widget._noImage = false;
+              log(ProfileControllers.imageController.text);
+            } else {
+              widget._noImage = true;
+            }
+          });
+        }
+      } else {
+        log('!200');
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
 
-  final TextEditingController oldPasswordController =
-      new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController passwordReController =
-      new TextEditingController();
-  final TextEditingController imageController = new TextEditingController();
+    setState(() {
+      widget._isLoading = false;
+    });
+  }
 
-  final TextEditingController _controller = new TextEditingController();
+  updateProfile(String first, last, email, phone, uni, field, year) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-  var items = [
-    'دانشجو',
-  ];
+    if (phone.length == 0) phone = null;
+    if (uni.length == 0) uni = null;
+    if (field.length == 0) field = null;
+    if (year.length == 0) year = null;
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Update_Profile + id);
+
+    var headers = {'Authorization': 'Token $token'};
+    var request = http.MultipartRequest('PUT', url);
+    try {
+      request.files
+          .add(await http.MultipartFile.fromPath('profile_image', widget._image.path));
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response1 = await request.send();
+
+      if (response1.statusCode == 200) {
+        print(await response1.stream.bytesToString());
+      } else {
+        print(response1.reasonPhrase);
+      }
+    } catch (e) {}
+    var response;
+    headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+
+    String data =
+        '{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}';
+    var jsonResponse;
+
+    log("Token $token");
+    log(data.toString());
+    log(AppUrl.Update_Profile + id);
+
+    try {
+      response = await http.put(url, body: data, headers: headers);
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        setState(() {
+          widget._isLoading = false;
+          widget._successful = true;
+        });
+      } else {
+        jsonResponse = await json.decode(response.body);
+        print(response.statusCode);
+        print(jsonResponse);
+        if (jsonResponse['phone_number'].toString() ==
+            '[user with this phone number already exists.]') {
+          setState(() {
+            widget.phoneError = true;
+          });
+        }
+        if (jsonResponse['email'].toString() ==
+            '[user with this email already exists.]') {
+          setState(() {
+            widget.emailError = true;
+          });
+        }
+        setState(() {
+          widget._isLoading = false;
+          widget._successful = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        widget._isLoading = false;
+      });
+    }
+  }
+
+  updatePassword(String oldPass, newPass) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Delete_Profile + id + '/change-password');
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('PUT', url);
+    request.body =
+    '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      sharedPreferences.clear();
+      sharedPreferences.commit();
+      setState(() {
+        widget._updatePass = true;
+        widget._wrongPass = false;
+      });
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false);
+    } else {
+      print(response.reasonPhrase);
+      setState(() {
+        widget._wrongPass = true;
+        widget._updatePass = false;
+      });
+    }
+    setState(() {
+      widget._isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,110 +243,47 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    log('Profile Init');
-    getProfile();
-    setState(() {
-      MyAppBar.appBarTitle = Text("BookTrader",
-          style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
-      MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
-    });
-  }
-
-  getProfile() async {
-    setState(() {
-      _isLoading = true;
-      phoneError = false;
-      emailError = false;
-    });
-
+  deleteProfile() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
-    var response;
 
     var token = sharedPreferences.getString("token");
     var id = sharedPreferences.getInt("id").toString();
-    var url = Uri.parse(AppUrl.Get_Profile + id);
+    var url = Uri.parse(AppUrl.Update_Profile + id);
 
-    try {
-      log(' url : ' + AppUrl.Get_Profile + id);
-      log(token);
-      response =
-          await http.get(url, headers: {'Authorization': 'Token $token'});
-      if (response.statusCode == 200) {
-        log('200');
-        print(response.body);
-        jsonResponse = json.decode(response.body);
-        if (jsonResponse != null) {
-          setState(() {
-            //_isLoading = false;
-            firstNameController.text = jsonResponse['first_name'];
-            lastNameController.text = jsonResponse['last_name'];
-            emailController.text = jsonResponse['email'];
-            if (jsonResponse['phone_number'] != null)
-              phoneController.text = jsonResponse['phone_number'].toString();
-            if (jsonResponse['university'] != "null")
-              universityController.text = jsonResponse['university'];
-            if (jsonResponse['field_of_study'] != "null")
-              fieldOfStudyController.text = jsonResponse['field_of_study'];
-            if (jsonResponse['entry_year'] != null)
-              entryYearController.text = jsonResponse['entry_year'].toString();
-            if (jsonResponse['profile_image'] != null) {
-              imageController.text = jsonResponse['profile_image'].toString();
-              _noImage = false;
-              log(imageController.text);
-            } else {
-              _noImage = true;
-            }
-          });
-          //Set user Info from response.data to sharedPrefrences
-        }
-      } else {
-        log('!200');
-        print(response.body);
-      }
-    } catch (e) {
-      print(e);
+    var headers = {'Authorization': 'Token $token'};
+    var request = http.Request('DELETE', url);
+    request.body = '''''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      sharedPreferences.clear();
+      sharedPreferences.commit();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+              (Route<dynamic> route) => false);
+    } else {
+      print(response.reasonPhrase);
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   Scaffold profile() {
     return Scaffold(
-      // backgroundColor: Colors.white,
       body: Container(
-        // margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        // decoration: new BoxDecoration(
-        //   border: Border.all(width: 1, color: Colors.white54),
-        //   borderRadius: BorderRadius.all(Radius.circular(20)),
-        //   color: Colors.white54,
-        //   boxShadow: [
-        //     BoxShadow(
-        //       color: Colors.grey.withOpacity(0.8),
-        //       spreadRadius: 5,
-        //       blurRadius: 7,
-        //       offset: Offset(0, 3), // changes position of shadow
-        //     ),
-        //   ],
-        // ),
-        child: _isLoading
+        child: widget._isLoading
             ? Center(
                 child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
               ))
             : ListView(
                 children: <Widget>[
                   headerSection(),
                   profilePicture(),
                   infoForm(),
-                  changePass_Modal_btn(),
-                  DeleteForm(),
+                  changePassModalBtn(),
+                  deleteForm(),
                 ],
               ),
       ),
@@ -190,16 +297,15 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Center(
           child: Text("پروفایل من",
               style: TextStyle(
-                  color: Colors.blueAccent,
+                  color: widget.mainColor,
                   fontSize: 20.0,
-                  fontFamily: 'myfont',
+                  fontFamily: widget.myFont,
                   fontWeight: FontWeight.bold))),
     );
   }
 
   Container profilePicture() {
     return Container(
-      // width: MediaQuery.of(context).size.width,
       height: 200.0,
       padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       margin: EdgeInsets.only(top: 0.0, bottom: 20),
@@ -209,17 +315,17 @@ class _ProfilePageState extends State<ProfilePage> {
               _showPicker(context);
             },
             child: Container(
-                child: _image != null
+                child: widget._image != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(500.0),
                         child: Image.file(
-                          _image,
+                          widget._image,
                           width: 200,
                           height: 200,
                           fit: BoxFit.fitHeight,
                         ),
                       )
-                    : _noImage
+                    : widget._noImage
                         ? Container(
                             decoration: BoxDecoration(
                                 color: Colors.grey[200],
@@ -234,7 +340,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         : ClipRRect(
                             borderRadius: BorderRadius.circular(500.0),
                             child: Image.network(
-                              'http://37.152.176.11' + imageController.text,
+                              'http://37.152.176.11' + ProfileControllers.imageController.text,
                               width: 200,
                               height: 200,
                               fit: BoxFit.fitHeight,
@@ -278,7 +384,7 @@ class _ProfilePageState extends State<ProfilePage> {
     File image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
     setState(() {
-      _image = image;
+      widget._image = image;
     });
   }
 
@@ -286,18 +392,18 @@ class _ProfilePageState extends State<ProfilePage> {
     File image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
     setState(() {
-      _image = image;
+      widget._image = image;
     });
   }
 
   Form infoForm() {
     return Form(
-      key: _formKey,
+      key: widget._formKey,
       child: Column(
         children: <Widget>[
           successSection(),
           profileSection(),
-          Submit(),
+          submit(),
         ],
       ),
     );
@@ -305,25 +411,25 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Form passForm() {
     return Form(
-      key: _formKey2,
+      key: widget._formKey2,
       child: Column(
         children: <Widget>[
           passHeader(),
-          updatePassword_success(),
+          updatePasswordSuccess(),
           changePass(),
-          Submit2(),
+          submit2(),
         ],
       ),
     );
   }
 
   Container successSection() {
-    if (_successful)
+    if (widget._successful)
       return Container(
         alignment: Alignment.centerRight,
         child: Text(
           "موفقیت آمیز",
-          style: TextStyle(color: Colors.green, fontFamily: 'myfont'),
+          style: TextStyle(color: Colors.green, fontFamily: widget.myFont),
         ),
       );
     return Container();
@@ -331,7 +437,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container profileSection() {
     return Container(
-      //color: Colors.teal,
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
@@ -339,35 +444,31 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               Flexible(
                 child: TextFormField(
-                  controller: firstNameController,
+                  controller: ProfileControllers.firstNameController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.account_box_rounded,
-                        color: Colors.blueAccent),
+                    icon: Icon(Icons.account_box_rounded, color: widget.mainColor),
                     labelText: "نام",
                     border: OutlineInputBorder(
-                        // borderSide: BorderSide(color: Colors.black)),
                         borderRadius: BorderRadius.circular(22.0)),
                     hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
               SizedBox(width: 5.0),
               Flexible(
                 child: TextFormField(
-                  controller: lastNameController,
+                  controller: ProfileControllers.lastNameController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    // icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
                     labelText: "نام خانوادگی",
                     border: OutlineInputBorder(
-                        // borderSide: BorderSide(color: Colors.black)),
                         borderRadius: BorderRadius.circular(22.0)),
                     hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -375,89 +476,84 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           SizedBox(height: 10),
           TextFormField(
-            controller: emailController,
-            validator: ProfileEmailFieldValidator.validate,
+            controller: ProfileControllers.emailController,
+            validator: ProfileValidators.validateEmail,
             onChanged: (content) {
               setState(() {
-                emailError = false;
+                widget.emailError = false;
               });
             },
             cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+            style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.blueAccent),
+              icon: Icon(Icons.email, color: widget.mainColor),
               labelText: "ایمیل",
-              errorText: emailError ? 'ایمیل تکراری است' : null,
-              border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
-                  borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              errorText: ProfileValidators.errorEmail(widget.emailError),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
           SizedBox(height: 10),
           TextFormField(
-            controller: phoneController,
+            controller: ProfileControllers.phoneController,
             cursorColor: Colors.black,
-            validator: ProfilePhoneFieldValidator.validate,
+            validator: ProfileValidators.validatePhone,
             onChanged: (content) {
               setState(() {
-                phoneError = false;
+                widget.phoneError = false;
               });
             },
-            style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+            style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
             decoration: InputDecoration(
-              icon: Icon(Icons.phone, color: Colors.blueAccent),
+              icon: Icon(Icons.phone, color: widget.mainColor),
               labelText: "تلفن همراه",
-              errorText: phoneError ? 'شماره موبایل تکراری است' : null,
-              border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
-                  borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              errorText: ProfileValidators.errorPhone(widget.phoneError),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
           SizedBox(height: 10),
           TextFormField(
-            controller: _controller,
+            controller: ProfileControllers.controller,
             cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+            style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             decoration: InputDecoration(
               suffixIcon: PopupMenuButton<String>(
                 icon: const Icon(Icons.arrow_drop_down),
                 onSelected: (String value) {
-                  _controller.text = value;
+                  ProfileControllers.controller.text = value;
                 },
                 itemBuilder: (BuildContext context) {
-                  return items.map<PopupMenuItem<String>>((String value) {
+                  return widget.items.map<PopupMenuItem<String>>((String value) {
                     return new PopupMenuItem(
                         child: new Text(value), value: value);
                   }).toList();
                 },
               ),
-              icon:
-                  Icon(Icons.accessibility_new_sharp, color: Colors.blueAccent),
+              icon: Icon(Icons.accessibility_new_sharp, color: widget.mainColor),
               labelText: "وضعیت",
-              border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
-                  borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
           SizedBox(height: 10),
           TextFormField(
-            controller: universityController,
+            controller: ProfileControllers.universityController,
             cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+            style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             decoration: InputDecoration(
-              icon: Icon(Icons.school, color: Colors.blueAccent),
+              icon: Icon(Icons.school, color: widget.mainColor),
               labelText: "دانشگاه",
-              border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
-                  borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
           SizedBox(height: 10),
@@ -465,38 +561,36 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               Flexible(
                 child: TextFormField(
-                  controller: fieldOfStudyController,
+                  controller: ProfileControllers.fieldOfStudyController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.school, color: Colors.blueAccent),
+                    icon: Icon(Icons.school, color: widget.mainColor),
                     labelText: "رشته تحصیلی",
                     border: OutlineInputBorder(
-                        // borderSide: BorderSide(color: Colors.black)),
                         borderRadius: BorderRadius.circular(22.0)),
                     hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
               SizedBox(width: 5.0),
               Flexible(
                 child: TextFormField(
-                  controller: entryYearController,
+                  controller: ProfileControllers.entryYearController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
                   ],
                   decoration: InputDecoration(
-                    icon: Icon(Icons.date_range, color: Colors.blueAccent),
+                    icon: Icon(Icons.date_range, color: widget.mainColor),
                     labelText: "سال ورود",
                     border: OutlineInputBorder(
-                        // borderSide: BorderSide(color: Colors.black)),
                         borderRadius: BorderRadius.circular(22.0)),
                     hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -507,7 +601,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Container Submit() {
+  Container submit() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 60.0,
@@ -515,21 +609,21 @@ class _ProfilePageState extends State<ProfilePage> {
       margin: EdgeInsets.only(top: 10.0),
       child: RaisedButton(
         onPressed: () {
-          if (!_formKey.currentState.validate()) {
+          if (!widget._formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
-              _isLoading = true;
+              widget._isLoading = true;
             });
             updateProfile(
-              firstNameController.text,
-              lastNameController.text,
-              emailController.text,
-              phoneController.text,
-              universityController.text,
-              fieldOfStudyController.text,
-              entryYearController.text,
+              ProfileControllers.firstNameController.text,
+              ProfileControllers.lastNameController.text,
+              ProfileControllers.emailController.text,
+              ProfileControllers.phoneController.text,
+              ProfileControllers.universityController.text,
+              ProfileControllers.fieldOfStudyController.text,
+              ProfileControllers.entryYearController.text,
             );
           }
         },
@@ -551,7 +645,7 @@ class _ProfilePageState extends State<ProfilePage> {
               "ثبت تغییرات",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 20, color: Colors.white, fontFamily: 'myfont'),
+                  fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
             ),
           ),
         ),
@@ -559,98 +653,16 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  updateProfile(String first, last, email, phone, uni, field, year) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    if (phone.length == 0) phone = null;
-    if (uni.length == 0) uni = null;
-    if (field.length == 0) field = null;
-    if (year.length == 0) year = null;
-
-    var token = sharedPreferences.getString("token");
-    var id = sharedPreferences.getInt("id").toString();
-    var url = Uri.parse(AppUrl.Update_Profile + id);
-
-    var headers = {'Authorization': 'Token $token'};
-    var request = http.MultipartRequest('PUT', url);
-    try {
-      request.files
-          .add(await http.MultipartFile.fromPath('profile_image', _image.path));
-      request.headers.addAll(headers);
-
-      http.StreamedResponse response1 = await request.send();
-
-      if (response1.statusCode == 200) {
-        print(await response1.stream.bytesToString());
-      } else {
-        print(response1.reasonPhrase);
-      }
-    } catch (e) {
-      // log("Update Profile photo: " + e);
-    }
-    var response;
-    headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json'
-    };
-
-    String data =
-        '{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}';
-    var jsonResponse = null;
-
-    log("Token $token");
-    log(data.toString());
-    log(AppUrl.Update_Profile + id);
-
-    try {
-      response = await http.put(url, body: data, headers: headers);
-      if (response.statusCode == 200) {
-        print(response.statusCode);
-        setState(() {
-          _isLoading = false;
-          _wrongInfo = false;
-          _successful = true;
-        });
-      } else {
-        jsonResponse = await json.decode(response.body);
-        print(response.statusCode);
-        print(jsonResponse);
-        if (jsonResponse['phone_number'].toString() ==
-            '[user with this phone number already exists.]') {
-          setState(() {
-            phoneError = true;
-          });
-        }
-        if (jsonResponse['email'].toString() ==
-            '[user with this email already exists.]') {
-          setState(() {
-            emailError = true;
-          });
-        }
-        setState(() {
-          _isLoading = false;
-          _wrongInfo = true;
-          _successful = false;
-        });
-      }
-    } catch (e) {
-      print(e);
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Container changePass_Modal_btn() {
+  Container changePassModalBtn() {
     return Container(
         child: IconButton(
-            icon: Icon(Icons.security, color: Colors.blueAccent),
+            icon: Icon(Icons.security, color: widget.mainColor),
             onPressed: () {
-              changePass_Modal(context);
+              changePassModal(context);
             }));
   }
 
-  void changePass_Modal(context) {
+  void changePassModal(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -661,14 +673,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Container passHeader() {
     return Container(
       margin: EdgeInsets.only(top: 0.0, bottom: 00),
-      // padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
       child: Center(
           child: Text("تغییر گذرواژه :",
               style: TextStyle(
-                  color: Colors.blueAccent,
+                  color: widget.mainColor,
                   fontSize: 20.0,
-                  fontFamily: 'myfont',
+                  fontFamily: widget.myFont,
                   fontWeight: FontWeight.bold))),
     );
   }
@@ -679,7 +690,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: <Widget>[
             TextFormField(
-              controller: oldPasswordController,
+              controller: ProfileControllers.oldPasswordController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'الزامی است';
@@ -688,20 +699,19 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               cursorColor: Colors.black,
               obscureText: true,
-              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: Colors.blueAccent),
+                icon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه",
-                errorText: _wrongPass ? 'رمز وارد شده غلط می باشد' : null,
+                errorText: widget._wrongPass ? 'رمز وارد شده غلط می باشد' : null,
                 border: OutlineInputBorder(
-                    // borderSide: BorderSide(color: Colors.black)),
                     borderRadius: BorderRadius.circular(22.0)),
-                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
             SizedBox(height: 10.0),
             TextFormField(
-              controller: passwordController,
+              controller: ProfileControllers.passwordController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'الزامی است';
@@ -710,44 +720,42 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               cursorColor: Colors.black,
               obscureText: true,
-              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: Colors.blueAccent),
+                icon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه ی جدید",
                 border: OutlineInputBorder(
-                    // borderSide: BorderSide(color: Colors.black)),
                     borderRadius: BorderRadius.circular(22.0)),
-                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
             SizedBox(height: 10.0),
             TextFormField(
-              controller: passwordReController,
+              controller: ProfileControllers.passwordReController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'الزامی است';
-                } else if (value != passwordController.text) {
+                } else if (value != ProfileControllers.passwordController.text) {
                   return 'تکرار گذرواژه غلط می باشد';
                 }
                 return null;
               },
               cursorColor: Colors.black,
               obscureText: true,
-              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: Colors.blueAccent),
+                icon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "تکرار گذرواژه ی جدید",
                 border: OutlineInputBorder(
-                    // borderSide: BorderSide(color: Colors.black)),
                     borderRadius: BorderRadius.circular(22.0)),
-                hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
           ],
         ));
   }
 
-  Container Submit2() {
+  Container submit2() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 60.0,
@@ -755,16 +763,16 @@ class _ProfilePageState extends State<ProfilePage> {
       margin: EdgeInsets.only(top: 10.0),
       child: RaisedButton(
         onPressed: () {
-          if (!_formKey2.currentState.validate()) {
+          if (!widget._formKey2.currentState.validate()) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
-              _isLoading = true;
+              widget._isLoading = true;
             });
             updatePassword(
-              oldPasswordController.text,
-              passwordController.text,
+              ProfileControllers.oldPasswordController.text,
+              ProfileControllers.passwordController.text,
             );
           }
         },
@@ -786,7 +794,7 @@ class _ProfilePageState extends State<ProfilePage> {
               "تغییر گذرواژه",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 20, color: Colors.white, fontFamily: 'myfont'),
+                  fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
             ),
           ),
         ),
@@ -794,60 +802,19 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  updatePassword(String oldPass, newPass) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    var token = sharedPreferences.getString("token");
-    var id = sharedPreferences.getInt("id").toString();
-    var url = Uri.parse(AppUrl.Delete_Profile + id + '/change-password');
-
-    var headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json'
-    };
-    var request = http.Request('PUT', url);
-    request.body =
-        '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      sharedPreferences.clear();
-      sharedPreferences.commit();
-      setState(() {
-        _updatePass = true;
-        _wrongPass = false;
-      });
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-          (Route<dynamic> route) => false);
-    } else {
-      print(response.reasonPhrase);
-      setState(() {
-        _wrongPass = true;
-        _updatePass = false;
-      });
-    }
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  Container updatePassword_success() {
-    if (_updatePass)
+  Container updatePasswordSuccess() {
+    if (widget._updatePass)
       return Container(
         alignment: Alignment.centerRight,
         child: Text(
           "موفقیت آمیز",
-          style: TextStyle(color: Colors.green, fontFamily: 'myfont'),
+          style: TextStyle(color: Colors.green, fontFamily: widget.myFont),
         ),
       );
     return Container();
   }
 
-  Form DeleteForm() {
+  Form deleteForm() {
     return Form(
       child: Column(
         children: <Widget>[SizedBox(height: 150), deleteBtn()],
@@ -857,7 +824,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container deleteBtn() {
     return Container(
-        // width: MediaQuery.of(context).size.width,
         height: 40.0,
         padding: EdgeInsets.symmetric(horizontal: 15.0),
         margin: EdgeInsets.only(top: 25.0, bottom: 10),
@@ -882,37 +848,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 "پاک کردن اکانت",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 20, color: Colors.white, fontFamily: 'myfont'),
+                    fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
               ),
             ),
           ),
         ));
-  }
-
-  deleteProfile() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    var token = sharedPreferences.getString("token");
-    var id = sharedPreferences.getInt("id").toString();
-    var url = Uri.parse(AppUrl.Update_Profile + id);
-
-    var headers = {'Authorization': 'Token $token'};
-    var request = http.Request('DELETE', url);
-    request.body = '''''';
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      sharedPreferences.clear();
-      sharedPreferences.commit();
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-          (Route<dynamic> route) => false);
-    } else {
-      print(response.reasonPhrase);
-    }
   }
 
   _showDialog(BuildContext context) {
@@ -926,25 +866,5 @@ class _ProfilePageState extends State<ProfilePage> {
         return alert;
       },
     );
-  }
-}
-
-class ProfilePhoneFieldValidator {
-  static String validate(String value) {
-    String pattern = r'^(?:0|98)9?[0-9]{10}$';
-    RegExp regExp = new RegExp(pattern);
-    if (!regExp.hasMatch(value)) return 'شماره موبایل درست را وارد کنید';
-
-    return null;
-  }
-}
-
-class ProfileEmailFieldValidator {
-  static String validate(String value) {
-    String pattern =
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-    RegExp regExp = new RegExp(pattern);
-    if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
-    return null;
   }
 }
