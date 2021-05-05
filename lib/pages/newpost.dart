@@ -493,6 +493,8 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
               style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 icon: Icon(Icons.description, color: Colors.black),
