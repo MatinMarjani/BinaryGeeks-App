@@ -58,6 +58,10 @@ class PostCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15.0),
                         child: Image.network(
                           post.image,
+                          loadingBuilder: (context, child, progress) {
+                            return progress == null
+                                ? child : LinearProgressIndicator();
+                          },
                           width: 100,
                           height: 120,
                           fit: BoxFit.fitHeight,
