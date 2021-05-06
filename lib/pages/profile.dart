@@ -218,18 +218,6 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50),
-        child: MyAppBar(),
-      ),
-      body: profile(),
-      drawer: MyDrawer(),
-    );
-  }
-
   deleteProfile() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
@@ -253,6 +241,18 @@ class _ProfilePageState extends State<ProfilePage> {
     } else {
       print(response.reasonPhrase);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: MyAppBar(),
+      ),
+      body: profile(),
+      drawer: MyDrawer(),
+    );
   }
 
   Scaffold profile() {
@@ -323,6 +323,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             borderRadius: BorderRadius.circular(500.0),
                             child: Image.network(
                               'http://37.152.176.11' + ProfileControllers.imageController.text,
+                              loadingBuilder: (context, child, progress) {
+                                return progress == null
+                                    ? child : LinearProgressIndicator();
+                              },
                               width: 200,
                               height: 200,
                               fit: BoxFit.fitHeight,
@@ -768,7 +772,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Form deleteForm() {
     return Form(
       child: Column(
-        children: <Widget>[SizedBox(height: 150), deleteBtn()],
+        children: <Widget>[SizedBox(height: 50), deleteBtn()],
       ),
     );
   }
