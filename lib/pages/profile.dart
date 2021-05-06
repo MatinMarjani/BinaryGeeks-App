@@ -519,31 +519,31 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           SizedBox(height: 10),
-          TextFormField(
-            controller: ProfileControllers.controller,
-            cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
-            decoration: InputDecoration(
-              suffixIcon: PopupMenuButton<String>(
-                icon: const Icon(Icons.arrow_drop_down),
-                onSelected: (String value) {
-                  ProfileControllers.controller.text = value;
-                },
-                itemBuilder: (BuildContext context) {
-                  return widget.items.map<PopupMenuItem<String>>((String value) {
-                    return new PopupMenuItem(
-                        child: new Text(value), value: value);
-                  }).toList();
-                },
-              ),
-              icon: Icon(Icons.accessibility_new_sharp, color: widget.mainColor),
-              labelText: "وضعیت",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
-            ),
-          ),
-          SizedBox(height: 10),
+          // TextFormField(
+          //   controller: ProfileControllers.controller,
+          //   cursorColor: Colors.black,
+          //   style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+          //   decoration: InputDecoration(
+          //     suffixIcon: PopupMenuButton<String>(
+          //       icon: const Icon(Icons.arrow_drop_down),
+          //       onSelected: (String value) {
+          //         ProfileControllers.controller.text = value;
+          //       },
+          //       itemBuilder: (BuildContext context) {
+          //         return widget.items.map<PopupMenuItem<String>>((String value) {
+          //           return new PopupMenuItem(
+          //               child: new Text(value), value: value);
+          //         }).toList();
+          //       },
+          //     ),
+          //     icon: Icon(Icons.accessibility_new_sharp, color: widget.mainColor),
+          //     labelText: "وضعیت",
+          //     border:
+          //         OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+          //     hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+          //   ),
+          // ),
+          // SizedBox(height: 10),
           TextFormField(
             controller: ProfileControllers.universityController,
             cursorColor: Colors.black,
