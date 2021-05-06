@@ -77,13 +77,6 @@ class _NewPostPageState extends State<NewPostPage> {
             ))
           : NewPost(),
       drawer: MyDrawer(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.check),
-        onPressed: () {
-          _formKey1.currentState.validate();
-          _formKey3.currentState.validate();
-        },
-      ),
     );
   }
 
@@ -108,11 +101,17 @@ class _NewPostPageState extends State<NewPostPage> {
                       child: TextButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.indigoAccent)),
+                                Colors.white),
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.blueAccent))),
+                        ),
                         child: Text(
                           "ادامه",
                           style: TextStyle(
-                              color: Colors.white, fontFamily: 'myfont'),
+                              color: Colors.blueAccent, fontFamily: 'myfont'),
                         ),
                         onPressed: () {
                           log(_currentStep.toString());
@@ -124,12 +123,18 @@ class _NewPostPageState extends State<NewPostPage> {
                     Container(
                       child: TextButton(
                         style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red)),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.red))),
+                        ),
                         child: Text(
                           "قبلی",
                           style: TextStyle(
-                              color: Colors.white, fontFamily: 'myfont'),
+                              color: Colors.red, fontFamily: 'myfont'),
                         ),
                         onPressed: () {
                           log(_currentStep.toString());
@@ -493,6 +498,8 @@ class _NewPostPageState extends State<NewPostPage> {
                 return null;
               },
               cursorColor: Colors.black,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
               style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 icon: Icon(Icons.description, color: Colors.black),

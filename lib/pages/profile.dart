@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
@@ -18,12 +19,11 @@ import 'package:application/util/app_url.dart';
 import 'package:application/util/ProfileUtils.dart';
 import 'package:application/pages/login.dart';
 
-
 class ProfilePage extends StatefulWidget {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
 
-  final Color mainColor = Colors.blueAccent;
+  final Color mainColor = Colors.blue[800];
   final String myFont = 'myFont';
 
   bool _isLoading = false;
@@ -72,26 +72,33 @@ class _ProfilePageState extends State<ProfilePage> {
 
     try {
       response =
-      await http.get(url, headers: {'Authorization': 'Token $token'});
+          await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
         print(response.body);
         jsonResponse = json.decode(response.body);
         if (jsonResponse != null) {
           setState(() {
-            ProfileControllers.firstNameController.text = jsonResponse['first_name'];
-            ProfileControllers.lastNameController.text = jsonResponse['last_name'];
+            ProfileControllers.firstNameController.text =
+                jsonResponse['first_name'];
+            ProfileControllers.lastNameController.text =
+                jsonResponse['last_name'];
             ProfileControllers.emailController.text = jsonResponse['email'];
             if (jsonResponse['phone_number'] != null)
-              ProfileControllers.phoneController.text = jsonResponse['phone_number'].toString();
+              ProfileControllers.phoneController.text =
+                  jsonResponse['phone_number'].toString();
             if (jsonResponse['university'] != "null")
-              ProfileControllers.universityController.text = jsonResponse['university'];
+              ProfileControllers.universityController.text =
+                  jsonResponse['university'];
             if (jsonResponse['field_of_study'] != "null")
-              ProfileControllers.fieldOfStudyController.text = jsonResponse['field_of_study'];
+              ProfileControllers.fieldOfStudyController.text =
+                  jsonResponse['field_of_study'];
             if (jsonResponse['entry_year'] != null)
-              ProfileControllers.entryYearController.text = jsonResponse['entry_year'].toString();
+              ProfileControllers.entryYearController.text =
+                  jsonResponse['entry_year'].toString();
             if (jsonResponse['profile_image'] != null) {
-              ProfileControllers.imageController.text = jsonResponse['profile_image'].toString();
+              ProfileControllers.imageController.text =
+                  jsonResponse['profile_image'].toString();
               widget._noImage = false;
               log(ProfileControllers.imageController.text);
             } else {
@@ -127,8 +134,8 @@ class _ProfilePageState extends State<ProfilePage> {
     var headers = {'Authorization': 'Token $token'};
     var request = http.MultipartRequest('PUT', url);
     try {
-      request.files
-          .add(await http.MultipartFile.fromPath('profile_image', widget._image.path));
+      request.files.add(await http.MultipartFile.fromPath(
+          'profile_image', widget._image.path));
       request.headers.addAll(headers);
 
       http.StreamedResponse response1 = await request.send();
@@ -156,15 +163,23 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       response = await http.put(url, body: data, headers: headers);
       if (response.statusCode == 200) {
+        log('200');
         print(response.statusCode);
         setState(() {
           widget._isLoading = false;
           widget._successful = true;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت انجام شد",
+                  style: TextStyle(color: Colors.green))));
         });
       } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+          "مشکلی وجود دارد",
+          style: TextStyle(color: Colors.red),
+        )));
         jsonResponse = await json.decode(response.body);
         print(response.statusCode);
-        print(jsonResponse);
         if (jsonResponse['phone_number'].toString() ==
             '[user with this phone number already exists.]') {
           setState(() {
@@ -203,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
     };
     var request = http.Request('PUT', url);
     request.body =
-    '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
+        '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -218,7 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false);
     } else {
       print(response.reasonPhrase);
       setState(() {
@@ -229,18 +244,6 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       widget._isLoading = false;
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50),
-        child: MyAppBar(),
-      ),
-      body: profile(),
-      drawer: MyDrawer(),
-    );
   }
 
   deleteProfile() async {
@@ -263,10 +266,22 @@ class _ProfilePageState extends State<ProfilePage> {
       sharedPreferences.commit();
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false);
     } else {
       print(response.reasonPhrase);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: MyAppBar(),
+      ),
+      body: profile(),
+      drawer: MyDrawer(),
+    );
   }
 
   Scaffold profile() {
@@ -292,7 +307,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 30.0),
+      margin: EdgeInsets.only(top: 20.0),
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: Center(
           child: Text("پروفایل من",
@@ -322,7 +337,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           widget._image,
                           width: 200,
                           height: 200,
-                          fit: BoxFit.fitHeight,
+                          fit: BoxFit.contain,
                         ),
                       )
                     : widget._noImage
@@ -338,12 +353,20 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           )
                         : ClipRRect(
-                            borderRadius: BorderRadius.circular(500.0),
-                            child: Image.network(
-                              'http://37.152.176.11' + ProfileControllers.imageController.text,
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.fitHeight,
+                            borderRadius: BorderRadius.circular(200.0),
+                            child: ClipOval(
+                              child: Image.network(
+                                'http://37.152.176.11' +
+                                    ProfileControllers.imageController.text,
+                                loadingBuilder: (context, child, progress) {
+                                  return progress == null
+                                      ? child
+                                      : LinearProgressIndicator();
+                                },
+                                width: 200,
+                                height: 200,
+                                fit: BoxFit.fitHeight,
+                              ),
                             ),
                           ))),
       ),
@@ -401,7 +424,6 @@ class _ProfilePageState extends State<ProfilePage> {
       key: widget._formKey,
       child: Column(
         children: <Widget>[
-          successSection(),
           profileSection(),
           submit(),
         ],
@@ -423,18 +445,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Container successSection() {
-    if (widget._successful)
-      return Container(
-        alignment: Alignment.centerRight,
-        child: Text(
-          "موفقیت آمیز",
-          style: TextStyle(color: Colors.green, fontFamily: widget.myFont),
-        ),
-      );
-    return Container();
-  }
-
   Container profileSection() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -446,14 +456,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: TextFormField(
                   controller: ProfileControllers.firstNameController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                  style:
+                      TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.account_box_rounded, color: widget.mainColor),
+                    icon: Icon(Icons.account_box_rounded,
+                        color: widget.mainColor),
                     labelText: "نام",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    hintStyle: TextStyle(
+                        color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -462,13 +474,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: TextFormField(
                   controller: ProfileControllers.lastNameController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                  style:
+                      TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
                     labelText: "نام خانوادگی",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    hintStyle: TextStyle(
+                        color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -491,7 +504,8 @@ class _ProfilePageState extends State<ProfilePage> {
               errorText: ProfileValidators.errorEmail(widget.emailError),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+              hintStyle:
+                  TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
           SizedBox(height: 10),
@@ -515,35 +529,36 @@ class _ProfilePageState extends State<ProfilePage> {
               errorText: ProfileValidators.errorPhone(widget.phoneError),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+              hintStyle:
+                  TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
           SizedBox(height: 10),
-          TextFormField(
-            controller: ProfileControllers.controller,
-            cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
-            decoration: InputDecoration(
-              suffixIcon: PopupMenuButton<String>(
-                icon: const Icon(Icons.arrow_drop_down),
-                onSelected: (String value) {
-                  ProfileControllers.controller.text = value;
-                },
-                itemBuilder: (BuildContext context) {
-                  return widget.items.map<PopupMenuItem<String>>((String value) {
-                    return new PopupMenuItem(
-                        child: new Text(value), value: value);
-                  }).toList();
-                },
-              ),
-              icon: Icon(Icons.accessibility_new_sharp, color: widget.mainColor),
-              labelText: "وضعیت",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
-            ),
-          ),
-          SizedBox(height: 10),
+          // TextFormField(
+          //   controller: ProfileControllers.controller,
+          //   cursorColor: Colors.black,
+          //   style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+          //   decoration: InputDecoration(
+          //     suffixIcon: PopupMenuButton<String>(
+          //       icon: const Icon(Icons.arrow_drop_down),
+          //       onSelected: (String value) {
+          //         ProfileControllers.controller.text = value;
+          //       },
+          //       itemBuilder: (BuildContext context) {
+          //         return widget.items.map<PopupMenuItem<String>>((String value) {
+          //           return new PopupMenuItem(
+          //               child: new Text(value), value: value);
+          //         }).toList();
+          //       },
+          //     ),
+          //     icon: Icon(Icons.accessibility_new_sharp, color: widget.mainColor),
+          //     labelText: "وضعیت",
+          //     border:
+          //         OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+          //     hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+          //   ),
+          // ),
+          // SizedBox(height: 10),
           TextFormField(
             controller: ProfileControllers.universityController,
             cursorColor: Colors.black,
@@ -553,7 +568,8 @@ class _ProfilePageState extends State<ProfilePage> {
               labelText: "دانشگاه",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
-              hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+              hintStyle:
+                  TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
           SizedBox(height: 10),
@@ -563,14 +579,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: TextFormField(
                   controller: ProfileControllers.fieldOfStudyController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                  style:
+                      TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
                     icon: Icon(Icons.school, color: widget.mainColor),
                     labelText: "رشته تحصیلی",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    hintStyle: TextStyle(
+                        color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -579,7 +596,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: TextFormField(
                   controller: ProfileControllers.entryYearController,
                   cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                  style:
+                      TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
@@ -589,8 +607,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     labelText: "سال ورود",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    hintStyle: TextStyle(
+                        color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -655,24 +673,33 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container changePassModalBtn() {
     return Container(
-        child: IconButton(
-            icon: Icon(Icons.security, color: widget.mainColor),
+        child: Row(
+      children: [
+        SizedBox(
+          height: 150,
+        ),
+        Text(
+          "    تغییر رمز عبور ",
+        ),
+        IconButton(
+            alignment: Alignment.topRight,
+            icon: Icon(Icons.security, color: Colors.redAccent),
             onPressed: () {
-              changePassModal(context);
-            }));
-  }
-
-  void changePassModal(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return passForm();
-        });
+              ProfileControllers.passwordController.clear();
+              ProfileControllers.oldPasswordController.clear();
+              ProfileControllers.passwordReController.clear();
+              showMaterialModalBottomSheet(
+                context: context,
+                builder: (context) => passForm(),
+              );
+            }),
+      ],
+    ));
   }
 
   Container passHeader() {
     return Container(
-      margin: EdgeInsets.only(top: 0.0, bottom: 00),
+      margin: EdgeInsets.only(top: 30.0, bottom: 30),
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
       child: Center(
           child: Text("تغییر گذرواژه :",
@@ -703,10 +730,12 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: InputDecoration(
                 icon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه",
-                errorText: widget._wrongPass ? 'رمز وارد شده غلط می باشد' : null,
+                errorText:
+                    widget._wrongPass ? 'رمز وارد شده غلط می باشد' : null,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
-                hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                hintStyle:
+                    TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
             SizedBox(height: 10.0),
@@ -726,7 +755,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 labelText: "گذرواژه ی جدید",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
-                hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                hintStyle:
+                    TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
             SizedBox(height: 10.0),
@@ -735,7 +765,8 @@ class _ProfilePageState extends State<ProfilePage> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'الزامی است';
-                } else if (value != ProfileControllers.passwordController.text) {
+                } else if (value !=
+                    ProfileControllers.passwordController.text) {
                   return 'تکرار گذرواژه غلط می باشد';
                 }
                 return null;
@@ -748,7 +779,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 labelText: "تکرار گذرواژه ی جدید",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
-                hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                hintStyle:
+                    TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
           ],
@@ -760,7 +792,7 @@ class _ProfilePageState extends State<ProfilePage> {
       width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
-      margin: EdgeInsets.only(top: 10.0),
+      margin: EdgeInsets.only(top: 30.0),
       child: RaisedButton(
         onPressed: () {
           if (!widget._formKey2.currentState.validate()) {
@@ -817,7 +849,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Form deleteForm() {
     return Form(
       child: Column(
-        children: <Widget>[SizedBox(height: 150), deleteBtn()],
+        children: <Widget>[SizedBox(height: 50), deleteBtn()],
       ),
     );
   }
@@ -848,7 +880,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 "پاک کردن اکانت",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontFamily: widget.myFont),
               ),
             ),
           ),

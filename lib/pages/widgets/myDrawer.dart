@@ -17,6 +17,8 @@ import 'package:application/pages/newpost.dart';
 import 'package:application/main.dart';
 
 class MyDrawer extends StatefulWidget {
+  final Color mainColor = Colors.blue[800];
+  final String myFont = 'myFont';
   @override
   _MyDrawerState createState() => _MyDrawerState();
 }
@@ -46,14 +48,14 @@ class _MyDrawerState extends State<MyDrawer> {
       child: _isLoading
           ? Center(
               child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+              valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
             ))
           : ListView(
               children: <Widget>[
                 !_noImage
                     ? UserAccountsDrawerHeader(
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: widget.mainColor,
                         ),
                         accountName: Text(
                           firstNameController.text ??
@@ -72,7 +74,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         ))
                     : UserAccountsDrawerHeader(
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: widget.mainColor,
                         ),
                         accountName: Text(
                           firstNameController.text ??
@@ -92,7 +94,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     "داشبورد",
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
-                  leading: Icon(Icons.home, color: Colors.blueAccent),
+                  leading: Icon(Icons.home, color: widget.mainColor),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -106,7 +108,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
                   leading:
-                      Icon(Icons.account_box_rounded, color: Colors.blueAccent),
+                      Icon(Icons.account_box_rounded, color: widget.mainColor),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -120,7 +122,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
                   leading: Icon(Icons.create_new_folder_rounded,
-                      color: Colors.blueAccent),
+                      color: widget.mainColor),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -133,7 +135,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     "خروج",
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
-                  leading: Icon(Icons.logout, color: Colors.blueAccent),
+                  leading: Icon(Icons.logout, color: widget.mainColor),
                   onLongPress: () {
                     logout();
                     Navigator.of(context).pushAndRemoveUntil(

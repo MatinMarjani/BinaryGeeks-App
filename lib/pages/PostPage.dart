@@ -134,6 +134,10 @@ class _PostPageState extends State<PostPage> {
               borderRadius: BorderRadius.circular(10.0),
               child: Image.network(
                 widget.post.image,
+                loadingBuilder: (context, child, progress) {
+                  return progress == null
+                      ? child : LinearProgressIndicator();
+                },
                 width: 300,
                 height: 300,
                 fit: BoxFit.fitHeight,

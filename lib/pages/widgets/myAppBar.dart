@@ -14,6 +14,8 @@ class MyAppBar extends StatefulWidget {
   static Widget appBarTitle =
       Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
   static Icon actionIcon = Icon(Icons.search, color: Colors.white);
+  final Color mainColor = Colors.blue[800];
+  final String myFont = 'myFont';
 
   @override
   _MyAppBarState createState() => _MyAppBarState(appBarTitle, actionIcon);
@@ -42,6 +44,7 @@ class _MyAppBarState extends State<MyAppBar> {
     return AppBar(
       centerTitle: true,
       title: appBarTitle,
+      backgroundColor: widget.mainColor,
       actions: <Widget>[
         IconButton(
           icon: actionIcon,
