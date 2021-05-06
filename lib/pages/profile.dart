@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
@@ -17,7 +18,6 @@ import 'package:application/pages/widgets/alertDialog_widget.dart';
 import 'package:application/util/app_url.dart';
 import 'package:application/util/ProfileUtils.dart';
 import 'package:application/pages/login.dart';
-
 
 class ProfilePage extends StatefulWidget {
   final _formKey = GlobalKey<FormState>();
@@ -49,8 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     log('Profile Init');
     getProfile();
     setState(() {
-      MyAppBar.appBarTitle = Text("BookTrader",
-          style: TextStyle(color: Colors.white, fontFamily: widget.myFont));
+      MyAppBar.appBarTitle = Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: widget.myFont));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
   }
@@ -71,8 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var url = Uri.parse(AppUrl.Get_Profile + id);
 
     try {
-      response =
-      await http.get(url, headers: {'Authorization': 'Token $token'});
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
         print(response.body);
@@ -127,8 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var headers = {'Authorization': 'Token $token'};
     var request = http.MultipartRequest('PUT', url);
     try {
-      request.files
-          .add(await http.MultipartFile.fromPath('profile_image', widget._image.path));
+      request.files.add(await http.MultipartFile.fromPath('profile_image', widget._image.path));
       request.headers.addAll(headers);
 
       http.StreamedResponse response1 = await request.send();
@@ -140,10 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     } catch (e) {}
     var response;
-    headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json'
-    };
+    headers = {'Authorization': 'Token $token', 'Content-Type': 'application/json'};
 
     String data =
         '{\r\n    "username": "$email",\r\n    "email": "$email",\r\n    "first_name": "$first",\r\n    "last_name": "$last",\r\n    "phone_number": $phone,\r\n    "university": "$uni",\r\n    "field_of_study": "$field", \r\n    "entry_year": $year \r\n}';
@@ -165,14 +159,12 @@ class _ProfilePageState extends State<ProfilePage> {
         jsonResponse = await json.decode(response.body);
         print(response.statusCode);
         print(jsonResponse);
-        if (jsonResponse['phone_number'].toString() ==
-            '[user with this phone number already exists.]') {
+        if (jsonResponse['phone_number'].toString() == '[user with this phone number already exists.]') {
           setState(() {
             widget.phoneError = true;
           });
         }
-        if (jsonResponse['email'].toString() ==
-            '[user with this email already exists.]') {
+        if (jsonResponse['email'].toString() == '[user with this email already exists.]') {
           setState(() {
             widget.emailError = true;
           });
@@ -197,13 +189,9 @@ class _ProfilePageState extends State<ProfilePage> {
     var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Delete_Profile + id + '/change-password');
 
-    var headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json'
-    };
+    var headers = {'Authorization': 'Token $token', 'Content-Type': 'application/json'};
     var request = http.Request('PUT', url);
-    request.body =
-    '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
+    request.body = '''{\r\n    "old_password": "$oldPass",\r\n    "new_password": "$newPass"\r\n}''';
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -217,8 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
         widget._wrongPass = false;
       });
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
     } else {
       print(response.reasonPhrase);
       setState(() {
@@ -262,8 +249,7 @@ class _ProfilePageState extends State<ProfilePage> {
       sharedPreferences.clear();
       sharedPreferences.commit();
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-              (Route<dynamic> route) => false);
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
     } else {
       print(response.reasonPhrase);
     }
@@ -297,10 +283,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Center(
           child: Text("پروفایل من",
               style: TextStyle(
-                  color: widget.mainColor,
-                  fontSize: 20.0,
-                  fontFamily: widget.myFont,
-                  fontWeight: FontWeight.bold))),
+                  color: widget.mainColor, fontSize: 20.0, fontFamily: widget.myFont, fontWeight: FontWeight.bold))),
     );
   }
 
@@ -327,9 +310,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       )
                     : widget._noImage
                         ? Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(500)),
+                            decoration:
+                                BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(500)),
                             width: 200,
                             height: 200,
                             child: Icon(
@@ -381,16 +363,14 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _imgFromCamera() async {
-    File image = await ImagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 50);
+    File image = await ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 50);
     setState(() {
       widget._image = image;
     });
   }
 
   _imgFromGallery() async {
-    File image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50);
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     setState(() {
       widget._image = image;
     });
@@ -450,10 +430,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     icon: Icon(Icons.account_box_rounded, color: widget.mainColor),
                     labelText: "نام",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -465,10 +443,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
                     labelText: "نام خانوادگی",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -489,8 +465,7 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: Icon(Icons.email, color: widget.mainColor),
               labelText: "ایمیل",
               errorText: ProfileValidators.errorEmail(widget.emailError),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
@@ -506,15 +481,12 @@ class _ProfilePageState extends State<ProfilePage> {
             },
             style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
+            inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
               icon: Icon(Icons.phone, color: widget.mainColor),
               labelText: "تلفن همراه",
               errorText: ProfileValidators.errorPhone(widget.phoneError),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
@@ -551,8 +523,7 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: InputDecoration(
               icon: Icon(Icons.school, color: widget.mainColor),
               labelText: "دانشگاه",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             ),
           ),
@@ -567,10 +538,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     icon: Icon(Icons.school, color: widget.mainColor),
                     labelText: "رشته تحصیلی",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -581,16 +550,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
+                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     icon: Icon(Icons.date_range, color: widget.mainColor),
                     labelText: "سال ورود",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0)),
-                    hintStyle:
-                        TextStyle(color: Colors.black, fontFamily: widget.myFont),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   ),
                 ),
               ),
@@ -610,8 +575,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: RaisedButton(
         onPressed: () {
           if (!widget._formKey.currentState.validate()) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('Processing Data')));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
               widget._isLoading = true;
@@ -627,8 +591,7 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         },
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
         padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
@@ -644,8 +607,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Text(
               "ثبت تغییرات",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
+              style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
             ),
           ),
         ),
@@ -658,29 +620,24 @@ class _ProfilePageState extends State<ProfilePage> {
         child: IconButton(
             icon: Icon(Icons.security, color: widget.mainColor),
             onPressed: () {
-              changePassModal(context);
+              ProfileControllers.passwordController.clear();
+              ProfileControllers.oldPasswordController.clear();
+              ProfileControllers.passwordReController.clear();
+              showMaterialModalBottomSheet(
+                context: context,
+                builder: (context) => passForm(),
+              );
             }));
-  }
-
-  void changePassModal(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return passForm();
-        });
   }
 
   Container passHeader() {
     return Container(
-      margin: EdgeInsets.only(top: 0.0, bottom: 00),
+      margin: EdgeInsets.only(top: 30.0, bottom: 30),
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
       child: Center(
           child: Text("تغییر گذرواژه :",
               style: TextStyle(
-                  color: widget.mainColor,
-                  fontSize: 20.0,
-                  fontFamily: widget.myFont,
-                  fontWeight: FontWeight.bold))),
+                  color: widget.mainColor, fontSize: 20.0, fontFamily: widget.myFont, fontWeight: FontWeight.bold))),
     );
   }
 
@@ -704,8 +661,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه",
                 errorText: widget._wrongPass ? 'رمز وارد شده غلط می باشد' : null,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(22.0)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
                 hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
@@ -724,8 +680,7 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: InputDecoration(
                 icon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه ی جدید",
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(22.0)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
                 hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
@@ -746,8 +701,7 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: InputDecoration(
                 icon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "تکرار گذرواژه ی جدید",
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(22.0)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
                 hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               ),
             ),
@@ -760,12 +714,11 @@ class _ProfilePageState extends State<ProfilePage> {
       width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
-      margin: EdgeInsets.only(top: 10.0),
+      margin: EdgeInsets.only(top: 30.0),
       child: RaisedButton(
         onPressed: () {
           if (!widget._formKey2.currentState.validate()) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('Processing Data')));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
               widget._isLoading = true;
@@ -776,8 +729,7 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         },
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
         padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
@@ -793,8 +745,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Text(
               "تغییر گذرواژه",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
+              style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
             ),
           ),
         ),
@@ -828,8 +779,7 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: EdgeInsets.symmetric(horizontal: 15.0),
         margin: EdgeInsets.only(top: 25.0, bottom: 10),
         child: RaisedButton(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
           padding: EdgeInsets.all(0.0),
           onPressed: () {
             _showDialog(context);
@@ -847,8 +797,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Text(
                 "پاک کردن اکانت",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
+                style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: widget.myFont),
               ),
             ),
           ),
@@ -856,10 +805,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _showDialog(BuildContext context) {
-    VoidCallback continueCallBack =
-        () => {Navigator.of(context).pop(), deleteProfile()};
-    BlurryDialog alert = BlurryDialog(
-        "خیر", "آیا مطمین هستید؟ امکان بازگشت وجود ندارد", continueCallBack);
+    VoidCallback continueCallBack = () => {Navigator.of(context).pop(), deleteProfile()};
+    BlurryDialog alert = BlurryDialog("خیر", "آیا مطمین هستید؟ امکان بازگشت وجود ندارد", continueCallBack);
     showDialog(
       context: context,
       builder: (BuildContext context) {
