@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
@@ -18,6 +19,7 @@ import 'package:application/util/Post.dart';
 class SearchPage extends StatefulWidget {
   final Color mainColor = Colors.blue[800];
   final String myFont = 'myFont';
+  final _formKey = GlobalKey<FormState>();
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -69,11 +71,64 @@ class _SearchPageState extends State<SearchPage> {
             ))
             : ListView(
           children: <Widget>[
+            FilterBtn(),
             Posts(),
           ],
         ),
       ),
       drawer: MyDrawer(),
+    );
+  }
+
+  Container FilterBtn() {
+    return Container(
+      child: TextButton(
+        style: ButtonStyle(
+          backgroundColor:
+          MaterialStateProperty.all<Color>(Colors.white),
+          shape:
+          MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: widget.mainColor))),
+        ),
+        child: Text(
+          "فیلتر",
+          style: TextStyle(
+              color: widget.mainColor, fontFamily: 'myfont'),
+        ),
+        onPressed: () {
+          showMaterialModalBottomSheet(
+            context: context,
+            builder: (context) => FilterForm(),
+          );
+        },
+      ),
+    );
+  }
+
+  Form FilterForm(){
+    return Form(
+      key: widget._formKey,
+      child: Column(
+        children: <Widget>[
+          filterHeader(),
+        ],
+      ),
+    );
+  }
+
+  Container filterHeader() {
+    return Container(
+      margin: EdgeInsets.only(top: 30.0, bottom: 30),
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
+      child: Center(
+          child: Text("فیلتر ها :",
+              style: TextStyle(
+                  color: widget.mainColor,
+                  fontSize: 20.0,
+                  fontFamily: widget.myFont,
+                  fontWeight: FontWeight.bold))),
     );
   }
 
