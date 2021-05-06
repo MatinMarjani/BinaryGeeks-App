@@ -16,14 +16,17 @@ import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
 
 class SearchPage extends StatefulWidget {
+  final Color mainColor = Colors.blue[800];
+  final String myFont = 'myFont';
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
   List<Post> myPost = [];
+  bool _isLoading = false;
   final TextEditingController _searchQuery = new TextEditingController();
-  String _searchText = "";
 
   void initState() {
     super.initState();
@@ -59,7 +62,12 @@ class _SearchPageState extends State<SearchPage> {
       body: Container(
         margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: ListView(
+        child: _isLoading
+            ? Center(
+            child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
+            ))
+            : ListView(
           children: <Widget>[
             Posts(),
           ],
@@ -86,6 +94,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   getPosts(String contains) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     var jsonResponse;
     var response;
 
@@ -133,5 +145,9 @@ class _SearchPageState extends State<SearchPage> {
       log("error");
       print(e);
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
