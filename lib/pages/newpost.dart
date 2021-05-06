@@ -101,11 +101,17 @@ class _NewPostPageState extends State<NewPostPage> {
                       child: TextButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.indigoAccent)),
+                                Colors.white),
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.blueAccent))),
+                        ),
                         child: Text(
                           "ادامه",
                           style: TextStyle(
-                              color: Colors.white, fontFamily: 'myfont'),
+                              color: Colors.blueAccent, fontFamily: 'myfont'),
                         ),
                         onPressed: () {
                           log(_currentStep.toString());
@@ -117,12 +123,18 @@ class _NewPostPageState extends State<NewPostPage> {
                     Container(
                       child: TextButton(
                         style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red)),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.red))),
+                        ),
                         child: Text(
                           "قبلی",
                           style: TextStyle(
-                              color: Colors.white, fontFamily: 'myfont'),
+                              color: Colors.red, fontFamily: 'myfont'),
                         ),
                         onPressed: () {
                           log(_currentStep.toString());
