@@ -23,7 +23,7 @@ class ProfilePage extends StatefulWidget {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
 
-  final Color mainColor = Colors.blueAccent;
+  final Color mainColor = Colors.blue[800];
   final String myFont = 'myFont';
 
   bool _isLoading = false;
@@ -154,8 +154,12 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           widget._isLoading = false;
           widget._successful = true;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("با موفقیت انجام شد",style: TextStyle(color: Colors.green))));
         });
       } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("مشکلی وجود دارد",style: TextStyle(color: Colors.red),)));
         jsonResponse = await json.decode(response.body);
         print(response.statusCode);
         print(jsonResponse);
@@ -278,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 30.0),
+      margin: EdgeInsets.only(top: 20.0),
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: Center(
           child: Text("پروفایل من",
@@ -305,7 +309,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           widget._image,
                           width: 200,
                           height: 200,
-                          fit: BoxFit.fitHeight,
+                          fit: BoxFit.contain,
                         ),
                       )
                     : widget._noImage
@@ -329,7 +333,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               },
                               width: 200,
                               height: 200,
-                              fit: BoxFit.fitHeight,
+                              fit: BoxFit.contain,
                             ),
                           ))),
       ),
@@ -385,7 +389,6 @@ class _ProfilePageState extends State<ProfilePage> {
       key: widget._formKey,
       child: Column(
         children: <Widget>[
-          successSection(),
           profileSection(),
           submit(),
         ],
@@ -405,18 +408,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
-  }
-
-  Container successSection() {
-    if (widget._successful)
-      return Container(
-        alignment: Alignment.centerRight,
-        child: Text(
-          "موفقیت آمیز",
-          style: TextStyle(color: Colors.green, fontFamily: widget.myFont),
-        ),
-      );
-    return Container();
   }
 
   Container profileSection() {
@@ -621,17 +612,25 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container changePassModalBtn() {
     return Container(
-        child: IconButton(
-            icon: Icon(Icons.security, color: widget.mainColor),
-            onPressed: () {
-              ProfileControllers.passwordController.clear();
-              ProfileControllers.oldPasswordController.clear();
-              ProfileControllers.passwordReController.clear();
-              showMaterialModalBottomSheet(
-                context: context,
-                builder: (context) => passForm(),
-              );
-            }));
+        child: Row (
+          children: [
+            SizedBox(height: 150,),
+            Text("    تغییر رمز عبور ",),
+            IconButton(
+                alignment: Alignment.topRight,
+                icon: Icon(Icons.security, color: Colors.redAccent),
+                onPressed: () {
+                  ProfileControllers.passwordController.clear();
+                  ProfileControllers.oldPasswordController.clear();
+                  ProfileControllers.passwordReController.clear();
+                  showMaterialModalBottomSheet(
+                    context: context,
+                    builder: (context) => passForm(),
+                  );
+                }
+            ),
+          ],
+        ));
   }
 
   Container passHeader() {
