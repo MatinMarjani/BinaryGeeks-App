@@ -178,7 +178,7 @@ class _MyDrawerState extends State<MyDrawer> {
       if (response.statusCode == 200) {
         log('200');
         print(response.body);
-        jsonResponse = json.decode(response.body);
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         if (jsonResponse != null) {
           setState(() {
             //_isLoading = false;
@@ -201,7 +201,6 @@ class _MyDrawerState extends State<MyDrawer> {
               _noImage = true;
             }
           });
-          //Set user Info from response.data to sharedPrefrences
         }
       } else {
         log('!200');
