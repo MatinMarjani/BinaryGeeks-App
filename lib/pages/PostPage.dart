@@ -7,9 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+
 
 import 'package:application/pages/widgets/myPostCard.dart';
 
@@ -28,7 +30,10 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   bool _isLoading = false;
   bool _noImage = false;
+  bool _isOwner = false;
   var formatter = new NumberFormat('###,###');
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -38,6 +43,24 @@ class _PostPageState extends State<PostPage> {
           style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
+    checkOwner();
+  }
+
+  checkOwner() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int ownerID = sharedPreferences.getInt("id");
+    if (widget.post.owner_id == ownerID){
+      setState(() {
+        MyAppBar.actionIcon = Icon(Icons.edit, color: Colors.white);
+        _isOwner = true;
+      });
+    }
+    else {
+      setState(() {
+        _isOwner = false;
+      });
+    }
+    log(_isOwner.toString());
   }
 
   @override
@@ -96,7 +119,36 @@ class _PostPageState extends State<PostPage> {
             ],
           ),
           SizedBox(height: 10),
-          Text(
+          _isOwner ? Row(
+            children: <Widget>[
+              Expanded(
+                  child: Text(
+                    widget.post.title,
+                    style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
+                  ),),
+              SizedBox(width: 10,),
+              Expanded(
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white),
+                      shape:
+                      MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.blueAccent))),
+                    ),
+                    child: Icon(Icons.edit, color: Colors.blueAccent,),
+                    onPressed: () {
+                      showMaterialModalBottomSheet(
+                        context: context,
+                        builder: (context) => updatePost(),
+                      );
+                    },
+                  ),),
+            ],
+          )
+          : Text(
             widget.post.title,
             style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
           ),
@@ -135,8 +187,7 @@ class _PostPageState extends State<PostPage> {
               child: Image.network(
                 widget.post.image,
                 loadingBuilder: (context, child, progress) {
-                  return progress == null
-                      ? child : LinearProgressIndicator();
+                  return progress == null ? child : LinearProgressIndicator();
                 },
                 width: 300,
                 height: 300,
@@ -260,6 +311,20 @@ class _PostPageState extends State<PostPage> {
             style: TextStyle(fontFamily: 'myfont'),
           ),
           SizedBox(height: 50)
+        ],
+      ),
+    );
+  }
+
+  Form updatePost() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          // editHeader(),
+          // updatePasswordSuccess(),
+          // changePass(),
+          // submit2(),
         ],
       ),
     );

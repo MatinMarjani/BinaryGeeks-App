@@ -52,7 +52,7 @@ class _MyAppBarState extends State<MyAppBar> {
             if (this.actionIcon.icon == Icons.search) {
               Navigator.push(context,
                   new MaterialPageRoute(builder: (context) => SearchPage()));
-            } else {
+            } else if (this.actionIcon.icon == Icons.close ){
               setState(() {
                 this.actionIcon = Icon(
                   Icons.search,
