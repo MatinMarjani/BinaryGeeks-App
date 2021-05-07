@@ -28,6 +28,10 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  final Color mainColor = Colors.blue[800];
+  final String myFont = 'myFont';
+
+
   bool _isLoading = false;
   bool _noImage = false;
   bool _isOwner = false;
@@ -136,9 +140,9 @@ class _PostPageState extends State<PostPage> {
                       MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.blueAccent))),
+                              side: BorderSide(color: mainColor))),
                     ),
-                    child: Icon(Icons.edit, color: Colors.blueAccent,),
+                    child: Icon(Icons.edit, color: mainColor,),
                     onPressed: () {
                       showMaterialModalBottomSheet(
                         context: context,
@@ -321,12 +325,50 @@ class _PostPageState extends State<PostPage> {
       key: _formKey,
       child: Column(
         children: <Widget>[
-          // editHeader(),
-          // updatePasswordSuccess(),
+          updateHeader(),
+          updateBody(),
           // changePass(),
           // submit2(),
         ],
       ),
+    );
+  }
+
+  Container updateHeader() {
+    return Container(
+      margin: EdgeInsets.only(top: 30.0, bottom: 30),
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
+      child: Center(
+          child: Text("تغییر آگهی",
+              style: TextStyle(
+                  color: mainColor,
+                  fontSize: 20.0,
+                  fontFamily: myFont,
+                  fontWeight: FontWeight.bold))),
+    );
+  }
+
+  Container updateBody() {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              // controller: FilterControllers.categoryController,
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.web_asset_sharp, color: mainColor),
+                labelText: "دسته بندی",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+          ],
+        )
     );
   }
 }
