@@ -48,25 +48,33 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     log("SearchPage init");
-    MyAppBar.appBarTitle = TextField(
-      controller: _searchQuery,
-      onSubmitted: (value) {
-        if (_searchQuery.text != "" || _searchQuery.text != null) {
-          myPost.clear();
-          getPosts(_searchQuery.text);
-        }
-      },
-      style: TextStyle(color: Colors.white, fontFamily: 'myfont'),
-      decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search, color: Colors.white),
-          hintText: "جست و جو",
-          hintStyle: TextStyle(color: Colors.white, fontFamily: 'myfont')),
-    );
+    setState(() {
+      MyAppBar.appBarTitle = TextField(
+        controller: _searchQuery,
+        onSubmitted: (value) {
+          if (_searchQuery.text != "" || _searchQuery.text != null) {
+            myPost.clear();
+            getPosts(_searchQuery.text);
+          }
+        },
+        style: TextStyle(color: Colors.white, fontFamily: 'myfont'),
+        decoration: InputDecoration(
+            prefixIcon: Icon(Icons.search, color: Colors.white),
+            hintText: "جست و جو",
+            hintStyle: TextStyle(color: Colors.white, fontFamily: 'myfont')),
+      );
 
-    MyAppBar.actionIcon = Icon(
-      Icons.close,
-      color: Colors.white,
-    );
+      MyAppBar.actionIcon = Icon(
+        Icons.close,
+        color: Colors.white,
+      );
+    });
+    FilterControllers.categoryController.text = "";
+    FilterControllers.pricestartController.text = "";
+    FilterControllers.priceendController.text = "";
+    FilterControllers.provinceController.text = "";
+    FilterControllers.cityController.text = "";
+    FilterControllers.sortController.text = "";
   }
 
   @override
