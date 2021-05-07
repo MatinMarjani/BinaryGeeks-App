@@ -279,7 +279,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     }).toList();
                   },
                 ),
-                icon: Icon(Icons.speaker_group, color: Colors.black),
+                icon: Icon(Icons.web_asset_sharp, color: Colors.black),
                 labelText: "دسته بندی",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),

@@ -76,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if (response.statusCode == 200) {
         log('200');
         print(response.body);
-        jsonResponse = json.decode(response.body);
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         if (jsonResponse != null) {
           setState(() {
             ProfileControllers.firstNameController.text =
@@ -87,15 +87,23 @@ class _ProfilePageState extends State<ProfilePage> {
             if (jsonResponse['phone_number'] != null)
               ProfileControllers.phoneController.text =
                   jsonResponse['phone_number'].toString();
+            else
+              ProfileControllers.phoneController.clear();
             if (jsonResponse['university'] != "null")
               ProfileControllers.universityController.text =
                   jsonResponse['university'];
+            else
+              ProfileControllers.universityController.clear();
             if (jsonResponse['field_of_study'] != "null")
               ProfileControllers.fieldOfStudyController.text =
                   jsonResponse['field_of_study'];
+            else
+              ProfileControllers.fieldOfStudyController.clear();
             if (jsonResponse['entry_year'] != null)
               ProfileControllers.entryYearController.text =
                   jsonResponse['entry_year'].toString();
+            else
+              ProfileControllers.entryYearController.clear();
             if (jsonResponse['profile_image'] != null) {
               ProfileControllers.imageController.text =
                   jsonResponse['profile_image'].toString();
