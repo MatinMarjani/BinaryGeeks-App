@@ -325,6 +325,7 @@ class _SearchPageState extends State<SearchPage> {
   getPosts(String contains) async {
     setState(() {
       _isLoading = true;
+      myPost.clear();
     });
 
     // String contains;
@@ -353,11 +354,7 @@ class _SearchPageState extends State<SearchPage> {
     var jsonResponse;
     var response;
 
-    var url = Uri.parse(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + priceend);
-    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + priceend);
-    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + priceend);
-    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + priceend);
-    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + priceend);
+    var url = Uri.parse(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + pricestart);
     log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + priceend);
 
     try {
