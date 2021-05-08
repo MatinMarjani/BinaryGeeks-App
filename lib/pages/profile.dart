@@ -443,6 +443,8 @@ class _ProfilePageState extends State<ProfilePage> {
     return Form(
       key: widget._formKey2,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           passHeader(),
           updatePasswordSuccess(),
@@ -467,8 +469,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style:
                       TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.account_box_rounded,
-                        color: widget.mainColor),
+                    prefixIcon: Icon(Icons.account_box_rounded, color: widget.mainColor),
                     labelText: "نام",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -485,6 +486,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style:
                       TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.account_box_rounded, color: widget.mainColor),
                     labelText: "نام خانوادگی",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -507,7 +509,7 @@ class _ProfilePageState extends State<ProfilePage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: widget.mainColor),
+              prefixIcon: Icon(Icons.email, color: widget.mainColor),
               labelText: "ایمیل",
               errorText: ProfileValidators.errorEmail(widget.emailError),
               border:
@@ -532,7 +534,7 @@ class _ProfilePageState extends State<ProfilePage> {
               FilteringTextInputFormatter.digitsOnly
             ],
             decoration: InputDecoration(
-              icon: Icon(Icons.phone, color: widget.mainColor),
+              prefixIcon: Icon(Icons.phone, color: widget.mainColor),
               labelText: "تلفن همراه",
               errorText: ProfileValidators.errorPhone(widget.phoneError),
               border:
@@ -572,7 +574,7 @@ class _ProfilePageState extends State<ProfilePage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             decoration: InputDecoration(
-              icon: Icon(Icons.school, color: widget.mainColor),
+              prefixIcon: Icon(Icons.school, color: widget.mainColor),
               labelText: "دانشگاه",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
@@ -590,7 +592,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style:
                       TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    icon: Icon(Icons.school, color: widget.mainColor),
+                    prefixIcon: Icon(Icons.school, color: widget.mainColor),
                     labelText: "رشته تحصیلی",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -611,7 +613,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     FilteringTextInputFormatter.digitsOnly
                   ],
                   decoration: InputDecoration(
-                    icon: Icon(Icons.date_range, color: widget.mainColor),
+                    prefixIcon: Icon(Icons.date_range, color: widget.mainColor),
                     labelText: "سال ورود",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -629,7 +631,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container submit() {
     return Container(
-      width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 10.0),
@@ -679,15 +680,15 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Container changePassModalBtn() {
-    return Container(
-        child: Row(
+  Row changePassModalBtn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-          height: 150,
-        ),
+        SizedBox(height: 50,),
         Text(
-          "    تغییر رمز عبور ",
+          "    تغییر گذرواژه ",
+          style: TextStyle(fontFamily: widget.myFont, fontWeight: FontWeight.bold),
         ),
         IconButton(
             alignment: Alignment.topRight,
@@ -702,18 +703,18 @@ class _ProfilePageState extends State<ProfilePage> {
               );
             }),
       ],
-    ));
+    );
   }
 
   Container passHeader() {
     return Container(
-      margin: EdgeInsets.only(top: 30.0, bottom: 30),
-      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
+      margin: EdgeInsets.only(top: 00.0, bottom: 60),
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 00.0),
       child: Center(
           child: Text("تغییر گذرواژه :",
               style: TextStyle(
                   color: widget.mainColor,
-                  fontSize: 20.0,
+                  fontSize: 30.0,
                   fontFamily: widget.myFont,
                   fontWeight: FontWeight.bold))),
     );
@@ -736,7 +737,7 @@ class _ProfilePageState extends State<ProfilePage> {
               obscureText: true,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: widget.mainColor),
+                prefixIcon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه",
                 errorText:
                     widget._wrongPass ? 'رمز وارد شده غلط می باشد' : null,
@@ -759,7 +760,7 @@ class _ProfilePageState extends State<ProfilePage> {
               obscureText: true,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: widget.mainColor),
+                prefixIcon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه ی جدید",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -783,7 +784,7 @@ class _ProfilePageState extends State<ProfilePage> {
               obscureText: true,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: widget.mainColor),
+                prefixIcon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "تکرار گذرواژه ی جدید",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -797,7 +798,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container submit2() {
     return Container(
-      width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 30.0),

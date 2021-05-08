@@ -105,6 +105,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Container FilterBtn() {
     return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
       child: TextButton(
         style: ButtonStyle(
           backgroundColor:
@@ -134,6 +135,8 @@ class _SearchPageState extends State<SearchPage> {
     return Form(
       key: widget._formKey,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           filterHeader(),
           filterBody(),
@@ -144,8 +147,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Container filterHeader() {
     return Container(
-      margin: EdgeInsets.only(top: 30.0, bottom: 30),
-      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 50.0),
+      margin: EdgeInsets.only(top: 00.0, bottom: 30),
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 00.0),
       child: Center(
           child: Text("فیلتر ها :",
               style: TextStyle(
@@ -283,6 +286,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Container filterDoneBtn() {
     return Container(
+      height: 40.0,
+      padding: EdgeInsets.symmetric(horizontal: 110.0),
       child: TextButton(
         style: ButtonStyle(
           backgroundColor:
@@ -307,7 +312,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget Posts() {
-    if (myPost.length == 0) return Text("nothing");
+    if (myPost.length == 0) return Center(child: Text("بدون نتیجه",style: TextStyle(fontSize: 13,fontFamily: widget.myFont),),);
     List<Widget> list = new List<Widget>();
     for (var i = 0; i < myPost.length; i++) {
       if (myPost[i].title == null) myPost[i].title = " ";
@@ -355,7 +360,7 @@ class _SearchPageState extends State<SearchPage> {
     var response;
 
     var url = Uri.parse(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + pricestart);
-    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + priceend);
+    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + pricestart);
 
     try {
       response = await http.get(url);

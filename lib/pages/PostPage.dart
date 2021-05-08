@@ -55,6 +55,15 @@ class _PostPageState extends State<PostPage> {
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
     checkOwner();
+
+    author.text = widget.post.author;
+    publisher.text = widget.post.publisher;
+    price.text = widget.post.price.toString();
+    province.text = widget.post.province;
+    city.text = widget.post.city;
+    zone.text = widget.post.zone;
+    description.text = widget.post.description;
+
   }
 
   checkOwner() async {
@@ -359,14 +368,6 @@ class _PostPageState extends State<PostPage> {
   }
 
   Container updateBody() {
-    author.text = widget.post.author;
-    publisher.text = widget.post.publisher;
-    price.text = widget.post.price.toString();
-    province.text = widget.post.province;
-    city.text = widget.post.city;
-    zone.text = widget.post.zone;
-    description.text = widget.post.description;
-
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
         child: Column(

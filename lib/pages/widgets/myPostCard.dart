@@ -33,12 +33,12 @@ class PostCard extends StatelessWidget {
         child: Card(
           borderOnForeground: true,
           elevation: 1,
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          color: Colors.white,
+          margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+          color: Colors.white70,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Padding(
-            padding: const EdgeInsets.all(2),
+            padding: const EdgeInsets.all(3),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
