@@ -32,6 +32,9 @@ class PasswordFieldValidator {
 }
 
 class LoginPage extends StatefulWidget {
+  final Color mainColor = Colors.blue[800];
+  final String myFont = 'myFont';
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -42,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +59,11 @@ class _LoginPageState extends State<LoginPage> {
         child: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
               ))
             : Center(
                 child: ListView(
+                  shrinkWrap: true,
                   children: <Widget>[
                     headerSection(),
                     errorSection(),
@@ -75,11 +80,11 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       margin: EdgeInsets.only(top: 0.0),
       // padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-      padding: EdgeInsetsDirectional.only(bottom: 40, top: 150),
+      padding: EdgeInsetsDirectional.only(bottom: 40, top: 00),
       child: Center(
           child: Text("ورود",
               style: TextStyle(
-                  color: Colors.blueAccent,
+                  color: widget.mainColor,
                   fontSize: 25.0,
                   fontFamily: 'myfont',
                   fontWeight: FontWeight.bold))),
@@ -102,7 +107,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Container textSection() {
     return Container(
-      //color: Colors.teal,
       padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
@@ -112,10 +116,9 @@ class _LoginPageState extends State<LoginPage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.blueAccent),
+              prefixIcon: Icon(Icons.email, color: widget.mainColor),
               labelText: "ایمیل",
               border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             ),
@@ -128,10 +131,9 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: true,
             style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.blueAccent),
+              prefixIcon: Icon(Icons.lock, color: widget.mainColor),
               labelText: "گذرواژه",
               border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(color: Colors.black, fontFamily: 'myfont'),
             ),
@@ -214,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                         (Route<dynamic> route) => false);
                   },
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: widget.mainColor,
                   fontFamily: 'myfont',
                 )),
           ],

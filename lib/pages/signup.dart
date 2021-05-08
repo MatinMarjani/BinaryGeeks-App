@@ -46,6 +46,9 @@ class PasswordFieldValidator {
 }
 
 class SignUpPage extends StatefulWidget {
+  final Color mainColor = Colors.blue[800];
+  final String myFont = 'myFont';
+
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -76,10 +79,11 @@ class _SignUpPageState extends State<SignUpPage> {
           child: _isLoading
               ? Center(
                   child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
                 ))
               : Center(
                   child: ListView(
+                    shrinkWrap: true,
                     children: <Widget>[
                       headerSection(),
                       signupForm(),
@@ -94,11 +98,11 @@ class _SignUpPageState extends State<SignUpPage> {
     return Container(
       margin: EdgeInsets.only(top: 0.0),
       // padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      padding: EdgeInsetsDirectional.only(bottom: 40, top: 80),
+      padding: EdgeInsetsDirectional.only(bottom: 40, top: 00),
       child: Center(
           child: Text("ساخت اکانت جدید",
               style: TextStyle(
-                  color: Colors.blueAccent,
+                  color: widget.mainColor,
                   fontSize: 25.0,
                   fontFamily: 'myfont',
                   fontWeight: FontWeight.bold))),
@@ -120,7 +124,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Container textSection() {
     return Container(
-      //color: Colors.teal,
       padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
@@ -133,10 +136,9 @@ class _SignUpPageState extends State<SignUpPage> {
               fontFamily: 'myfont',
             ),
             decoration: InputDecoration(
-              icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
+              prefixIcon: Icon(Icons.account_box_rounded, color: widget.mainColor),
               labelText: "نام",
               border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black),
                   borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(
                 color: Colors.black,
@@ -154,10 +156,9 @@ class _SignUpPageState extends State<SignUpPage> {
               fontFamily: 'myfont',
             ),
             decoration: InputDecoration(
-              icon: Icon(Icons.account_box_rounded, color: Colors.blueAccent),
+              prefixIcon: Icon(Icons.account_box_rounded, color: widget.mainColor),
               labelText: "نام خانوادگی",
               border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(
                 color: Colors.black,
@@ -175,11 +176,10 @@ class _SignUpPageState extends State<SignUpPage> {
               fontFamily: 'myfont',
             ),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.blueAccent),
+              prefixIcon: Icon(Icons.email, color: widget.mainColor),
               labelText: "ایمیل",
               errorText: _wrongEmail ? 'ایمیل تکراری است' : null,
               border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(
                 color: Colors.black,
@@ -198,10 +198,9 @@ class _SignUpPageState extends State<SignUpPage> {
               fontFamily: 'myfont',
             ),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.blueAccent),
+              prefixIcon: Icon(Icons.lock, color: widget.mainColor),
               labelText: "گذرواژه",
               border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(
                 color: Colors.black,
@@ -227,10 +226,9 @@ class _SignUpPageState extends State<SignUpPage> {
               fontFamily: 'myfont',
             ),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.blueAccent),
+              prefixIcon: Icon(Icons.lock, color: widget.mainColor),
               labelText: "تکرار گذرواژه",
               border: OutlineInputBorder(
-                  // borderSide: BorderSide(color: Colors.black)),
                   borderRadius: BorderRadius.circular(22.0)),
               hintStyle: TextStyle(
                 color: Colors.black,
