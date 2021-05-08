@@ -631,7 +631,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container submit() {
     return Container(
-      width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 10.0),
@@ -681,15 +680,14 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Container changePassModalBtn() {
-    return Container(
-        child: Row(
+  Row changePassModalBtn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-          height: 150,
-        ),
+        SizedBox(height: 50,),
         Text(
-          "    تغییر رمز عبور ",
+          "    تغییر گذرواژه ",
           style: TextStyle(fontFamily: widget.myFont, fontWeight: FontWeight.bold),
         ),
         IconButton(
@@ -705,7 +703,7 @@ class _ProfilePageState extends State<ProfilePage> {
               );
             }),
       ],
-    ));
+    );
   }
 
   Container passHeader() {
@@ -800,7 +798,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Container submit2() {
     return Container(
-      width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 30.0),

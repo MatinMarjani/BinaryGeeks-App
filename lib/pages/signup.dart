@@ -243,7 +243,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Container Submit() {
     return Container(
-      // width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 10.0),

@@ -145,7 +145,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Container Submit() {
     return Container(
-      width: MediaQuery.of(context).size.width,
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 120.0),
       margin: EdgeInsets.only(top: 10.0),
