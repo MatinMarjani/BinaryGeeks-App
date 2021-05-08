@@ -16,12 +16,17 @@ import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
 
 class DashBoard extends StatefulWidget {
+  final Color mainColor = Colors.blue[800];
+  final String myFont = 'myFont';
+
+
   @override
   _DashBoardState createState() => _DashBoardState();
 }
 
 class _DashBoardState extends State<DashBoard> {
   List<Post> myPost = [];
+  bool _isLoading = false;
 
   void initState() {
     super.initState();
@@ -44,7 +49,12 @@ class _DashBoardState extends State<DashBoard> {
       body: Container(
         margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: ListView(children: <Widget>[
+        child: _isLoading
+            ? Center(
+            child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
+            ))
+            : ListView(children: <Widget>[
           Posts(),
         ]),
       ),
@@ -69,6 +79,11 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   getPosts() async {
+    setState(() {
+      _isLoading = true;
+      myPost.clear();
+    });
+
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
     var response;
@@ -117,5 +132,8 @@ class _DashBoardState extends State<DashBoard> {
       log("error");
       print(e);
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
