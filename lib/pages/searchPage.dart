@@ -105,6 +105,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Container FilterBtn() {
     return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
       child: TextButton(
         style: ButtonStyle(
           backgroundColor:
@@ -311,7 +312,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget Posts() {
-    if (myPost.length == 0) return Text("nothing");
+    if (myPost.length == 0) return Center(child: Text("بدون نتیجه",style: TextStyle(fontSize: 13,fontFamily: widget.myFont),),);
     List<Widget> list = new List<Widget>();
     for (var i = 0; i < myPost.length; i++) {
       if (myPost[i].title == null) myPost[i].title = " ";
