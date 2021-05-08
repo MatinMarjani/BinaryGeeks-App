@@ -7,9 +7,14 @@ void main () {
      expect(result, 'الزامی است');
    });
 
-   test("non-Empty email return null",(){
+   test("non-Empty email return error", () {
      var result = EmailFieldValidator.validate('email');
      expect(result, "ایمیل را درست وارد کنید");
+   });
+
+   test("non-Empty email return null", () {
+     var result = EmailFieldValidator.validate('email@email.com');
+     expect(result, null);
    });
 
    test("Empty password return error",(){
