@@ -2,7 +2,7 @@ class AppUrl {
   static const String liveBaseURL = 'http://37.152.176.11';
   //static const String localBaseURL = "  http://localhost:8000";
   static const String localBaseURL = "http://10.0.2.2:8000";
-  static const String ____localBaseURL = "http://127.0.0.1:8000";
+  // static const String ____localBaseURL = "http://127.0.0.1:8000";
 
   static const String baseURL = liveBaseURL;
 

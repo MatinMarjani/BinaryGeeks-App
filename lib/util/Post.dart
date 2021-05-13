@@ -1,7 +1,7 @@
 class Post {
-  int owner_id;
-  String owner_email;
-  String owner_profile_image;
+  int ownerId;
+  String ownerEmail;
+  String ownerProfileImage;
   int id;
   String title;
   String author;
@@ -12,15 +12,15 @@ class Post {
   String zone;
   String status;
   String description;
-  bool is_active;
+  bool isActive;
   String image; //url
   String categories;
-  String created_at;
+  String createdAt;
 
   Post(
-    this.owner_id,
-    this.owner_email,
-    this.owner_profile_image,
+    this.ownerId,
+    this.ownerEmail,
+    this.ownerProfileImage,
     this.id,
     this.title,
     this.author,
@@ -31,9 +31,9 @@ class Post {
     this.zone,
     this.status,
     this.description,
-    this.is_active,
+    this.isActive,
     this.image, //url
     this.categories,
-    this.created_at,
+    this.createdAt,
   );
 }

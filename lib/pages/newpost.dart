@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -26,7 +25,6 @@ class _NewPostPageState extends State<NewPostPage> {
   StepperType stepperType = StepperType.vertical;
 
   bool _isLoading = false;
-  bool _wrongInfo = false;
   bool complete = false;
   bool created = false;
 
@@ -56,7 +54,7 @@ class _NewPostPageState extends State<NewPostPage> {
   void initState() {
     // TODO: implement initState
     setState(() {
-      MyAppBar.appBarTitle = Text("BookTrader",
+      MyAppBar.appBarTitle = Text("ساخت آگهی جدید",
           style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
@@ -75,12 +73,12 @@ class _NewPostPageState extends State<NewPostPage> {
               child: CircularProgressIndicator(
               valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
             ))
-          : NewPost(),
+          : newPost(),
       drawer: MyDrawer(),
     );
   }
 
-  Container NewPost() {
+  Container newPost() {
     return Container(
       child: Column(
         children: [
@@ -146,9 +144,9 @@ class _NewPostPageState extends State<NewPostPage> {
                 );
               },
               steps: <Step>[
-                step_one(),
-                step_two(),
-                step_three(),
+                stepOne(),
+                stepTwo(),
+                stepThree(),
               ],
             ),
           ),
@@ -180,19 +178,19 @@ class _NewPostPageState extends State<NewPostPage> {
       if (!_formKey3.currentState.validate()) {
         setState(() => _currentStep = 2);
       } else {
-        CreatePost();
+        createPost();
       }
     }
   }
 
   cancel() {
-    _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
-    if (_currentStep < 2) {
+    if(_currentStep > 0)
+      setState(() => _currentStep -= 1);
+    if (_currentStep < 2)
       setState(() => complete = false);
-    }
   }
 
-  Step step_one() {
+  Step stepOne() {
     return Step(
       title: new Text('مشخصات کتاب'),
       content: Form(
@@ -295,7 +293,7 @@ class _NewPostPageState extends State<NewPostPage> {
     );
   }
 
-  Step step_two() {
+  Step stepTwo() {
     return Step(
       title: new Text(
         'تصویر کتاب',
@@ -347,7 +345,7 @@ class _NewPostPageState extends State<NewPostPage> {
     );
   }
 
-  Step step_three() {
+  Step stepThree() {
     return Step(
       title: new Text(
         'توضیحات',
@@ -517,14 +515,13 @@ class _NewPostPageState extends State<NewPostPage> {
     );
   }
 
-  CreatePost() async {
+  createPost() async {
     setState(() {
       _isLoading = true;
     });
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     var token = sharedPreferences.getString("token");
-    var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Add_Post);
 
     var response;
@@ -548,7 +545,7 @@ class _NewPostPageState extends State<NewPostPage> {
       "is_active": true
     });
 
-    var jsonResponse = null;
+    var jsonResponse;
 
     log("Token $token");
     log(body.toString());
@@ -561,7 +558,7 @@ class _NewPostPageState extends State<NewPostPage> {
         print(response.body);
         jsonResponse = json.decode(response.body);
         print(jsonResponse["post"]["id"]);
-        post_Image(jsonResponse["post"]["id"].toString());
+        postImage(jsonResponse["post"]["id"].toString());
         setState(() {
           _isLoading = false;
           created = true;
@@ -585,7 +582,7 @@ class _NewPostPageState extends State<NewPostPage> {
     });
   }
 
-  post_Image(String id) async {
+  postImage(String id) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     var token = sharedPreferences.getString("token");
