@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:filter_list/filter_list.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
@@ -16,6 +15,7 @@ import 'package:application/pages/widgets/myPostCard.dart';
 
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
+import 'package:application/util/Utilities.dart';
 
 class FilterControllers {
   static final TextEditingController categoryController = new TextEditingController();
@@ -31,8 +31,8 @@ class FilterControllers {
 }
 
 class SearchPage extends StatefulWidget {
-  final Color mainColor = Colors.blue[800];
-  final String myFont = 'myFont';
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
   final _formKey = GlobalKey<FormState>();
 
 
@@ -43,18 +43,22 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   List<Post> myPost = [];
   bool _isLoading = false;
+  int page;
+
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
   final TextEditingController _searchQuery = new TextEditingController();
 
   void initState() {
     super.initState();
     log("SearchPage init");
     setState(() {
+      page = 1;
       MyAppBar.appBarTitle = TextField(
         controller: _searchQuery,
         onSubmitted: (value) {
           if (_searchQuery.text != "" || _searchQuery.text != null) {
             myPost.clear();
-            getPosts(_searchQuery.text);
+            getPosts(_searchQuery.text, page.toString());
           }
         },
         style: TextStyle(color: Colors.white, fontFamily: 'myfont'),
@@ -63,11 +67,9 @@ class _SearchPageState extends State<SearchPage> {
             hintText: "جست و جو",
             hintStyle: TextStyle(color: Colors.white, fontFamily: 'myfont')),
       );
+      MyAppBar.actionIcon = Icon(Icons.close, color: Colors.white,);
+      myPost.clear();
 
-      MyAppBar.actionIcon = Icon(
-        Icons.close,
-        color: Colors.white,
-      );
     });
     FilterControllers.categoryController.text = "";
     FilterControllers.pricestartController.text = "";
@@ -77,6 +79,28 @@ class _SearchPageState extends State<SearchPage> {
     FilterControllers.sortController.text = "";
   }
 
+  void _onRefresh() async{
+    myPost.clear();
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    for ( int i = 1; i <= page; i++) {
+      getPosts(_searchQuery.text, page.toString());
+    }
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async{
+    // monitor network fetch
+    page++;
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    getPosts(_searchQuery.text, page.toString());
+    if(mounted)
+      setState(() {});
+    _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,9 +108,37 @@ class _SearchPageState extends State<SearchPage> {
         preferredSize: const Size.fromHeight(50),
         child: MyAppBar(),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: WaterDropHeader(),
+        footer: CustomFooter(
+          builder: (BuildContext context,LoadStatus mode){
+            Widget body ;
+            if(mode==LoadStatus.idle){
+              body =  Text("pull up load");
+            }
+            else if(mode==LoadStatus.loading){
+              body =  CupertinoActivityIndicator();
+            }
+            else if(mode == LoadStatus.failed){
+              body = Text("Load Failed!Click retry!");
+            }
+            else if(mode == LoadStatus.canLoading){
+              body = Text("release to load more");
+            }
+            else{
+              body = Text("No more Data");
+            }
+            return Container(
+              height: 55.0,
+              child: Center(child:body),
+            );
+          },
+        ),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
         child: _isLoading
             ? Center(
             child: CircularProgressIndicator(
@@ -94,18 +146,20 @@ class _SearchPageState extends State<SearchPage> {
             ))
             : ListView(
           children: <Widget>[
-            FilterBtn(),
-            Posts(),
+            filterBtn(),
+            posts(),
           ],
         ),
+
       ),
       drawer: MyDrawer(),
     );
   }
 
-  Container FilterBtn() {
+  Container filterBtn() {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: TextButton(
         style: ButtonStyle(
           backgroundColor:
@@ -305,15 +359,17 @@ class _SearchPageState extends State<SearchPage> {
         ),
         onPressed: () {
           myPost.clear();
-          getPosts(_searchQuery.text);
+          page = 1;
+          getPosts(_searchQuery.text, page.toString());
+          Navigator.of(context).pop();
           },
       ),
     );
   }
 
-  Widget Posts() {
+  Widget posts() {
     if (myPost.length == 0) return Center(child: Text("بدون نتیجه",style: TextStyle(fontSize: 13,fontFamily: widget.myFont),),);
-    List<Widget> list = new List<Widget>();
+    List<Widget> list = [];
     for (var i = 0; i < myPost.length; i++) {
       if (myPost[i].title == null) myPost[i].title = " ";
       if (myPost[i].author == null) myPost[i].author = " ";
@@ -327,13 +383,7 @@ class _SearchPageState extends State<SearchPage> {
     return Column(children: list);
   }
 
-  getPosts(String contains) async {
-    setState(() {
-      _isLoading = true;
-      myPost.clear();
-    });
-
-    // String contains;
+  getPosts(String contains, String p) async {
     String category = FilterControllers.categoryController.text;
     String province = FilterControllers.provinceController.text;
     String city = FilterControllers.cityController.text;
@@ -359,8 +409,8 @@ class _SearchPageState extends State<SearchPage> {
     var jsonResponse;
     var response;
 
-    var url = Uri.parse(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + pricestart);
-    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + pricestart);
+    var url = Uri.parse(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + pricestart + "page=" + p);
+    log(AppUrl.Search + "?" + contains + category + province + city + sort + priceend + pricestart + "page=" + p);
 
     try {
       response = await http.get(url);
@@ -370,7 +420,6 @@ class _SearchPageState extends State<SearchPage> {
         print(jsonResponse);
         if (jsonResponse != null) {
           setState(() {
-            //_isLoading = false;
             for (var i in jsonResponse["results"]) {
               myPost.add(Post(
                 i["owner"]["id"],
@@ -397,15 +446,15 @@ class _SearchPageState extends State<SearchPage> {
         }
       } else {
         log('!200');
-        print(response.body);
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        setState(() {
+          if(jsonResponse["detail"] == "Invalid page.")
+            page--;
+        });
       }
     } catch (e) {
       log("error");
       print(e);
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 }
