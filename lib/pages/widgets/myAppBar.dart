@@ -1,21 +1,18 @@
-import 'dart:developer';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:application/util/app_url.dart';
-import 'package:http/http.dart' as http;
 
-import 'package:application/pages/login.dart';
 import 'package:application/pages/searchPage.dart';
 
+import 'package:application/util/Utilities.dart';
+
 class MyAppBar extends StatefulWidget {
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
+
   static Widget appBarTitle =
-      Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
+      Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont));
   static Icon actionIcon = Icon(Icons.search, color: Colors.white);
-  final Color mainColor = Colors.blue[800];
-  final String myFont = 'myFont';
 
   @override
   _MyAppBarState createState() => _MyAppBarState(appBarTitle, actionIcon);
@@ -24,7 +21,7 @@ class MyAppBar extends StatefulWidget {
 class _MyAppBarState extends State<MyAppBar> {
   SharedPreferences sharedPreferences;
   Widget appBarTitle =
-      Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
+      Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont));
   Icon actionIcon = Icon(Icons.search, color: Colors.white);
 
 
@@ -36,7 +33,6 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   void initState() {
     super.initState();
-    // init();
   }
 
   @override
@@ -59,7 +55,7 @@ class _MyAppBarState extends State<MyAppBar> {
                   color: Colors.white,
                 );
                 this.appBarTitle =
-                    Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
+                    Text("BookTrader", style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont));
                 Navigator.pop(context);
                 // _searchQuery.clear();
               });
