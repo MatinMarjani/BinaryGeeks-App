@@ -1,15 +1,12 @@
 import 'dart:ui';
-import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:application/pages/PostPage.dart';
 import 'package:application/util/Post.dart';
 
-
+//ignore: must_be_immutable
 class PostCard extends StatelessWidget {
-
   Post post;
   String price;
   bool _noImage = true;
@@ -27,13 +24,12 @@ class PostCard extends StatelessWidget {
 
     return GestureDetector(
         onTap: (){
-          Navigator.push(context,
-              new MaterialPageRoute(builder: (context) => PostPage(post)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(post)));
         },
         child: Card(
           borderOnForeground: true,
           elevation: 1,
-          margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+          margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
           color: Colors.white70,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
