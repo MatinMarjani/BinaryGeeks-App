@@ -27,12 +27,14 @@ dependencies:
   shared_preferences: ^2.0.5
   flutter_localizations:
     sdk: flutter
-  fluttertoast: ^8.0.3
+#  fluttertoast: ^8.0.3
   image_picker: ^0.6.6+5
   test: ^1.5.1
   intl: ^0.17.0
   modal_bottom_sheet: ^2.0.0
   filter_list: ^0.0.9
+  cached_network_image: ^3.0.0
+  pull_to_refresh: ^2.0.0
 
 
 

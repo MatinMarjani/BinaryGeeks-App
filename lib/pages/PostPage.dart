@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,15 +9,15 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
 
 
-import 'package:application/pages/widgets/myPostCard.dart';
-
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
+import 'package:application/util/Utilities.dart';
 
 class PostPage extends StatefulWidget {
   final Post post;
@@ -28,8 +29,8 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final Color mainColor = Colors.blue[800];
-  final String myFont = 'myFont';
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
 
   final TextEditingController author = new TextEditingController();
   final TextEditingController publisher = new TextEditingController();
@@ -44,13 +45,15 @@ class _PostPageState extends State<PostPage> {
   bool _isOwner = false;
   var formatter = new NumberFormat('###,###');
 
+  File _image;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      MyAppBar.appBarTitle = Text("BookTrader",
+      MyAppBar.appBarTitle = Text("صفحه آگهی",
           style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
@@ -69,7 +72,7 @@ class _PostPageState extends State<PostPage> {
   checkOwner() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     int ownerID = sharedPreferences.getInt("id");
-    if (widget.post.owner_id == ownerID){
+    if (widget.post.ownerId == ownerID){
       setState(() {
         MyAppBar.actionIcon = Icon(Icons.edit, color: Colors.white);
         _isOwner = true;
@@ -97,14 +100,14 @@ class _PostPageState extends State<PostPage> {
             ? Center(
                 child: CircularProgressIndicator(
                 valueColor:
-                    new AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+                    new AlwaysStoppedAnimation<Color>(mainColor),
               ))
             : ListView(
             shrinkWrap: true,
             children: <Widget>[
-              _BannerImage(),
-              _Header(),
-              _MainBody(),
+              bannerImage(),
+              header(),
+              mainBody(),
             ],
           ),
       ),
@@ -112,13 +115,13 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  Container _Header() {
+  Container header() {
     String date = "";
     String time2 = "";
     String time = "";
     try {
-      date = widget.post.created_at.split('T')[0] ?? "";
-      time2 = widget.post.created_at.split('T')[1] ?? "";
+      date = widget.post.createdAt.split('T')[0] ?? "";
+      time2 = widget.post.createdAt.split('T')[1] ?? "";
       time = time2.split(".")[0] ?? "";
     } catch (e) {}
     return Container(
@@ -161,7 +164,7 @@ class _PostPageState extends State<PostPage> {
                     ),
                     child: Icon(Icons.edit, color: mainColor,),
                     onPressed: () {
-                      showMaterialModalBottomSheet(
+                      showBarModalBottomSheet(
                         context: context,
                         builder: (context) => updatePostForm(),
                       );
@@ -187,7 +190,7 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  Container _BannerImage() {
+  Container bannerImage() {
     if (widget.post.image == null) _noImage = true;
     return Container(
       height: 300.0,
@@ -218,7 +221,7 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  Container _MainBody() {
+  Container mainBody() {
     final TextEditingController price = new TextEditingController();
     final TextEditingController priceH = new TextEditingController();
     final TextEditingController province = new TextEditingController();
@@ -346,7 +349,7 @@ class _PostPageState extends State<PostPage> {
           children: <Widget>[
             updateHeader(),
             updateBody(),
-            // updateImage(),
+            updateImage(),
             updateSubmit(),
           ],
         ),
@@ -367,6 +370,45 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
+  Container updateImage() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 200.0,
+      padding: EdgeInsets.symmetric(horizontal: 0.0),
+      margin: EdgeInsets.only(top: 0.0),
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            _showPicker(context);
+          },
+          child: Container(
+            child: _image != null
+                ? ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.file(
+                _image,
+                width: 300,
+                height: 300,
+                fit: BoxFit.fitHeight,
+              ),
+            )
+                : Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(15)),
+              width: 300,
+              height: 300,
+              child: Icon(
+                Icons.camera_alt,
+                color: Colors.grey[800],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Container updateBody() {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -375,9 +417,8 @@ class _PostPageState extends State<PostPage> {
             TextFormField(
               controller: author,
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value == null || value.isEmpty)
                   return 'الزامی است';
-                }
                 return null;
               },
               cursorColor: Colors.black,
@@ -395,9 +436,8 @@ class _PostPageState extends State<PostPage> {
             TextFormField(
               controller: publisher,
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value == null || value.isEmpty)
                   return 'الزامی است';
-                }
                 return null;
               },
               cursorColor: Colors.black,
@@ -418,9 +458,8 @@ class _PostPageState extends State<PostPage> {
                   child: TextFormField(
                     controller: price,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null || value.isEmpty)
                         return 'الزامی است';
-                      }
                       return null;
                     },
                     cursorColor: Colors.black,
@@ -440,9 +479,8 @@ class _PostPageState extends State<PostPage> {
                   child: TextFormField(
                     controller: province,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null || value.isEmpty)
                         return 'الزامی است';
-                      }
                       return null;
                     },
                     cursorColor: Colors.black,
@@ -482,9 +520,8 @@ class _PostPageState extends State<PostPage> {
                     child: TextFormField(
                       controller: zone,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null || value.isEmpty)
                           return 'الزامی است';
-                        }
                         return null;
                       },
                       cursorColor: Colors.black,
@@ -505,9 +542,8 @@ class _PostPageState extends State<PostPage> {
             TextFormField(
               controller: description,
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value == null || value.isEmpty)
                   return 'الزامی است';
-                }
                 return null;
               },
               cursorColor: Colors.black,
@@ -553,6 +589,110 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  ListTile(
+                      leading: new Icon(Icons.delete, color: Colors.red,),
+                      title: new Text('پاک کردن'),
+                      onTap: () {
+                        _imgDelete();
+                        Navigator.of(context).pop();
+                      }),
+                  ListTile(
+                      leading: new Icon(Icons.photo_library, color: Colors.lightBlue,),
+                      title: new Text('گالری'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  ListTile(
+                    leading: new Icon(Icons.photo_camera, color: Colors.cyanAccent,),
+                    title: new Text('دوربین'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _imgDelete() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var postID = widget.post.id;
+    var token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Update_Post + postID.toString());
+    var response;
+
+    String data =
+        '{\r\n    "image": null\r\n}';
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      response = await http.put(url, body: data, headers: headers);
+      if (response.statusCode == 200) {
+        log('200');
+        print(response.statusCode);
+        setState(() {
+          widget.post.image = null;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت انجام شد",
+                  style: TextStyle(color: Colors.green))));
+          Navigator.of(context).pop();
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "مشکلی وجود دارد",
+              style: TextStyle(color: Colors.red),
+            )));
+        Navigator.of(context).pop();
+        print(response.error);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  _imgFromCamera() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  _imgFromGallery() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
+  }
+
   updatePost() async {
     setState(() {
       _isLoading = true;
@@ -563,8 +703,9 @@ class _PostPageState extends State<PostPage> {
     String token = sharedPreferences.getString("token");
 
     var url = Uri.parse(AppUrl.Update_Post + postID.toString());
-
     var response;
+    var jsonResponse;
+
 
     var headers = {
       'Authorization': 'Token $token',
@@ -582,24 +723,14 @@ class _PostPageState extends State<PostPage> {
       "is_active": true
     });
 
-    var jsonResponse;
-
-
-    log("Token $token");
-    log(body.toString());
-    log(AppUrl.Update_Post + postID.toString());
-
     try {
       response = await http.put(url, body: body.toString(), headers: headers);
       if (response.statusCode == 200) {
         log("200");
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         print(jsonResponse);
-
-        // post_Image(jsonResponse["post"]["id"].toString());
+        postImage();
         setState(() {
-          _isLoading = false;
-
           widget.post.author = author.text;
           widget.post.publisher = publisher.text;
           widget.post.price = int.parse(price.text);
@@ -617,7 +748,6 @@ class _PostPageState extends State<PostPage> {
       } else {
         print(response.body);
         setState(() {
-          _isLoading = false;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("مشکلی به وجود آمد",
                   style: TextStyle(color: Colors.green))));
@@ -631,6 +761,56 @@ class _PostPageState extends State<PostPage> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  postImage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int postID = widget.post.id;
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Update_Post + postID.toString());
+
+    var headers = {'Authorization': 'Token $token'};
+    var request = http.MultipartRequest('PUT', url);
+
+    try {
+      request.files
+          .add(await http.MultipartFile.fromPath('image', _image.path));
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        getImage();
+      } else {
+        print(await response.stream.bytesToString());
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+
+  getImage() async {
+    int postID = widget.post.id;
+
+    var url = Uri.parse(AppUrl.Get_Post + postID.toString());
+    var response;
+
+    try {
+      response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
+        if (jsonResponse != null) {
+          setState(() {
+            widget.post.image = AppUrl.liveBaseURL + jsonResponse['image'];
+            log("YESYESYSEYSEYSY");
+          });
+        }
+      }
+    } catch(e) {}
 
   }
+
 }

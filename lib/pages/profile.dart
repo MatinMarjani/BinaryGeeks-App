@@ -13,43 +13,41 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+import 'package:application/pages/login.dart';
 import 'package:application/pages/widgets/alertDialog_widget.dart';
 
 import 'package:application/util/app_url.dart';
 import 'package:application/util/ProfileUtils.dart';
-import 'package:application/pages/login.dart';
+import 'package:application/util/Utilities.dart';
 
 class ProfilePage extends StatefulWidget {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
 
-  final Color mainColor = Colors.blue[800];
-  final String myFont = 'myFont';
-
-  bool _isLoading = false;
-  bool _wrongPass = false;
-  bool _successful = false;
-  bool _updatePass = false;
-  bool phoneError = false;
-  bool emailError = false;
-  bool _noImage = true;
-  File _image;
-  var items = [
-    'دانشجو',
-  ];
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  bool _isLoading = false;
+  bool _wrongPass = false;
+  bool _updatePass = false;
+  bool phoneError = false;
+  bool emailError = false;
+  bool _noImage = true;
+  File _image;
+
+
   @override
   void initState() {
     super.initState();
     log('Profile Init');
     getProfile();
     setState(() {
-      MyAppBar.appBarTitle = Text("BookTrader",
+      MyAppBar.appBarTitle = Text("پروفایل من",
           style: TextStyle(color: Colors.white, fontFamily: widget.myFont));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
@@ -57,9 +55,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   getProfile() async {
     setState(() {
-      widget._isLoading = true;
-      widget.phoneError = false;
-      widget.emailError = false;
+      _isLoading = true;
+      phoneError = false;
+      emailError = false;
     });
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -107,10 +105,10 @@ class _ProfilePageState extends State<ProfilePage> {
             if (jsonResponse['profile_image'] != null) {
               ProfileControllers.imageController.text =
                   jsonResponse['profile_image'].toString();
-              widget._noImage = false;
+              _noImage = false;
               log(ProfileControllers.imageController.text);
             } else {
-              widget._noImage = true;
+              _noImage = true;
             }
           });
         }
@@ -123,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     setState(() {
-      widget._isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -143,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var request = http.MultipartRequest('PUT', url);
     try {
       request.files.add(await http.MultipartFile.fromPath(
-          'profile_image', widget._image.path));
+          'profile_image', _image.path));
       request.headers.addAll(headers);
 
       http.StreamedResponse response1 = await request.send();
@@ -174,8 +172,6 @@ class _ProfilePageState extends State<ProfilePage> {
         log('200');
         print(response.statusCode);
         setState(() {
-          widget._isLoading = false;
-          widget._successful = true;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("با موفقیت انجام شد",
                   style: TextStyle(color: Colors.green))));
@@ -191,26 +187,24 @@ class _ProfilePageState extends State<ProfilePage> {
         if (jsonResponse['phone_number'].toString() ==
             '[user with this phone number already exists.]') {
           setState(() {
-            widget.phoneError = true;
+            phoneError = true;
           });
         }
         if (jsonResponse['email'].toString() ==
             '[user with this email already exists.]') {
           setState(() {
-            widget.emailError = true;
+            emailError = true;
           });
         }
-        setState(() {
-          widget._isLoading = false;
-          widget._successful = false;
-        });
       }
     } catch (e) {
       print(e);
-      setState(() {
-        widget._isLoading = false;
-      });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
+
   }
 
   updatePassword(String oldPass, newPass) async {
@@ -234,10 +228,9 @@ class _ProfilePageState extends State<ProfilePage> {
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
       sharedPreferences.clear();
-      sharedPreferences.commit();
       setState(() {
-        widget._updatePass = true;
-        widget._wrongPass = false;
+        _updatePass = true;
+        _wrongPass = false;
       });
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
@@ -245,12 +238,12 @@ class _ProfilePageState extends State<ProfilePage> {
     } else {
       print(response.reasonPhrase);
       setState(() {
-        widget._wrongPass = true;
-        widget._updatePass = false;
+        _wrongPass = true;
+        _updatePass = false;
       });
     }
     setState(() {
-      widget._isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -271,7 +264,6 @@ class _ProfilePageState extends State<ProfilePage> {
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
       sharedPreferences.clear();
-      sharedPreferences.commit();
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
           (Route<dynamic> route) => false);
@@ -295,14 +287,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Scaffold profile() {
     return Scaffold(
       body: Container(
-        child: widget._isLoading
+        child: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
                 valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
               ))
             : ListView(
                 children: <Widget>[
-                  headerSection(),
+                  SizedBox(height: 30,),
                   profilePicture(),
                   infoForm(),
                   changePassModalBtn(),
@@ -310,20 +302,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
       ),
-    );
-  }
-
-  Container headerSection() {
-    return Container(
-      margin: EdgeInsets.only(top: 20.0),
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      child: Center(
-          child: Text("پروفایل من",
-              style: TextStyle(
-                  color: widget.mainColor,
-                  fontSize: 20.0,
-                  fontFamily: widget.myFont,
-                  fontWeight: FontWeight.bold))),
     );
   }
 
@@ -338,17 +316,17 @@ class _ProfilePageState extends State<ProfilePage> {
               _showPicker(context);
             },
             child: Container(
-                child: widget._image != null
+                child: _image != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(500.0),
                         child: Image.file(
-                          widget._image,
+                          _image,
                           width: 200,
                           height: 200,
                           fit: BoxFit.contain,
                         ),
                       )
-                    : widget._noImage
+                    : _noImage
                         ? Container(
                             decoration: BoxDecoration(
                                 color: Colors.grey[200],
@@ -389,15 +367,22 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Container(
               child: new Wrap(
                 children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
+                  ListTile(
+                      leading: new Icon(Icons.delete, color: Colors.red,),
+                      title: new Text('پاک کردن'),
+                      onTap: () {
+                        _imgDelete();
+                        Navigator.of(context).pop();
+                      }),
+                  ListTile(
+                      leading: new Icon(Icons.photo_library, color: Colors.lightBlue,),
                       title: new Text('گالری'),
                       onTap: () {
                         _imgFromGallery();
                         Navigator.of(context).pop();
                       }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
+                  ListTile(
+                    leading: new Icon(Icons.photo_camera, color: Colors.cyanAccent,),
                     title: new Text('دوربین'),
                     onTap: () {
                       _imgFromCamera();
@@ -411,11 +396,59 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
+  _imgDelete() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Update_Profile + id);
+
+    var response;
+
+    String data =
+        '{\r\n    "profile_image": null\r\n}';
+
+    var headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json'
+    };
+
+    log(token);
+    log(data);
+    log(AppUrl.Update_Profile + id);
+
+    try {
+      response = await http.put(url, body: data, headers: headers);
+      if (response.statusCode == 200) {
+        log('200');
+        print(response.statusCode);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت انجام شد",
+                  style: TextStyle(color: Colors.green))));
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "مشکلی وجود دارد",
+              style: TextStyle(color: Colors.red),
+            )));
+        print(response.error);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   _imgFromCamera() async {
     File image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
     setState(() {
-      widget._image = image;
+      _image = image;
     });
   }
 
@@ -423,7 +456,7 @@ class _ProfilePageState extends State<ProfilePage> {
     File image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
     setState(() {
-      widget._image = image;
+      _image = image;
     });
   }
 
@@ -503,7 +536,7 @@ class _ProfilePageState extends State<ProfilePage> {
             validator: ProfileValidators.validateEmail,
             onChanged: (content) {
               setState(() {
-                widget.emailError = false;
+                emailError = false;
               });
             },
             cursorColor: Colors.black,
@@ -511,7 +544,7 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email, color: widget.mainColor),
               labelText: "ایمیل",
-              errorText: ProfileValidators.errorEmail(widget.emailError),
+              errorText: ProfileValidators.errorEmail(emailError),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
               hintStyle:
@@ -525,7 +558,7 @@ class _ProfilePageState extends State<ProfilePage> {
             validator: ProfileValidators.validatePhone,
             onChanged: (content) {
               setState(() {
-                widget.phoneError = false;
+                phoneError = false;
               });
             },
             style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
@@ -536,7 +569,7 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.phone, color: widget.mainColor),
               labelText: "تلفن همراه",
-              errorText: ProfileValidators.errorPhone(widget.phoneError),
+              errorText: ProfileValidators.errorPhone(phoneError),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
               hintStyle:
@@ -544,31 +577,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           SizedBox(height: 10),
-          // TextFormField(
-          //   controller: ProfileControllers.controller,
-          //   cursorColor: Colors.black,
-          //   style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
-          //   decoration: InputDecoration(
-          //     suffixIcon: PopupMenuButton<String>(
-          //       icon: const Icon(Icons.arrow_drop_down),
-          //       onSelected: (String value) {
-          //         ProfileControllers.controller.text = value;
-          //       },
-          //       itemBuilder: (BuildContext context) {
-          //         return widget.items.map<PopupMenuItem<String>>((String value) {
-          //           return new PopupMenuItem(
-          //               child: new Text(value), value: value);
-          //         }).toList();
-          //       },
-          //     ),
-          //     icon: Icon(Icons.accessibility_new_sharp, color: widget.mainColor),
-          //     labelText: "وضعیت",
-          //     border:
-          //         OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
-          //     hintStyle: TextStyle(color: Colors.black, fontFamily: widget.myFont),
-          //   ),
-          // ),
-          // SizedBox(height: 10),
           TextFormField(
             controller: ProfileControllers.universityController,
             cursorColor: Colors.black,
@@ -634,14 +642,14 @@ class _ProfilePageState extends State<ProfilePage> {
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 10.0),
-      child: RaisedButton(
+      child: TextButton(
         onPressed: () {
           if (!widget._formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
-              widget._isLoading = true;
+              _isLoading = true;
             });
             updateProfile(
               ProfileControllers.firstNameController.text,
@@ -654,9 +662,6 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         },
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-        padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -740,7 +745,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 prefixIcon: Icon(Icons.lock, color: widget.mainColor),
                 labelText: "گذرواژه",
                 errorText:
-                    widget._wrongPass ? 'رمز وارد شده غلط می باشد' : null,
+                    _wrongPass ? 'رمز وارد شده غلط می باشد' : null,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
                 hintStyle:
@@ -801,14 +806,14 @@ class _ProfilePageState extends State<ProfilePage> {
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 30.0),
-      child: RaisedButton(
+      child: TextButton(
         onPressed: () {
           if (!widget._formKey2.currentState.validate()) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
-              widget._isLoading = true;
+              _isLoading = true;
             });
             updatePassword(
               ProfileControllers.oldPasswordController.text,
@@ -816,9 +821,6 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         },
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-        padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -843,7 +845,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Container updatePasswordSuccess() {
-    if (widget._updatePass)
+    if (_updatePass)
       return Container(
         alignment: Alignment.centerRight,
         child: Text(
@@ -867,10 +869,7 @@ class _ProfilePageState extends State<ProfilePage> {
         height: 40.0,
         padding: EdgeInsets.symmetric(horizontal: 15.0),
         margin: EdgeInsets.only(top: 25.0, bottom: 10),
-        child: RaisedButton(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-          padding: EdgeInsets.all(0.0),
+        child: TextButton(
           onPressed: () {
             _showDialog(context);
           },

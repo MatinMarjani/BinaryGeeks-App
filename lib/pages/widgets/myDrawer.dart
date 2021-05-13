@@ -1,8 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter/services.dart';
-
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -11,14 +8,18 @@ import 'package:application/pages/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:application/util/app_url.dart';
 import 'package:application/pages/login.dart';
 import 'package:application/pages/newpost.dart';
 import 'package:application/main.dart';
 
+import 'package:application/util/app_url.dart';
+import 'package:application/util/User.dart';
+import 'package:application/util/Utilities.dart';
+
 class MyDrawer extends StatefulWidget {
-  final Color mainColor = Colors.blue[800];
-  final String myFont = 'myFont';
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
+
   @override
   _MyDrawerState createState() => _MyDrawerState();
 }
@@ -27,143 +28,111 @@ class _MyDrawerState extends State<MyDrawer> {
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
   final TextEditingController emailController = new TextEditingController();
-  final TextEditingController phoneController = new TextEditingController();
-  final TextEditingController universityController =
-      new TextEditingController();
-  final TextEditingController fieldOfStudyController =
-      new TextEditingController();
-  final TextEditingController entryYearController = new TextEditingController();
   final TextEditingController imageController = new TextEditingController();
 
   SharedPreferences sharedPreferences;
 
   var token;
 
-  bool _isLoading = false;
   bool _noImage = false;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
-            ))
-          : ListView(
-              children: <Widget>[
-                !_noImage
-                    ? UserAccountsDrawerHeader(
-                        decoration: BoxDecoration(
-                          color: widget.mainColor,
-                        ),
-                        accountName: Text(
-                          firstNameController.text ??
-                              " " + " " + lastNameController.text ??
-                              " ",
-                          style: TextStyle(fontFamily: 'myfont'),
-                        ),
-                        accountEmail: Text(
-                          emailController.text ?? " ",
-                          style: TextStyle(fontFamily: 'myfont'),
-                        ),
-                        currentAccountPicture: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          backgroundImage: NetworkImage(
-                              'http://37.152.176.11' + imageController.text),
-                        ))
-                    : UserAccountsDrawerHeader(
-                        decoration: BoxDecoration(
-                          color: widget.mainColor,
-                        ),
-                        accountName: Text(
-                          firstNameController.text ??
-                              " " + " " + lastNameController.text ??
-                              " ",
-                          style: TextStyle(fontFamily: 'myfont'),
-                        ),
-                        accountEmail: Text(
-                          emailController.text ?? " ",
-                          style: TextStyle(fontFamily: 'myfont'),
-                        ),
-                        currentAccountPicture: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: Text(firstNameController.text[0]))),
-                ListTile(
-                  title: Text(
-                    "داشبورد",
+      child: ListView(
+        children: <Widget>[
+          !_noImage
+              ? UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(
+                    color: widget.mainColor,
+                  ),
+                  accountName: Text(
+                    firstNameController.text + " " + lastNameController.text ,
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
-                  leading: Icon(Icons.home, color: widget.mainColor),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                            builder: (context) => MainPage()));
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    "پروفایل",
+                  accountEmail: Text(
+                    emailController.text ?? " ",
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
-                  leading:
-                      Icon(Icons.account_box_rounded, color: widget.mainColor),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                            builder: (context) => ProfilePage()));
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    "آگهی جدید",
+                  currentAccountPicture: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: NetworkImage('http://37.152.176.11' + imageController.text),
+                  ))
+              : UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(
+                    color: widget.mainColor,
+                  ),
+                  accountName: Text(
+                    firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
-                  leading: Icon(Icons.create_new_folder_rounded,
-                      color: widget.mainColor),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                            builder: (context) => NewPostPage()));
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    "خروج",
+                  accountEmail: Text(
+                    emailController.text ?? " ",
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
-                  leading: Icon(Icons.logout, color: widget.mainColor),
-                  onLongPress: () {
-                    logout();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => LoginPage()),
-                        (Route<dynamic> route) => false);
-                  },
-                ),
-              ],
+                  currentAccountPicture:
+                      CircleAvatar(backgroundColor: Colors.white, child: Text(firstNameController.text[0]))),
+          ListTile(
+            title: Text(
+              "داشبورد",
+              style: TextStyle(fontFamily: 'myfont'),
             ),
+            leading: Icon(Icons.home_outlined, color: widget.mainColor),
+            onTap: () {
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => MainPage()));
+            },
+          ),
+          ListTile(
+            title: Text(
+              "پروفایل",
+              style: TextStyle(fontFamily: 'myfont'),
+            ),
+            leading: Icon(Icons.account_circle_outlined, color: widget.mainColor),
+            onTap: () {
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => ProfilePage()));
+            },
+          ),
+          ListTile(
+            title: Text(
+              "آگهی جدید",
+              style: TextStyle(fontFamily: 'myfont'),
+            ),
+            leading: Icon(Icons.create_new_folder_outlined, color: widget.mainColor),
+            onTap: () {
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => NewPostPage()));
+            },
+          ),
+          ListTile(
+            title: Text(
+              "خروج",
+              style: TextStyle(fontFamily: 'myfont'),
+            ),
+            leading: Icon(Icons.login_outlined, color: widget.mainColor),
+            onLongPress: () {
+              logout();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
+            },
+          ),
+        ],
+      ),
     );
   }
 
   void initState() {
     super.initState();
-    firstNameController.text = " ";
-    lastNameController.text = " ";
-    emailController.text = " ";
+    setState(() {
+      firstNameController.text = User.firstName;
+      lastNameController.text = User.lastName;
+      emailController.text = User.email;
+      imageController.text = User.profileImage;
+    });
     getProfile();
   }
 
   getProfile() async {
-    setState(() {
-      _isLoading = true;
-    });
-
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var jsonResponse = null;
+    var jsonResponse;
     var response;
 
     var token = sharedPreferences.getString("token");
@@ -171,32 +140,19 @@ class _MyDrawerState extends State<MyDrawer> {
     var url = Uri.parse(AppUrl.Get_Profile + id);
 
     try {
-      log(' url : ' + AppUrl.Get_Profile + id);
-      log(token);
-      response =
-          await http.get(url, headers: {'Authorization': 'Token $token'});
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
         print(response.body);
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         if (jsonResponse != null) {
           setState(() {
-            //_isLoading = false;
-            firstNameController.text = jsonResponse['first_name'];
-            lastNameController.text = jsonResponse['last_name'];
-            emailController.text = jsonResponse['email'];
-            if (jsonResponse['phone_number'] != null)
-              phoneController.text = jsonResponse['phone_number'].toString();
-            if (jsonResponse['university'] != "null")
-              universityController.text = jsonResponse['university'];
-            if (jsonResponse['field_of_study'] != "null")
-              fieldOfStudyController.text = jsonResponse['field_of_study'];
-            if (jsonResponse['entry_year'] != null)
-              entryYearController.text = jsonResponse['entry_year'].toString();
+            User.firstName = jsonResponse['first_name'];
+            User.lastName = jsonResponse['last_name'];
+            User.email = jsonResponse['email'];
             if (jsonResponse['profile_image'] != null) {
-              imageController.text = jsonResponse['profile_image'].toString();
+              User.profileImage = jsonResponse['profile_image'].toString();
               _noImage = false;
-              log(imageController.text);
             } else {
               _noImage = true;
             }
@@ -209,10 +165,6 @@ class _MyDrawerState extends State<MyDrawer> {
     } catch (e) {
       print(e);
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   logout() async {
@@ -221,9 +173,7 @@ class _MyDrawerState extends State<MyDrawer> {
     var token = sharedPreferences.getString("token");
     try {
       sharedPreferences.clear();
-      sharedPreferences.commit();
-      response =
-          await http.get(url, headers: {'Authorization': 'Token $token'});
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
       print(response.body);
     } catch (e) {
       print(e);

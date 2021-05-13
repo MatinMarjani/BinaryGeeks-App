@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:application/pages/login.dart';
+import 'package:application/util/LoginUtils.dart';
 
 void main () {
    test("Empty email return error",(){

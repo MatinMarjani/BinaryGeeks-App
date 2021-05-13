@@ -1,16 +1,11 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:application/pages/login.dart';
 import 'package:application/pages/dashboard.dart';
-import 'package:application/util/app_url.dart';
-import 'package:http/http.dart' as http;
+
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
 
 void main() {
@@ -49,7 +44,6 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     checkLoginStatus();
-    setInfo();
     setState(() {
       MyAppBar.appBarTitle =
           Text("BookTrader", style: TextStyle(color: Colors.white));
@@ -69,9 +63,5 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return DashBoard();
-  }
-
-  setInfo() {
-    //get user info from sharedPrefrences
   }
 }
