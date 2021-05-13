@@ -8,32 +8,21 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:application/util/app_url.dart';
 import 'package:application/main.dart';
 import 'package:application/pages/signup.dart';
 
-class EmailFieldValidator {
-  static String validate(String value) {
-    String pattern =
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-    RegExp regExp = new RegExp(pattern);
-
-    if (value == null || value.isEmpty) return 'الزامی است';
-    if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
-    return null;
-  }
-}
-
-class PasswordFieldValidator {
-  static String validate(String value) {
-    if (value == null || value.isEmpty) return 'الزامی است';
-    return null;
-  }
-}
+import 'package:application/util/app_url.dart';
+import 'package:application/util/Utilities.dart';
+import 'package:application/util/LoginUtils.dart';
 
 class LoginPage extends StatefulWidget {
-  final Color mainColor = Colors.blue[800];
-  final String myFont = 'myFont';
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
+
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -42,10 +31,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _wrongInfo = false;
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +78,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Form loginForm() {
     return Form(
-      key: _formKey,
+      key: widget._formKey,
       child: Center(
         child: Column(
           children: <Widget>[
             textSection(),
-            Submit(),
+            submit(),
           ],
         ),
       ),
@@ -111,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         children: <Widget>[
           TextFormField(
-            controller: emailController,
+            controller: widget.emailController,
             validator: EmailFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
@@ -125,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: 10.0),
           TextFormField(
-            controller: passwordController,
+            controller: widget.passwordController,
             validator: PasswordFieldValidator.validate,
             cursorColor: Colors.black,
             obscureText: true,
@@ -143,26 +128,23 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container Submit() {
+  Container submit() {
     return Container(
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 120.0),
       margin: EdgeInsets.only(top: 10.0),
-      child: RaisedButton(
+      child: TextButton(
         onPressed: () {
-          if (!_formKey.currentState.validate()) {
+          if (!widget._formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
               _isLoading = true;
             });
-            signIn(emailController.text, passwordController.text);
+            signIn(widget.emailController.text, widget.passwordController.text);
           }
         },
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-        padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -236,34 +218,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signIn(String email, pass) async {
-    log('Login btn pressed');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map data = {'username': email, 'password': pass};
-    var jsonResponse = null;
+    var jsonResponse;
     var response;
 
     try {
-      //log(' url : ' + AppUrl.login);
-      log(data.toString());
       var url = Uri.parse(AppUrl.login);
       response = await http.post(url, body: data);
-      //print(response.statusCode);
       if (response.statusCode == 200) {
         log('200');
         jsonResponse = json.decode(response.body);
         if (jsonResponse != null) {
           setState(() {
-            _isLoading = false;
             _wrongInfo = false;
           });
 
           sharedPreferences.setString("token", jsonResponse['token']);
           sharedPreferences.setInt("id", jsonResponse['id']);
-
-          log(' token : ' + sharedPreferences.getString("token"));
-          log(' id : ' + sharedPreferences.getInt("id").toString());
-
-          //Set user Info from response.data to sharedPrefrences
 
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (BuildContext context) => MainPage()),
@@ -272,16 +244,16 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         log('!200');
         setState(() {
-          _isLoading = false;
           _wrongInfo = true;
         });
         print(response.body);
       }
     } catch (e) {
       print(e);
-      setState(() {
-        _isLoading = false;
-      });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
