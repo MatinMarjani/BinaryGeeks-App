@@ -6,48 +6,27 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:application/util/app_url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:application/main.dart';
 import 'package:application/pages/login.dart';
 
-class FirstNameFieldValidator {
-  static String validate(String value) {
-    if (value == null || value.isEmpty) return 'الزامی است';
-    return null;
-  }
-}
-
-class LastNameFieldValidator {
-  static String validate(String value) {
-    if (value == null || value.isEmpty) return 'الزامی است';
-    return null;
-  }
-}
-
-class EmailFieldValidator {
-  static String validate(String value) {
-    String pattern =
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-    RegExp regExp = new RegExp(pattern);
-
-    if (value == null || value.isEmpty) return 'الزامی است';
-    if (!regExp.hasMatch(value)) return 'ایمیل را درست وارد کنید';
-    return null;
-  }
-}
-
-class PasswordFieldValidator {
-  static String validate(String value) {
-    if (value == null || value.isEmpty) return 'الزامی است';
-    return null;
-  }
-}
+import 'package:application/util/app_url.dart';
+import 'package:application/util/Utilities.dart';
+import 'package:application/util/SignUpUtils.dart';
 
 class SignUpPage extends StatefulWidget {
-  final Color mainColor = Colors.blue[800];
-  final String myFont = 'myFont';
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
+
+  final TextEditingController firstNameController = new TextEditingController();
+  final TextEditingController lastNameController = new TextEditingController();
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController passwordReController =
+  new TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -57,15 +36,6 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
   bool _wrongEmail = false;
   bool _wrongInfo = false;
-
-  final TextEditingController firstNameController = new TextEditingController();
-  final TextEditingController lastNameController = new TextEditingController();
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController passwordReController =
-      new TextEditingController();
-
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     shrinkWrap: true,
                     children: <Widget>[
                       headerSection(),
-                      signupForm(),
+                      signUpForm(),
                       buttonSection1(),
                     ],
                   ),
@@ -109,14 +79,14 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Form signupForm() {
+  Form signUpForm() {
     return Form(
-      key: _formKey,
+      key: widget._formKey,
       child: Column(
         children: <Widget>[
           errorSection(),
           textSection(),
-          Submit(),
+          submit(),
         ],
       ),
     );
@@ -128,7 +98,7 @@ class _SignUpPageState extends State<SignUpPage> {
       child: Column(
         children: <Widget>[
           TextFormField(
-            controller: firstNameController,
+            controller: widget.firstNameController,
             validator: FirstNameFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(
@@ -148,7 +118,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           SizedBox(height: 10.0),
           TextFormField(
-            controller: lastNameController,
+            controller: widget.lastNameController,
             validator: LastNameFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(
@@ -168,7 +138,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           SizedBox(height: 10.0),
           TextFormField(
-            controller: emailController,
+            controller: widget.emailController,
             validator: EmailFieldValidator.validate,
             cursorColor: Colors.black,
             style: TextStyle(
@@ -189,7 +159,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           SizedBox(height: 10.0),
           TextFormField(
-            controller: passwordController,
+            controller: widget.passwordController,
             validator: PasswordFieldValidator.validate,
             cursorColor: Colors.black,
             obscureText: true,
@@ -210,11 +180,11 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           SizedBox(height: 10.0),
           TextFormField(
-            controller: passwordReController,
+            controller: widget.passwordReController,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'الزامی است';
-              } else if (value != passwordController.text) {
+              } else if (value != widget.passwordController.text) {
                 return 'تکرار گذرواژه غلط می باشد';
               }
               return null;
@@ -241,27 +211,24 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Container Submit() {
+  Container submit() {
     return Container(
       height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 110.0),
       margin: EdgeInsets.only(top: 10.0),
-      child: RaisedButton(
+      child: TextButton(
         onPressed: () {
-          if (!_formKey.currentState.validate()) {
+          if (!widget._formKey.currentState.validate()) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
           } else {
             setState(() {
               _isLoading = true;
             });
-            signUp(emailController.text, passwordController.text,
-                firstNameController.text, lastNameController.text);
+            signUp(widget.emailController.text, widget.passwordController.text,
+                widget.firstNameController.text, widget.lastNameController.text);
           }
         },
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-        padding: EdgeInsets.all(0.0),
         child: Ink(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -338,8 +305,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   signUp(String email, pass, firstName, lastName) async {
-    log('SignUp btn pressed');
-
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map data = {
       'username': email,
@@ -348,8 +313,7 @@ class _SignUpPageState extends State<SignUpPage> {
       'last_name': lastName,
       'password': pass
     };
-
-    var jsonResponse = null;
+    var jsonResponse;
     var response;
 
     try {
@@ -359,22 +323,15 @@ class _SignUpPageState extends State<SignUpPage> {
       print(response.statusCode);
       if (response.statusCode == 200) {
         log('200');
-        //print(response.body);
         jsonResponse = json.decode(response.body);
-        print(jsonResponse);
 
         if (jsonResponse != null) {
           setState(() {
-            _isLoading = false;
             _wrongEmail = false;
             _wrongInfo = false;
           });
           sharedPreferences.setString("token", jsonResponse['token']);
           sharedPreferences.setInt("id", jsonResponse['user']['id']);
-
-          log(' token : ' + sharedPreferences.getString("token"));
-          log(' id : ' + sharedPreferences.getInt("id").toString());
-
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (BuildContext context) => MainPage()),
               (Route<dynamic> route) => false);
@@ -388,17 +345,10 @@ class _SignUpPageState extends State<SignUpPage> {
           setState(() {
             _wrongEmail = true;
           });
-        } else {
-          setState(() {
-            _wrongInfo = true;
-          });
         }
       }
     } catch (e) {
       print(e);
-      setState(() {
-        _isLoading = false;
-      });
     }
     setState(() {
       _isLoading = false;

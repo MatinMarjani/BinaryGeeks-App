@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:application/pages/signup.dart';
+import 'package:application/util/SignUpUtils.dart';
 
 void main() {
   //FirsName
