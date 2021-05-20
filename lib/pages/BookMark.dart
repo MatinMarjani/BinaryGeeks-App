@@ -150,12 +150,15 @@ class _BookMarksState extends State<BookMarks> {
     var url = Uri.parse(AppUrl.Get_BookMarks + "?page=" + p);
     var token = sharedPreferences.getString("token");
 
+    log(AppUrl.Get_BookMarks + "?page=" + p);
+    log(token);
+
     try {
       response = await http.get(url,headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse);
+        print(jsonResponse["results"]);
         if (jsonResponse != null) {
           setState(() {
             for (var i in jsonResponse["results"]) {
@@ -163,21 +166,21 @@ class _BookMarksState extends State<BookMarks> {
                 i["markedpost"]["owner"]["id"],
                 i["markedpost"]["owner"]["email"],
                 i["markedpost"]["owner"]["profile_image"],
-                i["id"],
-                i["title"],
-                i["author"],
-                i["publisher"],
-                i["price"],
-                i["province"],
-                i["city"],
-                i["zone"],
-                i["status"],
-                i["description"],
-                i["is_active"],
-                i["image"],
+                i["markedpost"]["id"],
+                i["markedpost"]["title"],
+                i["markedpost"]["author"],
+                i["markedpost"]["publisher"],
+                i["markedpost"]["price"],
+                i["markedpost"]["province"],
+                i["markedpost"]["city"],
+                i["markedpost"]["zone"],
+                i["markedpost"]["status"],
+                i["markedpost"]["description"],
+                i["markedpost"]["is_active"],
+                i["markedpost"]["image"],
                 //url
-                i["categories"],
-                i["created_at"],
+                i["markedpost"]["categories"],
+                i["markedpost"]["created_at"],
               ));
             }
           });

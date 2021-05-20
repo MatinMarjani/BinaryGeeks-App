@@ -37,7 +37,7 @@ class AppUrl {
   //BookMark
   static const String Get_BookMarks = baseURL + "/api/bookmarks/getmarks"; //Headers token //Get
   static const String Set_BookMarks = baseURL + "/api/bookmarks/setmark"; //Headers token //Body //Post
-  static const String Is_BookMarks = baseURL + "api/bookmarks/ismarked?postid="; //Headers token //params=postid //Get
+  static const String Is_BookMarks = baseURL + "/api/bookmarks/ismarked?postid="; //Headers token //params=postid //Get
 
 
 }
