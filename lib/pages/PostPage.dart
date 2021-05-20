@@ -62,6 +62,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
+
     setState(() {
       MyAppBar.appBarTitle = Text("صفحه آگهی",
           style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
@@ -85,6 +86,7 @@ class _PostPageState extends State<PostPage> {
   checkOwner() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     int ownerID = sharedPreferences.getInt("id");
+    User.id = ownerID.toString();
     if (widget.post.ownerId == ownerID){
       setState(() {
         MyAppBar.actionIcon = Icon(Icons.edit, color: Colors.white);
@@ -125,7 +127,8 @@ class _PostPageState extends State<PostPage> {
               ),
               Divider(),
               SizedBox(height: 20,),
-              postBidField(),
+              !_isOwner ?
+              postBidField() : SizedBox(height: 5,),
               SizedBox(height: 20,),
               Divider(),
               SizedBox(height: 20,),
@@ -908,17 +911,13 @@ class _PostPageState extends State<PostPage> {
     int postID = widget.post.id;
     var url = Uri.parse(AppUrl.Get_Post + postID.toString() + "/bids");
     var response;
-    log("1");
 
     try {
       response = await http.get(url);
-      log("2");
       if (response.statusCode == 200) {
-        log("3");
         var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         print(jsonResponse);
         if (jsonResponse != null) {
-          log("4");
           setState(() {
             for (var i in jsonResponse) {
               myBids.add(BidCard(
@@ -933,6 +932,7 @@ class _PostPageState extends State<PostPage> {
                 i["offered_price"].toString(),
                 i["description"],
                 i["is_accepted"],
+                _isOwner,
               ));
               myBids.add(Divider(
                 thickness: 5,
@@ -945,17 +945,17 @@ class _PostPageState extends State<PostPage> {
     } catch(e) {}
 
     if ( myBids.isEmpty ){
-      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "10000", "description", false));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "10000", "description", false, _isOwner));
       myBids.add(Divider(
         thickness: 5,
         indent: 20,
       ));
-      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "5785178", "description", false));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "5785178", "description", false, _isOwner));
       myBids.add(Divider(
         thickness: 5,
         indent: 20,
       ));
-      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "78578578", "description", false));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "78578578", "description", false, _isOwner));
       myBids.add(Divider(
         thickness: 5,
         indent: 20,
