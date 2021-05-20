@@ -10,7 +10,10 @@ class BidCard extends StatelessWidget {
   final Color mainColor = Utilities().mainColor;
   final String myFont = Utilities().myFont;
 
-  int postID;
+  dynamic acceptBid;
+  dynamic deleteBid;
+
+  int bidID;
   int bidOwner;
   String userName;
   String email;
@@ -25,8 +28,8 @@ class BidCard extends StatelessWidget {
   bool isPostOwner;
   bool isBidOwner = false;
 
-  BidCard(this.postID, this.bidOwner, this.userName, this.email, this.firstName, this.lastName, this.profileImage,
-      this.offeredPrice, this.description, this.isAccepted, this.isPostOwner);
+  BidCard(this.bidID, this.bidOwner, this.userName, this.email, this.firstName, this.lastName, this.profileImage,
+      this.offeredPrice, this.description, this.isAccepted, this.isPostOwner, this.deleteBid);
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +91,7 @@ class BidCard extends StatelessWidget {
                   Icons.check_outlined,
                   color: Colors.green,
                 ),
-                onPressed: () {},
+                onPressed: acceptBid,
               ),
             ) : SizedBox(height: 1),
             isBidOwner ? Expanded(
@@ -102,7 +105,9 @@ class BidCard extends StatelessWidget {
                   Icons.delete,
                   color: Colors.red,
                 ),
-                onPressed: () {},
+                onPressed: (){
+                  deleteBid(bidID);
+                }
               ),
             ) : SizedBox(height: 1),
           ],

@@ -899,7 +899,6 @@ class _PostPageState extends State<PostPage> {
         if (jsonResponse != null) {
           setState(() {
             widget.post.image = AppUrl.liveBaseURL + jsonResponse['image'];
-            log("YESYESYSEYSEYSY");
           });
         }
       }
@@ -933,6 +932,7 @@ class _PostPageState extends State<PostPage> {
                 i["description"],
                 i["is_accepted"],
                 _isOwner,
+                deleteBid,
               ));
               myBids.add(Divider(
                 thickness: 5,
@@ -945,17 +945,17 @@ class _PostPageState extends State<PostPage> {
     } catch(e) {}
 
     if ( myBids.isEmpty ){
-      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "10000", "description", false, _isOwner));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "10000", "description", false, _isOwner, deleteBid));
       myBids.add(Divider(
         thickness: 5,
         indent: 20,
       ));
-      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "5785178", "description", false, _isOwner));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "5785178", "description", false, _isOwner, deleteBid));
       myBids.add(Divider(
         thickness: 5,
         indent: 20,
       ));
-      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "78578578", "description", false, _isOwner));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "78578578", "description", false, _isOwner, deleteBid,));
       myBids.add(Divider(
         thickness: 5,
         indent: 20,
@@ -1006,8 +1006,37 @@ class _PostPageState extends State<PostPage> {
     } catch (e) {
       log(e);
     }
-
-
   }
 
+  Future deleteBid(int bidID) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Post_Bid + "/" + bidID.toString());
+    var headers = {'Authorization': 'Token $token','Content-Type': 'application/json'};
+    var response;
+
+    try {
+      response = await http.delete(url, headers: headers);
+      if (response.statusCode == 200) {
+        log("200");
+        setState(() {
+          myBids.clear();
+          getBids();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت حذف شد",
+                  style: TextStyle(color: Colors.green))));
+        });
+      } else {
+        print(response.body);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("مشکلی به وجود آمد",
+                  style: TextStyle(color: Colors.red))));
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
 }
