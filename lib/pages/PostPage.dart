@@ -880,14 +880,49 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
-  postBid() async {
+  postBid(String price, String description) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     int postID = widget.post.id;
     String token = sharedPreferences.getString("token");
 
-    var url = Uri.parse(AppUrl.Update_Post + postID.toString());
+    var url = Uri.parse(AppUrl.Post_Bid);
 
     var headers = {'Authorization': 'Token $token'};
-    var request = http.MultipartRequest('PUT', url);
+
+    var response;
+    var jsonResponse;
+
+    var body = jsonEncode(<String, dynamic>{
+      "post": postID,
+      "offered_price": int.parse(price),
+      "description": description,
+    });
+
+    try {
+      response = await http.post(url, body: body.toString(), headers: headers);
+      if (response.statusCode == 200) {
+        log("200");
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت انجام شد",
+                  style: TextStyle(color: Colors.green))));
+          // Navigator.of(context).pop();
+        });
+      } else {
+        print(response.body);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("مشکلی به وجود آمد",
+                  style: TextStyle(color: Colors.green))));
+          // Navigator.of(context).pop();
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+
+
   }
 }
