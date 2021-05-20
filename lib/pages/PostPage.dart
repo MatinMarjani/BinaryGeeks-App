@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+import 'package:application/pages/widgets/myBidCard.dart';
 
 
 import 'package:application/util/app_url.dart';
@@ -43,6 +44,9 @@ class _PostPageState extends State<PostPage> {
   bool _isLoading = false;
   bool _noImage = false;
   bool _isOwner = false;
+
+  List<Widget> myBids = [];
+
   var formatter = new NumberFormat('###,###');
 
   File _image;
@@ -57,7 +61,9 @@ class _PostPageState extends State<PostPage> {
           style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
+    myBids.clear();
     checkOwner();
+    getBids();
 
     author.text = widget.post.author;
     publisher.text = widget.post.publisher;
@@ -108,6 +114,8 @@ class _PostPageState extends State<PostPage> {
               bannerImage(),
               header(),
               mainBody(),
+              Divider(),
+              Column(children: myBids),
             ],
           ),
       ),
@@ -813,4 +821,73 @@ class _PostPageState extends State<PostPage> {
 
   }
 
+  getBids() async {
+    int postID = widget.post.id;
+    var url = Uri.parse(AppUrl.Get_Post + postID.toString() + "/bids");
+    var response;
+    log("1");
+
+    try {
+      response = await http.get(url);
+      log("2");
+      if (response.statusCode == 200) {
+        log("3");
+        var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
+        if (jsonResponse != null) {
+          log("4");
+          setState(() {
+            for (var i in jsonResponse) {
+              myBids.add(BidCard(
+                i["id"],
+                i["owner"]["id"],
+                i["owner"]["username"],
+                i["owner"]["email"],
+                i["owner"]["first_name"],
+                i["owner"]["last_name"],
+                i["owner"]["profile_image"],
+
+                i["offered_price"].toString(),
+                i["description"],
+                i["is_accepted"],
+              ));
+              myBids.add(Divider(
+                thickness: 5,
+                indent: 20,
+              ));
+            }
+          });
+        }
+      }
+    } catch(e) {}
+
+    if ( myBids.isEmpty ){
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "offeredPrice", "description", false));
+      myBids.add(Divider(
+        thickness: 5,
+        indent: 20,
+      ));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "offeredPrice", "description", false));
+      myBids.add(Divider(
+        thickness: 5,
+        indent: 20,
+      ));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "offeredPrice", "description", false));
+      myBids.add(Divider(
+        thickness: 5,
+        indent: 20,
+      ));
+    }
+  }
+
+  postBid() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int postID = widget.post.id;
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Update_Post + postID.toString());
+
+    var headers = {'Authorization': 'Token $token'};
+    var request = http.MultipartRequest('PUT', url);
+  }
 }
