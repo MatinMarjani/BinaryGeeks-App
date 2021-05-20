@@ -48,6 +48,7 @@ class _PostPageState extends State<PostPage> {
   bool _isLoading = false;
   bool _noImage = false;
   bool _isOwner = false;
+  bool _isMarked = false;
 
   List<Widget> myBids = [];
 
@@ -62,6 +63,8 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
+
+    isMarked();
 
     setState(() {
       MyAppBar.appBarTitle = Text("صفحه آگهی",
@@ -98,7 +101,7 @@ class _PostPageState extends State<PostPage> {
         _isOwner = false;
       });
     }
-    log(_isOwner.toString());
+    log("_isOwner : " + _isOwner.toString());
   }
 
   @override
@@ -210,9 +213,32 @@ class _PostPageState extends State<PostPage> {
                   ),),
             ],
           )
-          : Text(
-            widget.post.title,
-            style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
+          : Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  widget.post.title,
+                  style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
+                ),),
+              SizedBox(width: 30,),
+              Expanded(
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.white),
+                    shape:
+                    MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: mainColor))),
+                  ),
+                  child: _isMarked ? Icon(Icons.bookmark, color: mainColor,)
+                      :Icon(Icons.bookmark_border_outlined, color: mainColor,),
+                  onPressed: () {
+                    setMark();
+                  },
+                ),),
+            ],
           ),
           Text(
             widget.post.author,
@@ -1061,13 +1087,11 @@ class _PostPageState extends State<PostPage> {
     var url = Uri.parse(AppUrl.Post_Bid + "/" + bidID.toString()+ "/accept");
     var headers = {'Authorization': 'Token $token','Content-Type': 'application/json'};
     var response;
-    var jsonResponse;
 
     try {
       response = await http.put(url, headers: headers);
       if (response.statusCode == 200) {
         log("200");
-        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           widget.post.isActive = false;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1084,6 +1108,69 @@ class _PostPageState extends State<PostPage> {
       }
     } catch (e) {
       log(e);
+    }
+  }
+
+  isMarked() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var token = sharedPreferences.getString("token");
+    int postID = widget.post.id;
+    var url = Uri.parse(AppUrl.Is_BookMarks + postID.toString());
+    var headers = {'Authorization': 'Token $token'};
+    var response;
+    var jsonResponse;
+
+    log(AppUrl.Is_BookMarks + postID.toString());
+    log(token);
+
+    try {
+      response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        log("200");
+        setState(() {
+          _isMarked = jsonResponse;
+        });
+      } else {}
+    } catch (e) {
+      log(e);
+    }
+
+  }
+
+  setMark() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var token = sharedPreferences.getString("token");
+    var url = Uri.parse(AppUrl.Set_BookMarks);
+    var headers = {'Authorization': 'Token $token', 'Content-Type': 'application/json'};
+    int postID = widget.post.id;
+    var response;
+    var body = jsonEncode(<String, dynamic>{
+      "markedpost": postID,
+    });
+
+    if( !_isMarked ) {
+      try {
+        response = await http.post(url, body: body.toString(), headers: headers);
+        if (response.statusCode == 200) {
+          log("200");
+          setState(() {
+            _isMarked = true;
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("با موفقیت نشان شد",
+                    style: TextStyle(color: Colors.green))));
+          });
+        } else {
+          print(response.body);
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("مشکلی به وجود آمد",
+                    style: TextStyle(color: Colors.red))));
+          });
+        }
+      } catch (e) {
+        log(e);
+      }
     }
   }
 }
