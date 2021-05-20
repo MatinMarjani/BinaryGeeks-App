@@ -421,6 +421,8 @@ class _SearchPageState extends State<SearchPage> {
         if (jsonResponse != null) {
           setState(() {
             for (var i in jsonResponse["results"]) {
+              if ( i["is_active"] == null )
+                i["is_active"] = false;
               myPost.add(Post(
                 i["owner"]["id"],
                 i["owner"]["email"],

@@ -116,7 +116,7 @@ class _PostPageState extends State<PostPage> {
                 child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(mainColor),
               ))
-            : ListView(
+            : widget.post.isActive ? ListView(
             shrinkWrap: true,
             children: <Widget>[
               bannerImage(),
@@ -134,6 +134,19 @@ class _PostPageState extends State<PostPage> {
               SizedBox(height: 20,),
               Column(children: myBids),
             ],
+          ) : ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+            bannerImage(),
+            header(),
+            mainBody(),
+              Center(
+                child: Text(
+                    "این آگهی غیر فعال است",
+                  style: TextStyle( color: Colors.red , fontFamily: myFont, fontSize: 30),
+                ),
+              )
+            ]
           ),
       ),
       drawer: MyDrawer(),
@@ -1048,14 +1061,15 @@ class _PostPageState extends State<PostPage> {
     var url = Uri.parse(AppUrl.Post_Bid + "/" + bidID.toString()+ "/accept");
     var headers = {'Authorization': 'Token $token','Content-Type': 'application/json'};
     var response;
+    var jsonResponse;
 
     try {
       response = await http.put(url, headers: headers);
       if (response.statusCode == 200) {
         log("200");
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
-          myBids.clear();
-          getBids();
+          widget.post.isActive = false;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("با موفقیت قبول شد",
                   style: TextStyle(color: Colors.green))));
