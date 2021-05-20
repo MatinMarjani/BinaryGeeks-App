@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:application/pages/login.dart';
 import 'package:application/pages/newpost.dart';
+import 'package:application/pages/BookMark.dart';
 import 'package:application/main.dart';
 
 import 'package:application/util/app_url.dart';
@@ -100,6 +101,16 @@ class _MyDrawerState extends State<MyDrawer> {
             leading: Icon(Icons.create_new_folder_outlined, color: widget.mainColor),
             onTap: () {
               Navigator.push(context, new MaterialPageRoute(builder: (context) => NewPostPage()));
+            },
+          ),
+          ListTile(
+            title: Text(
+              "نشان ها",
+              style: TextStyle(fontFamily: 'myfont'),
+            ),
+            leading: Icon(Icons.bookmark_border_outlined, color: widget.mainColor),
+            onTap: () {
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => BookMarks()));
             },
           ),
           ListTile(
