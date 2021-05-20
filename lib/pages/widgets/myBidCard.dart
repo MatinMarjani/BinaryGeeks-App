@@ -29,7 +29,7 @@ class BidCard extends StatelessWidget {
   bool isBidOwner = false;
 
   BidCard(this.bidID, this.bidOwner, this.userName, this.email, this.firstName, this.lastName, this.profileImage,
-      this.offeredPrice, this.description, this.isAccepted, this.isPostOwner, this.deleteBid);
+      this.offeredPrice, this.description, this.isAccepted, this.isPostOwner, this.deleteBid, this.acceptBid);
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,9 @@ class BidCard extends StatelessWidget {
                   Icons.check_outlined,
                   color: Colors.green,
                 ),
-                onPressed: acceptBid,
+                onPressed: () {
+                  acceptBid(bidID);
+                },
               ),
             ) : SizedBox(height: 1),
             isBidOwner ? Expanded(
