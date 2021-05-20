@@ -31,5 +31,6 @@ class AppUrl {
   //Search$Filter
   static const String Search = baseURL + "/api/filter/"; //+params  //GET
 
-
+  //Bids
+  static const String Post_Bid = baseURL + "/api/bids"; //post
 }

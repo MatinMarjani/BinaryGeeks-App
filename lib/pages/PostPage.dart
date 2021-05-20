@@ -13,10 +13,12 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+import 'package:application/pages/widgets/myBidCard.dart';
 
 
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
+import 'package:application/util/User.dart';
 import 'package:application/util/Utilities.dart';
 
 class PostPage extends StatefulWidget {
@@ -40,24 +42,35 @@ class _PostPageState extends State<PostPage> {
   final TextEditingController zone = new TextEditingController();
   final TextEditingController description = new TextEditingController();
 
+  final TextEditingController bidDescriptionController = new TextEditingController();
+  final TextEditingController bidPriceController = new TextEditingController();
+
   bool _isLoading = false;
   bool _noImage = false;
   bool _isOwner = false;
+
+  List<Widget> myBids = [];
+
   var formatter = new NumberFormat('###,###');
 
   File _image;
+  String userImage;
 
   final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+
     setState(() {
       MyAppBar.appBarTitle = Text("صفحه آگهی",
           style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
+    myBids.clear();
     checkOwner();
+    getBids();
 
     author.text = widget.post.author;
     publisher.text = widget.post.publisher;
@@ -67,11 +80,13 @@ class _PostPageState extends State<PostPage> {
     zone.text = widget.post.zone;
     description.text = widget.post.description;
 
+    userImage = User.profileImage;
   }
 
   checkOwner() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     int ownerID = sharedPreferences.getInt("id");
+    User.id = ownerID.toString();
     if (widget.post.ownerId == ownerID){
       setState(() {
         MyAppBar.actionIcon = Icon(Icons.edit, color: Colors.white);
@@ -99,16 +114,39 @@ class _PostPageState extends State<PostPage> {
         child: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(mainColor),
+                valueColor: AlwaysStoppedAnimation<Color>(mainColor),
               ))
-            : ListView(
+            : widget.post.isActive ? ListView(
             shrinkWrap: true,
             children: <Widget>[
               bannerImage(),
               header(),
               mainBody(),
+              Center(
+                child: Text("درخواست ها",style: TextStyle( fontSize: 30),),
+              ),
+              Divider(),
+              SizedBox(height: 20,),
+              !_isOwner ?
+              postBidField() : SizedBox(height: 5,),
+              SizedBox(height: 20,),
+              Divider(),
+              SizedBox(height: 20,),
+              Column(children: myBids),
             ],
+          ) : ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+            bannerImage(),
+            header(),
+            mainBody(),
+              Center(
+                child: Text(
+                    "این آگهی غیر فعال است",
+                  style: TextStyle( color: Colors.red , fontFamily: myFont, fontSize: 30),
+                ),
+              )
+            ]
           ),
       ),
       drawer: MyDrawer(),
@@ -336,6 +374,75 @@ class _PostPageState extends State<PostPage> {
           ),
           SizedBox(height: 50)
         ],
+      ),
+    );
+  }
+
+  Container postBidField() {
+    return Container(
+      child: ListTile(
+        // tileColor: Colors.white,
+        leading: Container(
+          height: 40.0,
+          width: 40.0,
+          decoration: new BoxDecoration(
+              color: Colors.blue,
+              borderRadius: new BorderRadius.all(Radius.circular(50))),
+          child: CircleAvatar(
+              radius: 50, backgroundImage: NetworkImage('http://37.152.176.11' + userImage)),
+        ),
+        title: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                maxLines: 4,
+                minLines: 1,
+                controller: bidDescriptionController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.request_page, color: mainColor),
+                  labelText: "توضیحات",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  hintStyle: TextStyle(
+                      color: Colors.black, fontFamily: myFont),
+                ),
+                validator: (value) => value.isEmpty ? "الزامی است" : null,
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                maxLines: 1,
+                minLines: 1,
+                controller: bidPriceController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.request_page, color: mainColor),
+                  labelText: "قیمت",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  hintStyle: TextStyle(
+                      color: Colors.black, fontFamily: myFont),
+                ),
+                validator: (value) => value.isEmpty ? "الزامی است" : null,
+              ),
+              SizedBox(height: 10),
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
+                ),
+                child: Text(
+                  "ارسال درخواست",
+                ),
+                onPressed: () {
+                  postBid(bidPriceController.text, bidDescriptionController.text);
+                },
+              ),
+            ],
+          )
+        ),
       ),
     );
   }
@@ -805,7 +912,6 @@ class _PostPageState extends State<PostPage> {
         if (jsonResponse != null) {
           setState(() {
             widget.post.image = AppUrl.liveBaseURL + jsonResponse['image'];
-            log("YESYESYSEYSEYSY");
           });
         }
       }
@@ -813,4 +919,171 @@ class _PostPageState extends State<PostPage> {
 
   }
 
+  getBids() async {
+    int postID = widget.post.id;
+    var url = Uri.parse(AppUrl.Get_Post + postID.toString() + "/bids");
+    var response;
+
+    try {
+      response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
+        if (jsonResponse != null) {
+          setState(() {
+            for (var i in jsonResponse) {
+              myBids.add(BidCard(
+                i["id"],
+                i["owner"]["id"],
+                i["owner"]["username"],
+                i["owner"]["email"],
+                i["owner"]["first_name"],
+                i["owner"]["last_name"],
+                i["owner"]["profile_image"],
+
+                i["offered_price"].toString(),
+                i["description"],
+                i["is_accepted"],
+                _isOwner,
+                deleteBid,
+                acceptBid,
+              ));
+              myBids.add(Divider(
+                thickness: 5,
+                indent: 20,
+              ));
+            }
+          });
+        }
+      }
+    } catch(e) {}
+
+    if ( myBids.isEmpty ){
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "10000", "description", false, _isOwner, deleteBid, acceptBid));
+      myBids.add(Divider(
+        thickness: 5,
+        indent: 20,
+      ));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "5785178", "description", false, _isOwner, deleteBid, acceptBid));
+      myBids.add(Divider(
+        thickness: 5,
+        indent: 20,
+      ));
+      myBids.add(BidCard(1, 1, "userName", "email", "firstName", "lastName", "null", "78578578", "description", false, _isOwner, deleteBid, acceptBid));
+      myBids.add(Divider(
+        thickness: 5,
+        indent: 20,
+      ));
+    }
+  }
+
+  postBid(String price, String description) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int postID = widget.post.id;
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Post_Bid);
+
+    var headers = {'Authorization': 'Token $token','Content-Type': 'application/json'};
+
+    var response;
+    var jsonResponse;
+
+    var body = jsonEncode(<String, dynamic>{
+      "post": postID,
+      "offered_price": int.parse(price),
+      "description": description,
+    });
+
+    try {
+      response = await http.post(url, body: body.toString(), headers: headers);
+      if (response.statusCode == 200) {
+        log("200");
+        print(jsonResponse);
+        setState(() {
+          myBids.clear();
+          getBids();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت انجام شد",
+                  style: TextStyle(color: Colors.green))));
+          // Navigator.of(context).pop();
+        });
+      } else {
+        print(response.body);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("مشکلی به وجود آمد",
+                  style: TextStyle(color: Colors.red))));
+          // Navigator.of(context).pop();
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+
+  Future deleteBid(int bidID) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Post_Bid + "/" + bidID.toString());
+    var headers = {'Authorization': 'Token $token','Content-Type': 'application/json'};
+    var response;
+
+    try {
+      response = await http.delete(url, headers: headers);
+      if (response.statusCode == 200) {
+        log("200");
+        setState(() {
+          myBids.clear();
+          getBids();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت حذف شد",
+                  style: TextStyle(color: Colors.green))));
+        });
+      } else {
+        print(response.body);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("مشکلی به وجود آمد",
+                  style: TextStyle(color: Colors.red))));
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+
+  Future acceptBid(int bidID) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Post_Bid + "/" + bidID.toString()+ "/accept");
+    var headers = {'Authorization': 'Token $token','Content-Type': 'application/json'};
+    var response;
+    var jsonResponse;
+
+    try {
+      response = await http.put(url, headers: headers);
+      if (response.statusCode == 200) {
+        log("200");
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        setState(() {
+          widget.post.isActive = false;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("با موفقیت قبول شد",
+                  style: TextStyle(color: Colors.green))));
+        });
+      } else {
+        print(response.body);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("مشکلی به وجود آمد",
+                  style: TextStyle(color: Colors.red))));
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
 }
