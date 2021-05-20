@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:application/util/Utilities.dart';
 
 //ignore: must_be_immutable
@@ -28,6 +27,7 @@ class BidCard extends StatelessWidget {
   Widget build(BuildContext context) {
     bool _noImage;
     var formatter = new NumberFormat('###,###');
+    String price = formatter.format(int.parse(offeredPrice));
 
     if (profileImage == null)
       _noImage = true;
@@ -60,7 +60,7 @@ class BidCard extends StatelessWidget {
         trailing: Column(
           children: <Widget>[
             Text(
-              offeredPrice,
+              price,
               style: TextStyle(color: Colors.green),
             ),
             SizedBox(height: 4),
