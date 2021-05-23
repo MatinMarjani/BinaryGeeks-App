@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import 'package:application/pages/PostPage.dart';
 import 'package:application/util/Post.dart';
+import 'package:application/util/Utilities.dart';
+
 
 //ignore: must_be_immutable
 class PostCard extends StatelessWidget {
@@ -98,7 +100,7 @@ class PostCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                       child: Text(
-                        formatter.format(post.price),
+                        Utilities().replaceFarsiNumber(formatter.format(post.price)),
                         style: TextStyle(fontSize: 15.0, color: Colors.green, fontFamily: 'myfont'),
                       ),
                     ),
