@@ -76,7 +76,7 @@ class BidCard extends StatelessWidget {
         trailing: Column(
           children: <Widget>[
             Text(
-              price,
+              price + " تومان",
               style: TextStyle(color: Colors.green),
             ),
             SizedBox(height: 4),
