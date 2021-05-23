@@ -39,5 +39,7 @@ class AppUrl {
   static const String Set_BookMarks = baseURL + "/api/bookmarks/setmark"; //Headers token //Body //Post
   static const String Is_BookMarks = baseURL + "/api/bookmarks/ismarked?postid="; //Headers token //params=postid //Get
 
+  //Notifications
+  static const String Get_Notifications = baseURL + "/api/notifications/getmynotifications"; //Headers token //Get
 
 }
