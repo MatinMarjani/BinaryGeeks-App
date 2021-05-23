@@ -161,9 +161,9 @@ class _PostPageState extends State<PostPage> {
     String time2 = "";
     String time = "";
     try {
-      date = widget.post.createdAt.split('T')[0] ?? "";
+      date = Utilities().replaceFarsiNumber(widget.post.createdAt.split('T')[0] ?? "");
       time2 = widget.post.createdAt.split('T')[1] ?? "";
-      time = time2.split(".")[0] ?? "";
+      time = Utilities().replaceFarsiNumber(time2.split(".")[0] ?? "");
     } catch (e) {}
     return Container(
       child: Column(
@@ -298,8 +298,7 @@ class _PostPageState extends State<PostPage> {
 
     setState(() {
       priceH.text = "قیمت :";
-      price.text = formatter.format(widget.post.price);
-      provinceH.text = "استان :";
+      price.text = Utilities().replaceFarsiNumber(formatter.format(widget.post.price));      provinceH.text = "استان :";
       province.text = widget.post.province ?? "-";
       cityH.text = "شهر :";
       city.text = widget.post.city ?? "-";
