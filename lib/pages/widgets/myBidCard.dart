@@ -79,7 +79,7 @@ class BidCard extends StatelessWidget {
               price + " تومان",
               style: TextStyle(color: Colors.green),
             ),
-            SizedBox(height: 4),
+            SizedBox(height: 1),
             isPostOwner ? Expanded(
               child: TextButton(
                 style: ButtonStyle(
@@ -111,7 +111,7 @@ class BidCard extends StatelessWidget {
                   deleteBid(bidID);
                 }
               ),
-            ) : SizedBox(height: 1),
+            ) : SizedBox(height: 0),
           ],
         ),
         isThreeLine: true,
