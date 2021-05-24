@@ -174,6 +174,9 @@ class _MyAppBarState extends State<MyAppBar> {
                   //url
                   jsonResponse["categories"],
                   jsonResponse["created_at"],
+                  jsonResponse["exchange_book_title"],
+                  jsonResponse["exchange_book_author"],
+                  jsonResponse["exchange_book_publisher"],
                 )));
                 myNotifications.add(Divider(thickness: 3,));
                 if( !i["is_seen"] ) {

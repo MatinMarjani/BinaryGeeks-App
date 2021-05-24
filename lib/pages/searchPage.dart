@@ -442,6 +442,9 @@ class _SearchPageState extends State<SearchPage> {
                 //url
                 i["categories"],
                 i["created_at"],
+                i["exchange_book_title"],
+                i["exchange_book_author"],
+                i["exchange_book_publisher"],
               ));
             }
           });
