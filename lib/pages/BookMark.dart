@@ -181,6 +181,9 @@ class _BookMarksState extends State<BookMarks> {
                 //url
                 i["markedpost"]["categories"],
                 i["markedpost"]["created_at"],
+                i["markedpost"]["exchange_book_title"],
+                i["markedpost"]["exchange_book_author"],
+                i["markedpost"]["exchange_book_publisher"],
               ));
             }
           });

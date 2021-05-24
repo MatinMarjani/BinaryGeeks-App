@@ -16,24 +16,29 @@ class Post {
   String image; //url
   String categories;
   String createdAt;
+  String exchangeTitle;
+  String exchangeAuthor;
+  String changePublisher;
 
   Post(
-    this.ownerId,
-    this.ownerEmail,
-    this.ownerProfileImage,
-    this.id,
-    this.title,
-    this.author,
-    this.publisher,
-    this.price,
-    this.province,
-    this.city,
-    this.zone,
-    this.status,
-    this.description,
-    this.isActive,
-    this.image, //url
-    this.categories,
-    this.createdAt,
-  );
+      this.ownerId,
+      this.ownerEmail,
+      this.ownerProfileImage,
+      this.id,
+      this.title,
+      this.author,
+      this.publisher,
+      this.price,
+      this.province,
+      this.city,
+      this.zone,
+      this.status,
+      this.description,
+      this.isActive,
+      this.image, //url
+      this.categories,
+      this.createdAt,
+      this.exchangeAuthor,
+      this.exchangeTitle,
+      this.changePublisher);
 }
