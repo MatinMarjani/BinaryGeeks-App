@@ -3,7 +3,7 @@ import 'package:application/pages/PostPage.dart';
 import 'package:flutter/material.dart';
 import 'package:application/util/Utilities.dart';
 import 'package:application/util/Post.dart';
-import 'package:http/http.dart';
+
 
 //ignore: must_be_immutable
 class NotificationCard extends StatelessWidget {
@@ -22,6 +22,8 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String postIDfarsi = Utilities().replaceFarsiNumber(postID.toString());
+    String notificationIDfarsi = Utilities().replaceFarsiNumber(notificationID.toString());
     return Padding(
       padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
       child: ListTile(
@@ -38,8 +40,8 @@ class NotificationCard extends StatelessWidget {
           "درخواست جدید",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text("پست $postID"),
-        trailing: Text("$notificationID"),
+        subtitle: Text("پست $postIDfarsi"),
+        trailing: Text("$notificationIDfarsi"),
         isThreeLine: true,
         onTap: () {
           Navigator.push(context, new MaterialPageRoute(builder: (context) => PostPage(post)));

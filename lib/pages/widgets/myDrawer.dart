@@ -132,13 +132,13 @@ class _MyDrawerState extends State<MyDrawer> {
 
   void initState() {
     super.initState();
+    getProfile();
     setState(() {
       firstNameController.text = User.firstName;
       lastNameController.text = User.lastName;
       emailController.text = User.email;
       imageController.text = User.profileImage;
     });
-    getProfile();
   }
 
   getProfile() async {

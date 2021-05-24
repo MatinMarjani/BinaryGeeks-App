@@ -14,15 +14,20 @@ import 'package:application/pages/widgets/myAppBar.dart';
 import 'package:application/pages/dashboard.dart';
 
 import 'package:application/util/app_url.dart';
+import 'package:application/util/Utilities.dart';
+
 
 class NewPostPage extends StatefulWidget {
+  final Color mainColor = Utilities().mainColor;
+  final String myFont = Utilities().myFont;
+
   @override
   _NewPostPageState createState() => _NewPostPageState();
 }
 
 class _NewPostPageState extends State<NewPostPage> {
   int _currentStep = 0;
-  StepperType stepperType = StepperType.vertical;
+  StepperType stepperType = StepperType.horizontal;
 
   bool _isLoading = false;
   bool complete = false;
@@ -208,7 +213,7 @@ class _NewPostPageState extends State<NewPostPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
-                icon: Icon(Icons.title, color: Colors.black),
+                icon: Icon(Icons.title_outlined, color: widget.mainColor),
                 labelText: "نام کتاب",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
@@ -227,7 +232,7 @@ class _NewPostPageState extends State<NewPostPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
-                icon: Icon(Icons.assignment_ind, color: Colors.black),
+                icon: Icon(Icons.assignment_ind_outlined, color: widget.mainColor),
                 labelText: "نویسنده",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
@@ -246,7 +251,7 @@ class _NewPostPageState extends State<NewPostPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
-                icon: Icon(Icons.print, color: Colors.black),
+                icon: Icon(Icons.print_disabled_outlined, color: widget.mainColor),
                 labelText: "ناشر",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
@@ -266,7 +271,7 @@ class _NewPostPageState extends State<NewPostPage> {
               style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
                 suffixIcon: PopupMenuButton<String>(
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: Icon(Icons.arrow_drop_down_circle_outlined, color: widget.mainColor,),
                   onSelected: (String value) {
                     categoriesController.text = value;
                   },
@@ -277,7 +282,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     }).toList();
                   },
                 ),
-                icon: Icon(Icons.web_asset_sharp, color: Colors.black),
+                icon: Icon(Icons.web_asset_outlined, color: widget.mainColor),
                 labelText: "دسته بندی",
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
@@ -329,8 +334,8 @@ class _NewPostPageState extends State<NewPostPage> {
                           width: 300,
                           height: 300,
                           child: Icon(
-                            Icons.camera_alt,
-                            color: Colors.grey[800],
+                            Icons.camera_alt_outlined,
+                            color: widget.mainColor,
                           ),
                         ),
                 ),
@@ -370,7 +375,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 FilteringTextInputFormatter.digitsOnly
               ],
               decoration: InputDecoration(
-                icon: Icon(Icons.attach_money, color: Colors.black),
+                icon: Icon(Icons.attach_money_outlined, color: widget.mainColor),
                 labelText: 'قیمت',
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
@@ -392,7 +397,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     cursorColor: Colors.black,
                     style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
-                      icon: Icon(Icons.map, color: Colors.black),
+                      icon: Icon(Icons.map_outlined, color: widget.mainColor),
                       labelText: "استان",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
@@ -414,7 +419,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     cursorColor: Colors.black,
                     style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
-                      icon: Icon(Icons.location_city, color: Colors.black),
+                      icon: Icon(Icons.location_city_outlined, color: widget.mainColor),
                       labelText: "شهر",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
@@ -440,7 +445,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     cursorColor: Colors.black,
                     style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
-                      icon: Icon(Icons.map, color: Colors.black),
+                      icon: Icon(Icons.map_outlined, color: widget.mainColor),
                       labelText: "منطقه",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
@@ -463,7 +468,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
                     decoration: InputDecoration(
                       suffixIcon: PopupMenuButton<String>(
-                        icon: const Icon(Icons.arrow_drop_down),
+                        icon: Icon(Icons.arrow_drop_down_circle_outlined, color: widget.mainColor),
                         onSelected: (String value) {
                           statusController.text = value;
                         },
@@ -475,7 +480,7 @@ class _NewPostPageState extends State<NewPostPage> {
                           }).toList();
                         },
                       ),
-                      icon: Icon(Icons.speaker_group, color: Colors.black),
+                      icon: Icon(Icons.transform_outlined, color: widget.mainColor),
                       labelText: "وضعیت",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
@@ -500,7 +505,7 @@ class _NewPostPageState extends State<NewPostPage> {
               maxLines: null,
               style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
               decoration: InputDecoration(
-                icon: Icon(Icons.description, color: Colors.black),
+                icon: Icon(Icons.description_outlined, color: widget.mainColor),
                 labelText: 'توضیحات',
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),

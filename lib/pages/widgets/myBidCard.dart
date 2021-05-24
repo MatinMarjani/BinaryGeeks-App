@@ -35,7 +35,7 @@ class BidCard extends StatelessWidget {
   Widget build(BuildContext context) {
     bool _noImage;
     var formatter = new NumberFormat('###,###');
-    String price = formatter.format(int.parse(offeredPrice));
+    String price = Utilities().replaceFarsiNumber(formatter.format(int.parse(offeredPrice)));
 
     log(User.id);
     log(bidOwner.toString());
@@ -76,7 +76,7 @@ class BidCard extends StatelessWidget {
         trailing: Column(
           children: <Widget>[
             Text(
-              price,
+              price + " تومان",
               style: TextStyle(color: Colors.green),
             ),
             SizedBox(height: 4),

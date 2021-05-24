@@ -7,7 +7,6 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:application/pages/widgets/myNotifCard.dart';
 
