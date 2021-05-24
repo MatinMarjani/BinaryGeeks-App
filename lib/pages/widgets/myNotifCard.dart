@@ -3,7 +3,6 @@ import 'package:application/pages/PostPage.dart';
 import 'package:flutter/material.dart';
 import 'package:application/util/Utilities.dart';
 import 'package:application/util/Post.dart';
-import 'package:application/util/Utilities.dart';
 
 
 //ignore: must_be_immutable

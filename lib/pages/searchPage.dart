@@ -223,7 +223,7 @@ class _SearchPageState extends State<SearchPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.web_asset_sharp, color: widget.mainColor),
+                prefixIcon: Icon(Icons.web_asset_outlined, color: widget.mainColor),
                 labelText: "دسته بندی",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -238,7 +238,7 @@ class _SearchPageState extends State<SearchPage> {
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
                 // icon: Icon(Icons.lock, color: widget.mainColor),
-                prefixIcon: Icon(Icons.map, color: widget.mainColor),
+                prefixIcon: Icon(Icons.map_outlined, color: widget.mainColor),
                 labelText: "استان",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -253,7 +253,7 @@ class _SearchPageState extends State<SearchPage> {
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
                 // icon: Icon(Icons.lock, color: widget.mainColor),
-                prefixIcon: Icon(Icons.location_city, color: widget.mainColor),
+                prefixIcon: Icon(Icons.location_city_outlined, color: widget.mainColor),
                 labelText: "شهر",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -267,7 +267,7 @@ class _SearchPageState extends State<SearchPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.save_alt_rounded, color: widget.mainColor),
+                prefixIcon: Icon(Icons.save_alt_outlined, color: widget.mainColor),
                 suffixIcon: PopupMenuButton<String>(
                   icon: const Icon(Icons.arrow_drop_down),
                   onSelected: (String value) {
@@ -299,7 +299,7 @@ class _SearchPageState extends State<SearchPage> {
                         FilteringTextInputFormatter.digitsOnly
                       ],
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.arrow_back_ios, color: widget.mainColor),
+                        prefixIcon: Icon(Icons.arrow_back_ios_outlined, color: widget.mainColor),
                         labelText: "از قیمت",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(22.0)),
@@ -319,7 +319,7 @@ class _SearchPageState extends State<SearchPage> {
                         FilteringTextInputFormatter.digitsOnly
                       ],
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.arrow_forward_ios, color: widget.mainColor),
+                        prefixIcon: Icon(Icons.arrow_forward_ios_outlined, color: widget.mainColor),
                         labelText: "تا قیمت",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(22.0)),

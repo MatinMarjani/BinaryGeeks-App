@@ -502,7 +502,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style:
                       TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.account_box_rounded, color: widget.mainColor),
+                    prefixIcon: Icon(Icons.account_box_outlined, color: widget.mainColor),
                     labelText: "نام",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -519,7 +519,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style:
                       TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.account_box_rounded, color: widget.mainColor),
+                    prefixIcon: Icon(Icons.account_box_outlined, color: widget.mainColor),
                     labelText: "نام خانوادگی",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -542,7 +542,7 @@ class _ProfilePageState extends State<ProfilePage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.email, color: widget.mainColor),
+              prefixIcon: Icon(Icons.email_outlined, color: widget.mainColor),
               labelText: "ایمیل",
               errorText: ProfileValidators.errorEmail(emailError),
               border:
@@ -567,7 +567,7 @@ class _ProfilePageState extends State<ProfilePage> {
               FilteringTextInputFormatter.digitsOnly
             ],
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.phone, color: widget.mainColor),
+              prefixIcon: Icon(Icons.phone_android_outlined, color: widget.mainColor),
               labelText: "تلفن همراه",
               errorText: ProfileValidators.errorPhone(phoneError),
               border:
@@ -582,7 +582,7 @@ class _ProfilePageState extends State<ProfilePage> {
             cursorColor: Colors.black,
             style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.school, color: widget.mainColor),
+              prefixIcon: Icon(Icons.school_outlined, color: widget.mainColor),
               labelText: "دانشگاه",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
@@ -600,7 +600,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style:
                       TextStyle(color: Colors.black, fontFamily: widget.myFont),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.school, color: widget.mainColor),
+                    prefixIcon: Icon(Icons.school_outlined, color: widget.mainColor),
                     labelText: "رشته تحصیلی",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -621,7 +621,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     FilteringTextInputFormatter.digitsOnly
                   ],
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.date_range, color: widget.mainColor),
+                    prefixIcon: Icon(Icons.date_range_outlined, color: widget.mainColor),
                     labelText: "سال ورود",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22.0)),
@@ -742,7 +742,7 @@ class _ProfilePageState extends State<ProfilePage> {
               obscureText: true,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock, color: widget.mainColor),
+                prefixIcon: Icon(Icons.lock_open_outlined, color: widget.mainColor),
                 labelText: "گذرواژه",
                 errorText:
                     _wrongPass ? 'رمز وارد شده غلط می باشد' : null,
@@ -765,7 +765,7 @@ class _ProfilePageState extends State<ProfilePage> {
               obscureText: true,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock, color: widget.mainColor),
+                prefixIcon: Icon(Icons.lock_open_outlined, color: widget.mainColor),
                 labelText: "گذرواژه ی جدید",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -789,7 +789,7 @@ class _ProfilePageState extends State<ProfilePage> {
               obscureText: true,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock, color: widget.mainColor),
+                prefixIcon: Icon(Icons.lock_open_outlined, color: widget.mainColor),
                 labelText: "تکرار گذرواژه ی جدید",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
