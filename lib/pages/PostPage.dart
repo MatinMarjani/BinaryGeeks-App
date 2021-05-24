@@ -15,6 +15,7 @@ import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
 import 'package:application/pages/widgets/myBidCard.dart';
 
+import 'package:application/pages/dashboard.dart';
 
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
@@ -298,7 +299,8 @@ class _PostPageState extends State<PostPage> {
 
     setState(() {
       priceH.text = "قیمت :";
-      price.text = Utilities().replaceFarsiNumber(formatter.format(widget.post.price));      provinceH.text = "استان :";
+      price.text = Utilities().replaceFarsiNumber(formatter.format(widget.post.price));
+      provinceH.text = "استان :";
       province.text = widget.post.province ?? "-";
       cityH.text = "شهر :";
       city.text = widget.post.city ?? "-";
@@ -483,6 +485,7 @@ class _PostPageState extends State<PostPage> {
             updateBody(),
             updateImage(),
             updateSubmit(),
+            deleteSubmit(),
           ],
         ),
     );
@@ -721,6 +724,32 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
+  Container deleteSubmit() {
+    return Container(
+      margin: EdgeInsets.only(top: 30.0, bottom: 00),
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 00.0),
+      child: TextButton(
+        style: ButtonStyle(
+          backgroundColor:
+          MaterialStateProperty.all<Color>(Colors.white),
+          shape:
+          MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.red))),
+        ),
+        child: Text(
+          "پاک کردن آگهی",
+          style: TextStyle(
+              color: Colors.red, fontFamily: 'myfont'),
+        ),
+        onLongPress: () {
+          deletePost();
+        },
+      ),
+    );
+  }
+
   void _showPicker(context) {
     showModalBottomSheet(
         context: context,
@@ -921,6 +950,52 @@ class _PostPageState extends State<PostPage> {
     } catch (e) {
       log(e);
     }
+  }
+
+  deletePost() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int postID = widget.post.id;
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse(AppUrl.Delete_Post + postID.toString());
+    var response;
+    var jsonResponse;
+
+    var headers = {
+      'Authorization': 'Token $token',
+    };
+
+    try {
+      response = await http.put(url, headers: headers);
+      if (response.statusCode == 200) {
+        log("200");
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("آگهی با موفقیت پاک شد",
+                  style: TextStyle(color: Colors.green))));
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => DashBoard()));
+        });
+      } else {
+        print(response.body);
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("مشکلی به وجود آمد",
+                  style: TextStyle(color: Colors.green))));
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   getImage() async {
