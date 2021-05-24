@@ -43,6 +43,10 @@ class _PostPageState extends State<PostPage> {
   final TextEditingController zone = new TextEditingController();
   final TextEditingController description = new TextEditingController();
 
+  final TextEditingController exchangeTitleController = new TextEditingController();
+  final TextEditingController exchangeAuthorController = new TextEditingController();
+  final TextEditingController exchangePublisherController = new TextEditingController();
+
   final TextEditingController bidDescriptionController = new TextEditingController();
   final TextEditingController bidPriceController = new TextEditingController();
 
@@ -217,7 +221,10 @@ class _PostPageState extends State<PostPage> {
                     onPressed: () {
                       showBarModalBottomSheet(
                         context: context,
-                        builder: (context) => updatePostForm(),
+                        builder: (context) => SingleChildScrollView(
+                          controller: ModalScrollController.of(context),
+                          child: updatePostForm(),
+                        ),
                       );
                     },
                   ),),
@@ -513,7 +520,7 @@ class _PostPageState extends State<PostPage> {
 
   Container updateHeader() {
     return Container(
-      margin: EdgeInsets.only(top: 00.0, bottom: 60),
+      margin: EdgeInsets.only(top: 60.0, bottom: 60),
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 00.0),
       child: Center(
           child: Text("تغییر اطلاعات آگهی",
@@ -567,7 +574,7 @@ class _PostPageState extends State<PostPage> {
   Container updateBody() {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-        child: Column(
+        child: isExchange ? Column(
           children: <Widget>[
             TextFormField(
               controller: author,
@@ -579,7 +586,7 @@ class _PostPageState extends State<PostPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.assignment_ind, color: mainColor),
+                prefixIcon: Icon(Icons.assignment_ind_outlined, color: mainColor),
                 labelText: "نویسنده",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -598,7 +605,191 @@ class _PostPageState extends State<PostPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.print, color: mainColor),
+                prefixIcon: Icon(Icons.print_disabled_outlined, color: mainColor),
+                labelText: "ناشر",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: province,
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                labelText: "استان",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    controller: city,
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.location_city_outlined, color: mainColor),
+                      labelText: "شهر",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle:
+                      TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  child: TextFormField(
+                    controller: zone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return 'الزامی است';
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                      labelText: "منطقه",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle:
+                      TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: description,
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.description_outlined, color: mainColor),
+                labelText: "توضیحات",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              "کتابی که میخواهید با آن مبادله کنید :",
+              style: TextStyle( fontFamily: myFont, color: mainColor, fontSize: 20),),
+            TextFormField(
+              controller: exchangeTitleController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.title_outlined, color: mainColor),
+                labelText: "نام کتاب",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextFormField(
+              controller: exchangeAuthorController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.assignment_ind_outlined, color: mainColor),
+                labelText: "نویسنده",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextFormField(
+              controller: exchangePublisherController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الزامی است';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: 'myfont'),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.print_disabled_outlined, color: mainColor),
+                labelText: "ناشر",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10),
+          ],
+        )
+            : Column(
+          children: <Widget>[
+            TextFormField(
+              controller: author,
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.assignment_ind_outlined, color: mainColor),
+                labelText: "نویسنده",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(22.0)),
+                hintStyle:
+                TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: publisher,
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.print_disabled_outlined, color: mainColor),
                 labelText: "ناشر",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -620,7 +811,7 @@ class _PostPageState extends State<PostPage> {
                     cursorColor: Colors.black,
                     style: TextStyle(color: Colors.black, fontFamily: myFont),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.attach_money, color: mainColor),
+                      prefixIcon: Icon(Icons.attach_money_outlined, color: mainColor),
                       labelText: "قیمت",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(22.0)),
@@ -641,7 +832,7 @@ class _PostPageState extends State<PostPage> {
                     cursorColor: Colors.black,
                     style: TextStyle(color: Colors.black, fontFamily: myFont),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.map, color: mainColor),
+                      prefixIcon: Icon(Icons.map_outlined, color: mainColor),
                       labelText: "استان",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(22.0)),
@@ -661,7 +852,7 @@ class _PostPageState extends State<PostPage> {
                       cursorColor: Colors.black,
                       style: TextStyle(color: Colors.black, fontFamily: myFont),
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.location_city, color: mainColor),
+                        prefixIcon: Icon(Icons.location_city_outlined, color: mainColor),
                         labelText: "شهر",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(22.0)),
@@ -682,7 +873,7 @@ class _PostPageState extends State<PostPage> {
                       cursorColor: Colors.black,
                       style: TextStyle(color: Colors.black, fontFamily: myFont),
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.map, color: mainColor),
+                        prefixIcon: Icon(Icons.map_outlined, color: mainColor),
                         labelText: "منطقه",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(22.0)),
@@ -704,7 +895,7 @@ class _PostPageState extends State<PostPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: myFont),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.description, color: mainColor),
+                prefixIcon: Icon(Icons.description_outlined, color: mainColor),
                 labelText: "توضیحات",
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22.0)),
@@ -972,7 +1163,7 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
-  deletePost() async {
+  deletePost() async   {
     setState(() {
       _isLoading = true;
     });
