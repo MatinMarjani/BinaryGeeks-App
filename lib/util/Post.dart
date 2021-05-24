@@ -18,7 +18,7 @@ class Post {
   String createdAt;
   String exchangeTitle;
   String exchangeAuthor;
-  String changePublisher;
+  String exchangePublisher;
 
   Post(
       this.ownerId,
@@ -40,5 +40,5 @@ class Post {
       this.createdAt,
       this.exchangeAuthor,
       this.exchangeTitle,
-      this.changePublisher);
+      this.exchangePublisher);
 }
