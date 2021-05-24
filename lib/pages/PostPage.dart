@@ -50,6 +50,7 @@ class _PostPageState extends State<PostPage> {
   bool _noImage = false;
   bool _isOwner = false;
   bool _isMarked = false;
+  bool isExchange = false;
 
   List<Widget> myBids = [];
 
@@ -64,8 +65,16 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-
     isMarked();
+
+    if( widget.post.status == "مبادله")
+      setState(() {
+        isExchange = true;
+      });
+    else
+      setState(() {
+        isExchange = false;
+      });
 
     setState(() {
       MyAppBar.appBarTitle = Text("صفحه آگهی",
@@ -245,11 +254,22 @@ class _PostPageState extends State<PostPage> {
             widget.post.author,
             style: TextStyle(fontSize: 20.0, fontFamily: 'myfont'),
           ),
-          SizedBox(height: 10),
           Text(
             widget.post.publisher,
             style: TextStyle(fontSize: 15.0, fontFamily: 'myfont'),
           ),
+          isExchange ? TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
+              ),
+              child: Text(
+                "مبادله",
+                style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont),
+              ),
+          )
+          : SizedBox(height: 10),
         ],
       ),
     );
