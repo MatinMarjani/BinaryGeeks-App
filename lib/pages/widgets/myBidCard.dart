@@ -27,9 +27,23 @@ class BidCard extends StatelessWidget {
 
   bool isPostOwner;
   bool isBidOwner = false;
+  bool isExchange = false;
 
-  BidCard(this.bidID, this.bidOwner, this.userName, this.email, this.firstName, this.lastName, this.profileImage,
-      this.offeredPrice, this.description, this.isAccepted, this.isPostOwner, this.deleteBid, this.acceptBid);
+  BidCard(
+      this.bidID,
+      this.bidOwner,
+      this.userName,
+      this.email,
+      this.firstName,
+      this.lastName,
+      this.profileImage,
+      this.offeredPrice,
+      this.description,
+      this.isAccepted,
+      this.isPostOwner,
+      this.isExchange,
+      this.deleteBid,
+      this.acceptBid);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +54,7 @@ class BidCard extends StatelessWidget {
     log(User.id);
     log(bidOwner.toString());
 
-    if(User.id == bidOwner.toString())
+    if (User.id == bidOwner.toString())
       isBidOwner = true;
     else
       isBidOwner = false;
@@ -80,38 +94,41 @@ class BidCard extends StatelessWidget {
               style: TextStyle(color: Colors.green),
             ),
             SizedBox(height: 1),
-            isPostOwner ? Expanded(
-              child: TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.green))),
-                ),
-                child: Icon(
-                  Icons.check_outlined,
-                  color: Colors.green,
-                ),
-                onPressed: () {
-                  acceptBid(bidID);
-                },
-              ),
-            ) : SizedBox(height: 1),
-            isBidOwner ? Expanded(
-              child: TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.red))),
-                ),
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
-                onPressed: (){
-                  deleteBid(bidID);
-                }
-              ),
-            ) : SizedBox(height: 0),
+            isPostOwner
+                ? Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.green))),
+                      ),
+                      child: Icon(
+                        Icons.check_outlined,
+                        color: Colors.green,
+                      ),
+                      onPressed: () {
+                        acceptBid(bidID);
+                      },
+                    ),
+                  )
+                : SizedBox(height: 0),
+            isBidOwner
+                ? Expanded(
+                    child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.red))),
+                        ),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          deleteBid(bidID);
+                        }),
+                  )
+                : SizedBox(height: 0),
           ],
         ),
         isThreeLine: true,

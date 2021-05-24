@@ -100,8 +100,9 @@ class PostCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                            child: TextButton(
+                              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                              child: TextButton(
+                                onPressed: () {},
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -111,8 +112,7 @@ class PostCard extends StatelessWidget {
                                   "مبادله",
                                   style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont),
                                 ),
-                            )
-                          ),
+                              )),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
                             child: Text(
