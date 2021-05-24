@@ -291,6 +291,7 @@ class _PostPageState extends State<PostPage> {
           ),
           isExchange
               ? TextButton(
+                  onPressed: () {},
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -617,51 +618,103 @@ class _PostPageState extends State<PostPage> {
         ),
         title: Form(
             key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                TextFormField(
-                  maxLines: 4,
-                  minLines: 1,
-                  controller: bidDescriptionController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.request_page, color: mainColor),
-                    labelText: "توضیحات",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
-                  ),
-                  validator: (value) => value.isEmpty ? "الزامی است" : null,
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  maxLines: 1,
-                  minLines: 1,
-                  controller: bidPriceController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.request_page, color: mainColor),
-                    labelText: "قیمت",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
-                  ),
-                  validator: (value) => value.isEmpty ? "الزامی است" : null,
-                ),
-                SizedBox(height: 10),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
-                  ),
-                  child: Text(
-                    "ارسال درخواست",
-                  ),
-                  onPressed: () {
-                    postBid(bidPriceController.text, bidDescriptionController.text);
-                  },
-                ),
-              ],
-            )),
+            child: isExchange
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      TextFormField(
+                        maxLines: 4,
+                        minLines: 1,
+                        controller: bidDescriptionController,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.request_page, color: mainColor),
+                          labelText: "توضیحات",
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                          hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                        ),
+                        validator: (value) => value.isEmpty ? "الزامی است" : null,
+                      ),
+                      SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () {
+                          _showPicker(context);
+                        },
+                        child: Container(
+                          child: _image != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Image.file(
+                                    _image,
+                                    width: 300,
+                                    height: 300,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                )
+                              : Text("انتخاب عکس کتاب"),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
+                        ),
+                        child: Text(
+                          "ارسال درخواست",
+                        ),
+                        onPressed: () {
+                          postBid(bidPriceController.text, bidDescriptionController.text);
+                        },
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      TextFormField(
+                        maxLines: 4,
+                        minLines: 1,
+                        controller: bidDescriptionController,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.request_page, color: mainColor),
+                          labelText: "توضیحات",
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                          hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                        ),
+                        validator: (value) => value.isEmpty ? "الزامی است" : null,
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        maxLines: 1,
+                        minLines: 1,
+                        controller: bidPriceController,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.request_page, color: mainColor),
+                          labelText: "قیمت",
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                          hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                        ),
+                        validator: (value) => value.isEmpty ? "الزامی است" : null,
+                      ),
+                      SizedBox(height: 10),
+                      TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
+                        ),
+                        child: Text(
+                          "ارسال درخواست",
+                        ),
+                        onPressed: () {
+                          postBid(bidPriceController.text, bidDescriptionController.text);
+                        },
+                      ),
+                    ],
+                  )),
       ),
     );
   }
@@ -1052,6 +1105,7 @@ class _PostPageState extends State<PostPage> {
       margin: EdgeInsets.only(top: 30.0, bottom: 00),
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 00.0),
       child: TextButton(
+        onPressed: () {},
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -1135,7 +1189,6 @@ class _PostPageState extends State<PostPage> {
       response = await http.put(url, body: data, headers: headers);
       if (response.statusCode == 200) {
         log('200');
-        print(response.statusCode);
         setState(() {
           widget.post.image = null;
           ScaffoldMessenger.of(context)
@@ -1149,11 +1202,8 @@ class _PostPageState extends State<PostPage> {
           style: TextStyle(color: Colors.red),
         )));
         Navigator.of(context).pop();
-        print(response.error);
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
 
     setState(() {
       _isLoading = false;
@@ -1185,7 +1235,6 @@ class _PostPageState extends State<PostPage> {
 
     var url = Uri.parse(AppUrl.Update_Post + postID.toString());
     var response;
-    var jsonResponse;
 
     var headers = {'Authorization': 'Token $token', 'Content-Type': 'application/json'};
 
@@ -1203,9 +1252,6 @@ class _PostPageState extends State<PostPage> {
     try {
       response = await http.put(url, body: body.toString(), headers: headers);
       if (response.statusCode == 200) {
-        log("200");
-        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse);
         postImage();
         setState(() {
           widget.post.author = author.text;
@@ -1222,7 +1268,6 @@ class _PostPageState extends State<PostPage> {
           Navigator.of(context).pop();
         });
       } else {
-        print(response.body);
         setState(() {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.green))));
@@ -1256,10 +1301,7 @@ class _PostPageState extends State<PostPage> {
 
       if (response.statusCode == 200) {
         getImage();
-      } else {
-        print(await response.stream.bytesToString());
-        print(response.reasonPhrase);
-      }
+      } else {}
     } catch (e) {
       log(e);
     }
@@ -1276,7 +1318,6 @@ class _PostPageState extends State<PostPage> {
 
     var url = Uri.parse(AppUrl.Delete_Post + postID.toString());
     var response;
-    var jsonResponse;
 
     var headers = {
       'Authorization': 'Token $token',
@@ -1285,16 +1326,12 @@ class _PostPageState extends State<PostPage> {
     try {
       response = await http.put(url, headers: headers);
       if (response.statusCode == 200) {
-        log("200");
-        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse);
         setState(() {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("آگهی با موفقیت پاک شد", style: TextStyle(color: Colors.green))));
           Navigator.push(context, new MaterialPageRoute(builder: (context) => DashBoard()));
         });
       } else {
-        print(response.body);
         setState(() {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.green))));
@@ -1319,7 +1356,6 @@ class _PostPageState extends State<PostPage> {
       response = await http.get(url);
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse);
         if (jsonResponse != null) {
           setState(() {
             widget.post.image = AppUrl.liveBaseURL + jsonResponse['image'];
@@ -1342,6 +1378,12 @@ class _PostPageState extends State<PostPage> {
         if (jsonResponse != null) {
           setState(() {
             for (var i in jsonResponse) {
+              var offeredPrice;
+              if (i["offered_price"] is int)
+                offeredPrice = i["offered_price"].toString();
+              else
+                offeredPrice = 0;
+
               myBids.add(BidCard(
                 i["id"],
                 i["owner"]["id"],
@@ -1350,10 +1392,11 @@ class _PostPageState extends State<PostPage> {
                 i["owner"]["first_name"],
                 i["owner"]["last_name"],
                 i["owner"]["profile_image"],
-                i["offered_price"].toString(),
+                offeredPrice.toString(),
                 i["description"],
                 i["is_accepted"],
                 _isOwner,
+                isExchange,
                 deleteBid,
                 acceptBid,
               ));
@@ -1365,7 +1408,9 @@ class _PostPageState extends State<PostPage> {
           });
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
 
     if (myBids.isEmpty) {
       myBids.add(Center(
@@ -1388,35 +1433,70 @@ class _PostPageState extends State<PostPage> {
 
     var response;
     var jsonResponse;
+    var temp;
+
+    if (price.isEmpty)
+      temp = 0;
+    else
+      temp = int.parse(price);
 
     var body = jsonEncode(<String, dynamic>{
       "post": postID,
-      "offered_price": int.parse(price),
+      "offered_price": temp,
       "description": description,
     });
 
     try {
       response = await http.post(url, body: body.toString(), headers: headers);
       if (response.statusCode == 200) {
-        log("200");
-        print(jsonResponse);
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
-          myBids.clear();
-          getBids();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("با موفقیت انجام شد", style: TextStyle(color: Colors.green))));
-          // Navigator.of(context).pop();
+          if (isExchange && _image != null) {
+            postBidImage(jsonResponse["id"]);
+          } else {
+            myBids.clear();
+            getBids();
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text("با موفقیت انجام شد", style: TextStyle(color: Colors.green))));
+          }
         });
       } else {
         print(response.body);
         setState(() {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.red))));
-          // Navigator.of(context).pop();
         });
       }
     } catch (e) {
       log(e);
+    }
+  }
+
+  postBidImage(var bidID) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String token = sharedPreferences.getString("token");
+
+    var url = Uri.parse("http://37.152.176.11/api/bids/edit?bidid=" + bidID.toString());
+
+    var headers = {'Authorization': 'Token $token'};
+    var request = http.MultipartRequest('PUT', url);
+
+    try {
+      request.files.add(await http.MultipartFile.fromPath('exchange_image', _image.path));
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        log("postBidImage 200");
+        myBids.clear();
+        getBids();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("با موفقیت انجام شد", style: TextStyle(color: Colors.green))));
+      } else {
+        log("postBidImage !200");
+      }
+    } catch (e) {
+      log("postBidImage" + e);
     }
   }
 
@@ -1431,7 +1511,6 @@ class _PostPageState extends State<PostPage> {
     try {
       response = await http.delete(url, headers: headers);
       if (response.statusCode == 200) {
-        log("200");
         setState(() {
           myBids.clear();
           getBids();
@@ -1461,7 +1540,6 @@ class _PostPageState extends State<PostPage> {
     try {
       response = await http.put(url, headers: headers);
       if (response.statusCode == 200) {
-        log("200");
         setState(() {
           widget.post.isActive = false;
           ScaffoldMessenger.of(context)
@@ -1495,7 +1573,6 @@ class _PostPageState extends State<PostPage> {
       response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        log("200");
         setState(() {
           _isMarked = jsonResponse;
         });
@@ -1520,7 +1597,6 @@ class _PostPageState extends State<PostPage> {
       try {
         response = await http.post(url, body: body.toString(), headers: headers);
         if (response.statusCode == 200) {
-          log("200");
           setState(() {
             _isMarked = true;
             ScaffoldMessenger.of(context)
