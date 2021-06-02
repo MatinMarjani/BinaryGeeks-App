@@ -699,22 +699,41 @@ class _NewPostPageState extends State<NewPostPage> {
     // ignore: unnecessary_statements
     priceController.text.isEmpty ? priceController.text = "0" : null;
 
-    var body = jsonEncode(<String, dynamic>{
-      "title": titleController.text,
-      "author": authorController.text,
-      "publisher": publisherController.text,
-      "categories": categoriesController.text,
-      "price": priceController.text,
-      "province": provinceController.text,
-      "city": cityController.text,
-      "zone": zoneController.text,
-      "status": statusController.text,
-      "description": descriptionController.text,
-      "is_active": true,
-      "exchange_book_title" : exchangeTitleController.text,
-      "exchange_book_author" : exchangeAuthorController.text,
-      "exchange_book_publisher" : exchangePublisherController.text,
-    });
+    var body;
+
+    if(isExchange) {
+      body = jsonEncode(<String, dynamic>{
+        "title": titleController.text,
+        "author": authorController.text,
+        "publisher": publisherController.text,
+        "categories": categoriesController.text,
+        "price": priceController.text,
+        "province": provinceController.text,
+        "city": cityController.text,
+        "zone": zoneController.text,
+        "status": statusController.text,
+        "description": descriptionController.text,
+        "is_active": true,
+        "exchange_book_title" : exchangeTitleController.text,
+        "exchange_book_author" : exchangeAuthorController.text,
+        "exchange_book_publisher" : exchangePublisherController.text,
+      });
+    }
+     else if(!isExchange) {
+      body = jsonEncode(<String, dynamic>{
+        "title": titleController.text,
+        "author": authorController.text,
+        "publisher": publisherController.text,
+        "categories": categoriesController.text,
+        "price": priceController.text,
+        "province": provinceController.text,
+        "city": cityController.text,
+        "zone": zoneController.text,
+        "status": statusController.text,
+        "description": descriptionController.text,
+        "is_active": true,
+      });
+    }
 
     var jsonResponse;
 
