@@ -124,12 +124,12 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50),
+        preferredSize: Size.fromHeight(50),
         child: MyAppBar(),
       ),
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        margin: EdgeInsets.symmetric(vertical: 00, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 00, horizontal: 10),
         child: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
@@ -139,6 +139,7 @@ class _PostPageState extends State<PostPage> {
                 ? ListView(
                     shrinkWrap: true,
                     children: <Widget>[
+                      SizedBox(height: 30),
                       bannerImage(),
                       header(),
                       mainBody(),
@@ -313,7 +314,7 @@ class _PostPageState extends State<PostPage> {
     return Container(
       height: 300.0,
       padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      margin: EdgeInsets.only(top: 0.0, bottom: 20),
+      margin: EdgeInsets.only(top: 0.0, bottom: 00),
       child: _noImage
           ? Container(
               decoration: BoxDecoration(color: Colors.grey[500], borderRadius: BorderRadius.circular(10)),
