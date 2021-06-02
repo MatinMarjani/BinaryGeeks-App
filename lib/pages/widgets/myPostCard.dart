@@ -15,6 +15,15 @@ class PostCard extends StatelessWidget {
 
   PostCard(this.post);
 
+  final _title = Key('_title');
+  final _author = Key('_author');
+  final _categories = Key('_categories');
+  final _province = Key('_province');
+  final _price = Key('_price');
+  final _currency  = Key('_currency');
+  final _cardTap = Key('_cardTap');
+
+
   @override
   Widget build(BuildContext context) {
     var formatter = new NumberFormat('###,###');
@@ -30,6 +39,7 @@ class PostCard extends StatelessWidget {
       isExchange = false;
 
     return GestureDetector(
+      key: _cardTap,
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(post)));
         },
@@ -75,6 +85,7 @@ class PostCard extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
                           post.title,
+                          key: _title,
                           style: TextStyle(fontSize: 18.0, fontFamily: 'myfont'),
                         ),
                       ),
@@ -82,6 +93,7 @@ class PostCard extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
                           post.author,
+                          key: _author,
                           style: TextStyle(fontSize: 15.0, fontFamily: 'myfont'),
                         ),
                       ),
@@ -89,6 +101,7 @@ class PostCard extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 2.0),
                         child: Text(
                           post.categories,
+                          key: _categories,
                           style: TextStyle(fontSize: 13.0, fontFamily: 'myfont'),
                         ),
                       ),
@@ -117,6 +130,7 @@ class PostCard extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
                             child: Text(
                               post.province,
+                              key: _province,
                               style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
                             ),
                           ),
@@ -129,6 +143,7 @@ class PostCard extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 0.0),
                             child: Text(
                               Utilities().replaceFarsiNumber(formatter.format(post.price)),
+                              key: _price,
                               style: TextStyle(fontSize: 15.0, color: Colors.green, fontFamily: 'myfont'),
                             ),
                           ),
@@ -136,6 +151,7 @@ class PostCard extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(12.0, 0.0, 2.0, 2.0),
                             child: Text(
                               "تومان",
+                              key: _currency,
                               style: TextStyle(fontSize: 13.0, color: Colors.green, fontFamily: 'myfont'),
                             ),
                           ),
@@ -143,6 +159,7 @@ class PostCard extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
                             child: Text(
                               post.province,
+                              key: _province,
                               style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
                             ),
                           ),
