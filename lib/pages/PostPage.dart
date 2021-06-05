@@ -55,6 +55,8 @@ class _PostPageState extends State<PostPage> {
   bool _isOwner = false;
   bool _isMarked = false;
   bool isExchange = false;
+  bool isBuy = false;
+  bool isDonation = false;
 
   List<Widget> myBids = [];
 
@@ -71,14 +73,23 @@ class _PostPageState extends State<PostPage> {
     super.initState();
     isMarked();
 
-    if (widget.post.status == "مبادله")
-      setState(() {
-        isExchange = true;
-      });
-    else
-      setState(() {
-        isExchange = false;
-      });
+    if (widget.post.status == "مبادله") {
+      isExchange = true;
+      isBuy = false;
+      isDonation = false;
+    } else if (widget.post.status == "خرید") {
+      isExchange = false;
+      isBuy = true;
+      isDonation = false;
+    } else if (widget.post.status == "اهدا") {
+      isExchange = false;
+      isBuy = false;
+      isDonation = true;
+    } else {
+      isExchange = false;
+      isBuy = false;
+      isDonation = false;
+    }
 
     setState(() {
       MyAppBar.appBarTitle = Text("صفحه آگهی", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
@@ -294,15 +305,41 @@ class _PostPageState extends State<PostPage> {
               ? TextButton(
                   onPressed: () {},
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
                   ),
                   child: Text(
                     "مبادله",
-                    style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont),
+                    style: TextStyle(color: Colors.red, fontFamily: Utilities().myFont),
                   ),
                 )
+              : isBuy
+              ? TextButton(
+            onPressed: () {},
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.teal))),
+            ),
+            child: Text(
+              "خرید",
+              style: TextStyle(color: Colors.teal, fontFamily: Utilities().myFont),
+            ),
+          )
+              : isDonation
+              ? TextButton(
+            onPressed: () {},
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.cyanAccent))),
+            ),
+            child: Text(
+              "اهدا",
+              style: TextStyle(color: Colors.cyanAccent, fontFamily: Utilities().myFont),
+            ),
+          )
               : SizedBox(height: 10),
         ],
       ),
