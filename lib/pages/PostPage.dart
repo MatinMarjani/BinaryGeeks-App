@@ -1888,6 +1888,7 @@ class _PostPageState extends State<PostPage> {
                 i["owner"]["profile_image"],
                 offeredPrice.toString(),
                 i["description"],
+                i["exchange_image"],
                 i["is_accepted"],
                 _isOwner,
                 isExchange,
