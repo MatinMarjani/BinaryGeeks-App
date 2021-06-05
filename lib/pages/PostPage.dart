@@ -856,6 +856,104 @@ class _PostPageState extends State<PostPage> {
                       ),
                     ],
                   )
+                : isBuy
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  maxLines: 4,
+                  minLines: 1,
+                  controller: bidDescriptionController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.request_page, color: mainColor),
+                    labelText: "توضیحات",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                  ),
+                  validator: (value) => value.isEmpty ? "الزامی است" : null,
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  maxLines: 1,
+                  minLines: 1,
+                  controller: bidPriceController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.request_page, color: mainColor),
+                    labelText: "قیمت",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                  ),
+                  validator: (value) => value.isEmpty ? "الزامی است" : null,
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    _showPicker(context);
+                  },
+                  child: Container(
+                    child: _image != null
+                        ? ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.file(
+                        _image,
+                        width: 300,
+                        height: 300,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    )
+                        : Text("انتخاب عکس کتاب"),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
+                  ),
+                  child: Text(
+                    "ارسال درخواست",
+                  ),
+                  onPressed: () {
+                    postBid(bidPriceController.text, bidDescriptionController.text);
+                  },
+                ),
+              ],
+            )
+                : isDonation
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  maxLines: 4,
+                  minLines: 1,
+                  controller: bidDescriptionController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.request_page, color: mainColor),
+                    labelText: "توضیحات",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                  ),
+                  validator: (value) => value.isEmpty ? "الزامی است" : null,
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
+                  ),
+                  child: Text(
+                    "ارسال درخواست",
+                  ),
+                  onPressed: () {
+                    postBid(bidPriceController.text, bidDescriptionController.text);
+                  },
+                ),
+              ],
+            )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1793,6 +1891,8 @@ class _PostPageState extends State<PostPage> {
                 i["is_accepted"],
                 _isOwner,
                 isExchange,
+                isBuy,
+                isDonation,
                 deleteBid,
                 acceptBid,
               ));
