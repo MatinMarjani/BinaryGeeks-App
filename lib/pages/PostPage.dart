@@ -55,6 +55,8 @@ class _PostPageState extends State<PostPage> {
   bool _isOwner = false;
   bool _isMarked = false;
   bool isExchange = false;
+  bool isBuy = false;
+  bool isDonation = false;
 
   List<Widget> myBids = [];
 
@@ -71,14 +73,23 @@ class _PostPageState extends State<PostPage> {
     super.initState();
     isMarked();
 
-    if (widget.post.status == "مبادله")
-      setState(() {
-        isExchange = true;
-      });
-    else
-      setState(() {
-        isExchange = false;
-      });
+    if (widget.post.status == "مبادله") {
+      isExchange = true;
+      isBuy = false;
+      isDonation = false;
+    } else if (widget.post.status == "خرید") {
+      isExchange = false;
+      isBuy = true;
+      isDonation = false;
+    } else if (widget.post.status == "اهدا") {
+      isExchange = false;
+      isBuy = false;
+      isDonation = true;
+    } else {
+      isExchange = false;
+      isBuy = false;
+      isDonation = false;
+    }
 
     setState(() {
       MyAppBar.appBarTitle = Text("صفحه آگهی", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
@@ -124,12 +135,12 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50),
+        preferredSize: Size.fromHeight(50),
         child: MyAppBar(),
       ),
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        margin: EdgeInsets.symmetric(vertical: 00, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 00, horizontal: 10),
         child: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
@@ -139,6 +150,7 @@ class _PostPageState extends State<PostPage> {
                 ? ListView(
                     shrinkWrap: true,
                     children: <Widget>[
+                      SizedBox(height: 30),
                       bannerImage(),
                       header(),
                       mainBody(),
@@ -293,15 +305,41 @@ class _PostPageState extends State<PostPage> {
               ? TextButton(
                   onPressed: () {},
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
                   ),
                   child: Text(
                     "مبادله",
-                    style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont),
+                    style: TextStyle(color: Colors.red, fontFamily: Utilities().myFont),
                   ),
                 )
+              : isBuy
+              ? TextButton(
+            onPressed: () {},
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.teal))),
+            ),
+            child: Text(
+              "خرید",
+              style: TextStyle(color: Colors.teal, fontFamily: Utilities().myFont),
+            ),
+          )
+              : isDonation
+              ? TextButton(
+            onPressed: () {},
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.cyanAccent))),
+            ),
+            child: Text(
+              "اهدا",
+              style: TextStyle(color: Colors.cyanAccent, fontFamily: Utilities().myFont),
+            ),
+          )
               : SizedBox(height: 10),
         ],
       ),
@@ -313,7 +351,7 @@ class _PostPageState extends State<PostPage> {
     return Container(
       height: 300.0,
       padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      margin: EdgeInsets.only(top: 0.0, bottom: 20),
+      margin: EdgeInsets.only(top: 0.0, bottom: 00),
       child: _noImage
           ? Container(
               decoration: BoxDecoration(color: Colors.grey[500], borderRadius: BorderRadius.circular(10)),
@@ -512,6 +550,154 @@ class _PostPageState extends State<PostPage> {
                 SizedBox(height: 50)
               ],
             )
+          : isBuy
+          ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: provinceH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: province,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: cityH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: city,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: zoneH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: zone,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          SizedBox(height: 30),
+          Text(
+            "توضیحات : ",
+            style: TextStyle(fontSize: 30, fontFamily: myFont, color: mainColor),
+          ),
+          TextField(
+            controller: description,
+            enabled: false,
+            textAlign: TextAlign.right,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            style: TextStyle(fontFamily: 'myfont'),
+          ),
+          SizedBox(height: 50)
+        ],
+      )
+          : isDonation
+          ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: provinceH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: province,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: cityH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: city,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: zoneH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: zone,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          SizedBox(height: 30),
+          Text(
+            "توضیحات : ",
+            style: TextStyle(fontSize: 30, fontFamily: myFont, color: mainColor),
+          ),
+          TextField(
+            controller: description,
+            enabled: false,
+            textAlign: TextAlign.right,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            style: TextStyle(fontFamily: 'myfont'),
+          ),
+          SizedBox(height: 50)
+        ],
+      )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -670,6 +856,104 @@ class _PostPageState extends State<PostPage> {
                       ),
                     ],
                   )
+                : isBuy
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  maxLines: 4,
+                  minLines: 1,
+                  controller: bidDescriptionController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.request_page, color: mainColor),
+                    labelText: "توضیحات",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                  ),
+                  validator: (value) => value.isEmpty ? "الزامی است" : null,
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  maxLines: 1,
+                  minLines: 1,
+                  controller: bidPriceController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.request_page, color: mainColor),
+                    labelText: "قیمت",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                  ),
+                  validator: (value) => value.isEmpty ? "الزامی است" : null,
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    _showPicker(context);
+                  },
+                  child: Container(
+                    child: _image != null
+                        ? ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.file(
+                        _image,
+                        width: 300,
+                        height: 300,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    )
+                        : Text("انتخاب عکس کتاب"),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
+                  ),
+                  child: Text(
+                    "ارسال درخواست",
+                  ),
+                  onPressed: () {
+                    postBid(bidPriceController.text, bidDescriptionController.text);
+                  },
+                ),
+              ],
+            )
+                : isDonation
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  maxLines: 4,
+                  minLines: 1,
+                  controller: bidDescriptionController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.request_page, color: mainColor),
+                    labelText: "توضیحات",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                  ),
+                  validator: (value) => value.isEmpty ? "الزامی است" : null,
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), side: BorderSide(color: mainColor))),
+                  ),
+                  child: Text(
+                    "ارسال درخواست",
+                  ),
+                  onPressed: () {
+                    postBid(bidPriceController.text, bidDescriptionController.text);
+                  },
+                ),
+              ],
+            )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -949,6 +1233,216 @@ class _PostPageState extends State<PostPage> {
                   SizedBox(height: 10),
                 ],
               )
+            : isBuy
+            ?  Column(
+          children: <Widget>[
+            TextFormField(
+              controller: author,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.assignment_ind_outlined, color: mainColor),
+                labelText: "نویسنده",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: publisher,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.print_disabled_outlined, color: mainColor),
+                labelText: "ناشر",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: province,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                labelText: "استان",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    controller: city,
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.location_city_outlined, color: mainColor),
+                      labelText: "شهر",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  child: TextFormField(
+                    controller: zone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'الزامی است';
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                      labelText: "منطقه",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: description,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.description_outlined, color: mainColor),
+                labelText: "توضیحات",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+          ],
+        )
+            : isDonation
+            ? Column(
+          children: <Widget>[
+            TextFormField(
+              controller: author,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.assignment_ind_outlined, color: mainColor),
+                labelText: "نویسنده",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: publisher,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.print_disabled_outlined, color: mainColor),
+                labelText: "ناشر",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: province,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                labelText: "استان",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    controller: city,
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.location_city_outlined, color: mainColor),
+                      labelText: "شهر",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  child: TextFormField(
+                    controller: zone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'الزامی است';
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                      labelText: "منطقه",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: description,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.description_outlined, color: mainColor),
+                labelText: "توضیحات",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+          ],
+        )
             : Column(
                 children: <Widget>[
                   TextFormField(
@@ -1394,9 +1888,12 @@ class _PostPageState extends State<PostPage> {
                 i["owner"]["profile_image"],
                 offeredPrice.toString(),
                 i["description"],
+                i["exchange_image"],
                 i["is_accepted"],
                 _isOwner,
                 isExchange,
+                isBuy,
+                isDonation,
                 deleteBid,
                 acceptBid,
               ));
@@ -1558,6 +2055,9 @@ class _PostPageState extends State<PostPage> {
   }
 
   isMarked() async {
+    setState(() {
+      _isLoading = true;
+    });
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString("token");
     int postID = widget.post.id;
@@ -1580,6 +2080,9 @@ class _PostPageState extends State<PostPage> {
     } catch (e) {
       log(e);
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   setMark() async {

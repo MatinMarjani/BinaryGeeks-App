@@ -10,22 +10,22 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
-import 'package:application/pages/widgets/myPostCard.dart';
+import 'package:application/pages/widgets/myNotifCard.dart';
 
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
 import 'package:application/util/Utilities.dart';
 
-class DashBoard extends StatefulWidget {
+class NotificationPage extends StatefulWidget {
   final Color mainColor = Utilities().mainColor;
   final String myFont = Utilities().myFont;
 
-
   @override
-  _DashBoardState createState() => _DashBoardState();
+  _NotificationPageState createState() => _NotificationPageState();
 }
 
-class _DashBoardState extends State<DashBoard> {
+class _NotificationPageState extends State<NotificationPage> {
+  List<Widget> myNotifications = [];
   List<Post> myPost = [];
   bool _isLoading = false;
   int page;
@@ -39,11 +39,11 @@ class _DashBoardState extends State<DashBoard> {
       _isLoading = true;
       page = 1;
       MyAppBar.appBarTitle =
-          Text("داشبورد", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
+          Text("اعلان ها", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
       myPost.clear();
     });
-    getPosts(page.toString());
+    getNotifications(page.toString());
   }
 
   void _onRefresh() async{
@@ -51,7 +51,7 @@ class _DashBoardState extends State<DashBoard> {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     for ( int i = 1; i <= page; i++) {
-      getPosts(page.toString());
+      getNotifications(page.toString());
     }
     // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
@@ -62,7 +62,7 @@ class _DashBoardState extends State<DashBoard> {
     page++;
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    getPosts(page.toString());
+    getNotifications(page.toString());
     if(mounted)
       setState(() {});
     _refreshController.loadComplete();
@@ -106,92 +106,110 @@ class _DashBoardState extends State<DashBoard> {
         onRefresh: _onRefresh,
         onLoading: _onLoading,
         child: _isLoading
-              ? Center(
-              child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
-              ))
-              : ListView(children: <Widget>[
-            posts(),
-          ]),
+            ? Center(
+            child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
+            ))
+            : ListView(children: <Widget>[
+          notifications(),
+        ]),
 
       ),
       drawer: MyDrawer(),
     );
   }
 
-  Widget posts() {
-    if (myPost.length == 0) return Text("nothing");
-    List<Widget> list = [];
-    for (var i = 0; i < myPost.length; i++) {
-      if (myPost[i].title == null) myPost[i].title = " ";
-      if (myPost[i].author == null) myPost[i].author = " ";
-      if (myPost[i].categories == null) myPost[i].categories = " ";
-      if (myPost[i].price == null) myPost[i].price = 0;
-      if (myPost[i].province == null) myPost[i].province = " ";
-      if (myPost[i].description == null) myPost[i].description = " ";
-
-      list.add(PostCard(myPost[i]));
-    }
-    return Column(children: list);
+  Widget notifications() {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: myNotifications);
   }
 
-  getPosts(String p) async {
-
+  getNotifications(String p) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var url = Uri.parse(AppUrl.Get_Notifications + "?page=" + p);
+    var token = sharedPreferences.getString("token");
     var jsonResponse;
     var response;
-    var url = Uri.parse(AppUrl.Get_My_Posts + "?page=" + p);
-    var token = sharedPreferences.getString("token");
 
     try {
-      response = await http.get(url,headers: {'Authorization': 'Token $token'});
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse);
+        print(jsonResponse["results"]);
         if (jsonResponse != null) {
           setState(() {
             for (var i in jsonResponse["results"]) {
-              myPost.add(Post(
-                i["owner"]["id"],
-                i["owner"]["email"],
-                i["owner"]["profile_image"],
-                i["id"],
-                i["title"],
-                i["author"],
-                i["publisher"],
-                i["price"],
-                i["province"],
-                i["city"],
-                i["zone"],
-                i["status"],
-                i["description"],
-                i["is_active"],
-                i["image"],
-                //url
-                i["categories"],
-                i["created_at"],
-                i["exchange_book_title"],
-                i["exchange_book_author"],
-                i["exchange_book_publisher"],
-              ));
+              getPost(sharedPreferences, i["post"], i);
             }
           });
         }
       } else {
         log('!200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        setState(() {
-          if(jsonResponse["detail"] == "Invalid page.")
-            page--;
-        });
       }
     } catch (e) {
+      print(e);
       log("error");
+      setState(() {
+        if(jsonResponse["detail"] == "Invalid page.")
+          page--;
+      });
     }
 
     setState(() {
       _isLoading = false;
     });
+  }
+
+  getPost(SharedPreferences sharedPreferences, int postID, var i) async {
+    var token = sharedPreferences.getString("token");
+    var url = Uri.parse(AppUrl.Get_Post + postID.toString());
+    var jsonResponse;
+    var response;
+
+    try {
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log('200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        if (jsonResponse != null) {
+          setState(() {
+            myNotifications.add(NotificationCard(i["id"], i["owner"], i["post"], i["is_seen"], i["message"], Post(
+              jsonResponse["owner"]["id"],
+              jsonResponse["owner"]["email"],
+              jsonResponse["owner"]["profile_image"],
+              jsonResponse["id"],
+              jsonResponse["title"],
+              jsonResponse["author"],
+              jsonResponse["publisher"],
+              jsonResponse["price"],
+              jsonResponse["province"],
+              jsonResponse["city"],
+              jsonResponse["zone"],
+              jsonResponse["status"],
+              jsonResponse["description"],
+              jsonResponse["is_active"],
+              AppUrl.baseURL + jsonResponse["image"],
+              //url
+              jsonResponse["categories"],
+              jsonResponse["created_at"],
+              jsonResponse["exchange_book_title"],
+              jsonResponse["exchange_book_author"],
+              jsonResponse["exchange_book_publisher"],
+            )));
+            myNotifications.add(Divider(thickness: 3,));
+          });
+        }
+      } else {
+        log('!200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      }
+    } catch (e) {
+      print(e);
+      log("error");
+    }
   }
 }

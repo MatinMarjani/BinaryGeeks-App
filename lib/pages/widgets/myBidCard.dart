@@ -23,11 +23,14 @@ class BidCard extends StatelessWidget {
 
   String offeredPrice;
   String description;
+  String exchangeImage;
   bool isAccepted;
 
   bool isPostOwner;
   bool isBidOwner = false;
   bool isExchange = false;
+  bool isBuy = false;
+  bool isDonation = false;
 
   BidCard(
       this.bidID,
@@ -39,9 +42,12 @@ class BidCard extends StatelessWidget {
       this.profileImage,
       this.offeredPrice,
       this.description,
+      this.exchangeImage,
       this.isAccepted,
       this.isPostOwner,
       this.isExchange,
+      this.isBuy,
+      this.isDonation,
       this.deleteBid,
       this.acceptBid);
 
@@ -65,6 +71,15 @@ class BidCard extends StatelessWidget {
       _noImage = false;
     }
 
+    bool _BidImage = true;
+    if (exchangeImage == null)
+      _BidImage = false;
+    else {
+      _BidImage = true;
+    }
+
+
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
       child: ListTile(
@@ -86,13 +101,58 @@ class BidCard extends StatelessWidget {
           firstName + " " + lastName,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(description),
+        subtitle: isExchange
+            ? _BidImage
+                ? Column(
+                    children: <Widget>[
+                      Text(description),
+                      SizedBox(height: 5),
+                      Image.network(
+                        'http://37.152.176.11' + exchangeImage,
+                        loadingBuilder: (context, child, progress) {
+                          return progress == null ? child : LinearProgressIndicator();
+                        },
+                        width: 150,
+                        height: 200,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ],
+                  )
+                : Text(description)
+            : isBuy
+                ? _BidImage
+                    ? Column(
+                        children: <Widget>[
+                          Text(description),
+                          SizedBox(height: 5),
+                          Image.network(
+                            'http://37.152.176.11' + exchangeImage,
+                            loadingBuilder: (context, child, progress) {
+                              return progress == null ? child : LinearProgressIndicator();
+                            },
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.fitHeight,
+                          ),
+                        ],
+                      )
+                    : Text(description)
+                : Text(description),
         trailing: Column(
           children: <Widget>[
-            Text(
-              price + " تومان",
-              style: TextStyle(color: Colors.green),
-            ),
+            isExchange
+                ? SizedBox(height: 0)
+                : isBuy
+                    ? Text(
+                        price + " تومان",
+                        style: TextStyle(color: Colors.green),
+                      )
+                    : isDonation
+                        ? SizedBox(height: 0)
+                        : Text(
+                            price + " تومان",
+                            style: TextStyle(color: Colors.green),
+                          ),
             SizedBox(height: 1),
             isPostOwner
                 ? Expanded(
