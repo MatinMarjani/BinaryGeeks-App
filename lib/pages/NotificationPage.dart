@@ -120,4 +120,46 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
+  getNotifications() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var url = Uri.parse(AppUrl.Get_Notifications);
+    var token = sharedPreferences.getString("token");
+    var jsonResponse;
+    var response;
+
+    try {
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log('200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse["results"]);
+        if (jsonResponse != null) {
+          setState(() {
+            int counter = 0;
+            for (var i in jsonResponse["results"]) {
+              if( counter <= 4) {
+                getPost(sharedPreferences, i["post"], i);
+              }
+              counter++;
+            }
+          });
+        }
+      } else {
+        log('!200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      }
+    } catch (e) {
+      print(e);
+      log("error");
+    }
+
+    if ( myNotifications.isNotEmpty ) {
+      setState(() {
+        myNotifications.add(SizedBox(
+          height: 200,
+        ));
+      });
+    }
+  }
+  
 }
