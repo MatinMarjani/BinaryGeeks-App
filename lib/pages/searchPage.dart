@@ -28,6 +28,10 @@ class FilterControllers {
   static var items = [
     'قیمت',
   ];
+
+  static var items1 = ["ریاضی", "علوم پایه", "مهندسی کامپیوتر", "معارف"];
+
+
 }
 
 class SearchPage extends StatefulWidget {
@@ -223,6 +227,20 @@ class _SearchPageState extends State<SearchPage> {
               cursorColor: Colors.black,
               style: TextStyle(color: Colors.black, fontFamily: widget.myFont),
               decoration: InputDecoration(
+                suffixIcon: PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.arrow_drop_down_circle_outlined,
+                    color: widget.mainColor,
+                  ),
+                  onSelected: (String value) {
+                    FilterControllers.categoryController.text = value;
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return FilterControllers.items1.map<PopupMenuItem<String>>((String value) {
+                      return new PopupMenuItem(child: new Text(value), value: value);
+                    }).toList();
+                  },
+                ),
                 prefixIcon: Icon(Icons.web_asset_outlined, color: widget.mainColor),
                 labelText: "دسته بندی",
                 border: OutlineInputBorder(
@@ -269,9 +287,12 @@ class _SearchPageState extends State<SearchPage> {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.save_alt_outlined, color: widget.mainColor),
                 suffixIcon: PopupMenuButton<String>(
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: Icon(
+                    Icons.arrow_drop_down_circle_outlined,
+                    color: widget.mainColor,
+                  ),
                   onSelected: (String value) {
-                    FilterControllers.categoryController.text = value;},
+                    FilterControllers.sortController.text = value;},
                   itemBuilder: (BuildContext context) {
                     return FilterControllers.items.map<PopupMenuItem<String>>((String value) {
                       return new PopupMenuItem(
