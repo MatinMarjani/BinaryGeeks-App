@@ -1135,6 +1135,216 @@ class _PostPageState extends State<PostPage> {
                   SizedBox(height: 10),
                 ],
               )
+            : isBuy
+            ?  Column(
+          children: <Widget>[
+            TextFormField(
+              controller: author,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.assignment_ind_outlined, color: mainColor),
+                labelText: "نویسنده",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: publisher,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.print_disabled_outlined, color: mainColor),
+                labelText: "ناشر",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: province,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                labelText: "استان",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    controller: city,
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.location_city_outlined, color: mainColor),
+                      labelText: "شهر",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  child: TextFormField(
+                    controller: zone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'الزامی است';
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                      labelText: "منطقه",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: description,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.description_outlined, color: mainColor),
+                labelText: "توضیحات",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+          ],
+        )
+            : isDonation
+            ? Column(
+          children: <Widget>[
+            TextFormField(
+              controller: author,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.assignment_ind_outlined, color: mainColor),
+                labelText: "نویسنده",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: publisher,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.print_disabled_outlined, color: mainColor),
+                labelText: "ناشر",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: province,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                labelText: "استان",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    controller: city,
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.location_city_outlined, color: mainColor),
+                      labelText: "شهر",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  child: TextFormField(
+                    controller: zone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'الزامی است';
+                      return null;
+                    },
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black, fontFamily: myFont),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.map_outlined, color: mainColor),
+                      labelText: "منطقه",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                      hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              controller: description,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'الزامی است';
+                return null;
+              },
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black, fontFamily: myFont),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.description_outlined, color: mainColor),
+                labelText: "توضیحات",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.0)),
+                hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
+              ),
+            ),
+            SizedBox(height: 10.0),
+          ],
+        )
             : Column(
                 children: <Widget>[
                   TextFormField(
