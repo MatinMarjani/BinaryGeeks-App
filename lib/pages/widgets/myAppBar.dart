@@ -119,8 +119,12 @@ class _MyAppBarState extends State<MyAppBar> {
         print(jsonResponse["results"]);
         if (jsonResponse != null) {
           setState(() {
+            int counter = 0;
             for (var i in jsonResponse["results"]) {
-              getPost(sharedPreferences, i["post"], i);
+              if( counter <= 4) {
+                getPost(sharedPreferences, i["post"], i);
+              }
+              counter++;
             }
           });
         }
