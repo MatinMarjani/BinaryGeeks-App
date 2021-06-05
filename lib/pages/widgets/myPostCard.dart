@@ -12,6 +12,8 @@ class PostCard extends StatelessWidget {
   String price;
   bool _noImage = true;
   bool isExchange = false;
+  bool isBuy = false;
+  bool isDonation = false;
 
   PostCard(this.post);
 
@@ -20,9 +22,8 @@ class PostCard extends StatelessWidget {
   final _categories = Key('_categories');
   final _province = Key('_province');
   final _price = Key('_price');
-  final _currency  = Key('_currency');
+  final _currency = Key('_currency');
   final _cardTap = Key('_cardTap');
-
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +34,26 @@ class PostCard extends StatelessWidget {
       _noImage = false;
     }
 
-    if (post.status == "مبادله")
+    if (post.status == "مبادله") {
       isExchange = true;
-    else
+      isBuy = false;
+      isDonation = false;
+    } else if (post.status == "خرید") {
       isExchange = false;
+      isBuy = true;
+      isDonation = false;
+    } else if ( post.status == "اهدا") {
+      isExchange = false;
+      isBuy = false;
+      isDonation = true;
+    } else {
+      isExchange = false;
+      isBuy = false;
+      isDonation = false;
+    }
 
     return GestureDetector(
-      key: _cardTap,
+        key: _cardTap,
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(post)));
         },
@@ -117,13 +131,13 @@ class PostCard extends StatelessWidget {
                               child: TextButton(
                                 onPressed: () {},
                                 style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
                                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
                                 ),
                                 child: Text(
                                   "مبادله",
-                                  style: TextStyle(color: Colors.white, fontFamily: Utilities().myFont),
+                                  style: TextStyle(color: Colors.red, fontFamily: Utilities().myFont),
                                 ),
                               )),
                           Padding(
@@ -136,6 +150,62 @@ class PostCard extends StatelessWidget {
                           ),
                         ],
                       )
+                    : isBuy
+                    ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        child: TextButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.teal))),
+                          ),
+                          child: Text(
+                            "خرید",
+                            style: TextStyle(color: Colors.teal, fontFamily: Utilities().myFont),
+                          ),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      child: Text(
+                        post.province,
+                        key: _province,
+                        style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
+                      ),
+                    ),
+                  ],
+                )
+                    : isDonation
+                    ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        child: TextButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.cyanAccent))),
+                          ),
+                          child: Text(
+                            "اهدا",
+                            style: TextStyle(color: Colors.cyanAccent, fontFamily: Utilities().myFont),
+                          ),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      child: Text(
+                        post.province,
+                        key: _province,
+                        style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
+                      ),
+                    ),
+                  ],
+                )
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
