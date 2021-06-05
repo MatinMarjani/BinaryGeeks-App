@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:application/pages/login.dart';
 import 'package:application/pages/newpost.dart';
 import 'package:application/pages/BookMark.dart';
+import 'package:application/pages/NotificationPage.dart';
 import 'package:application/main.dart';
 
 import 'package:application/util/app_url.dart';
@@ -111,6 +112,16 @@ class _MyDrawerState extends State<MyDrawer> {
             leading: Icon(Icons.bookmark_border_outlined, color: widget.mainColor),
             onTap: () {
               Navigator.push(context, new MaterialPageRoute(builder: (context) => BookMarks()));
+            },
+          ),
+          ListTile(
+            title: Text(
+              "اعلان ها",
+              style: TextStyle(fontFamily: 'myfont'),
+            ),
+            leading: Icon(Icons.notifications_none_outlined, color: widget.mainColor),
+            onTap: () {
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => NotificationPage()));
             },
           ),
           ListTile(
