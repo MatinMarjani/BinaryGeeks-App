@@ -1559,6 +1559,9 @@ class _PostPageState extends State<PostPage> {
   }
 
   isMarked() async {
+    setState(() {
+      _isLoading = true;
+    });
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString("token");
     int postID = widget.post.id;
@@ -1581,6 +1584,9 @@ class _PostPageState extends State<PostPage> {
     } catch (e) {
       log(e);
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   setMark() async {
