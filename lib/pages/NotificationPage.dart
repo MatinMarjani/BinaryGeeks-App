@@ -161,5 +161,57 @@ class _DashBoardState extends State<DashBoard> {
       });
     }
   }
-  
+
+  getPost(SharedPreferences sharedPreferences, int postID, var i) async {
+    var token = sharedPreferences.getString("token");
+    var url = Uri.parse(AppUrl.Get_Post + postID.toString());
+    var jsonResponse;
+    var response;
+
+    try {
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log('200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        if (jsonResponse != null) {
+          setState(() {
+            myNotifications.add(NotificationCard(i["id"], i["owner"], i["post"], i["is_seen"], i["message"], Post(
+              jsonResponse["owner"]["id"],
+              jsonResponse["owner"]["email"],
+              jsonResponse["owner"]["profile_image"],
+              jsonResponse["id"],
+              jsonResponse["title"],
+              jsonResponse["author"],
+              jsonResponse["publisher"],
+              jsonResponse["price"],
+              jsonResponse["province"],
+              jsonResponse["city"],
+              jsonResponse["zone"],
+              jsonResponse["status"],
+              jsonResponse["description"],
+              jsonResponse["is_active"],
+              AppUrl.baseURL + jsonResponse["image"],
+              //url
+              jsonResponse["categories"],
+              jsonResponse["created_at"],
+              jsonResponse["exchange_book_title"],
+              jsonResponse["exchange_book_author"],
+              jsonResponse["exchange_book_publisher"],
+            )));
+            myNotifications.add(Divider(thickness: 3,));
+            if( !i["is_seen"] ) {
+              alert = true;
+            }
+          });
+        }
+      } else {
+        log('!200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      }
+    } catch (e) {
+      print(e);
+      log("error");
+    }
+  }
+
 }
