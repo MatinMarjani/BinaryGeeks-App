@@ -550,6 +550,154 @@ class _PostPageState extends State<PostPage> {
                 SizedBox(height: 50)
               ],
             )
+          : isBuy
+          ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: provinceH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: province,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: cityH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: city,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: zoneH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: zone,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          SizedBox(height: 30),
+          Text(
+            "توضیحات : ",
+            style: TextStyle(fontSize: 30, fontFamily: myFont, color: mainColor),
+          ),
+          TextField(
+            controller: description,
+            enabled: false,
+            textAlign: TextAlign.right,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            style: TextStyle(fontFamily: 'myfont'),
+          ),
+          SizedBox(height: 50)
+        ],
+      )
+          : isDonation
+          ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: provinceH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: province,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: cityH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: city,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: TextFormField(
+                    controller: zoneH,
+                    textAlign: TextAlign.right,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+              Flexible(
+                  child: TextFormField(
+                    controller: zone,
+                    textAlign: TextAlign.left,
+                    enabled: false,
+                    style: TextStyle(fontFamily: 'myfont'),
+                  )),
+            ],
+          ),
+          SizedBox(height: 30),
+          Text(
+            "توضیحات : ",
+            style: TextStyle(fontSize: 30, fontFamily: myFont, color: mainColor),
+          ),
+          TextField(
+            controller: description,
+            enabled: false,
+            textAlign: TextAlign.right,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            style: TextStyle(fontFamily: 'myfont'),
+          ),
+          SizedBox(height: 50)
+        ],
+      )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
