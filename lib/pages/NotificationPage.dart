@@ -212,5 +212,4 @@ class _NotificationPageState extends State<NotificationPage> {
       log("error");
     }
   }
-
 }
