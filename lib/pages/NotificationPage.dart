@@ -16,16 +16,15 @@ import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
 import 'package:application/util/Utilities.dart';
 
-class DashBoard extends StatefulWidget {
+class NotificationPage extends StatefulWidget {
   final Color mainColor = Utilities().mainColor;
   final String myFont = Utilities().myFont;
 
-
   @override
-  _DashBoardState createState() => _DashBoardState();
+  _NotificationPageState createState() => _NotificationPageState();
 }
 
-class _DashBoardState extends State<DashBoard> {
+class _NotificationPageState extends State<NotificationPage> {
   List<Widget> myNotifications = [];
   List<Post> myPost = [];
   bool _isLoading = false;
@@ -40,11 +39,11 @@ class _DashBoardState extends State<DashBoard> {
       _isLoading = true;
       page = 1;
       MyAppBar.appBarTitle =
-          Text("داشبورد", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
+          Text("اعلان ها", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
       myPost.clear();
     });
-    getPosts(page.toString());
+    getNotifications(page.toString());
   }
 
   void _onRefresh() async{
@@ -52,7 +51,7 @@ class _DashBoardState extends State<DashBoard> {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     for ( int i = 1; i <= page; i++) {
-      getPosts(page.toString());
+      getNotifications(page.toString());
     }
     // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
@@ -63,7 +62,7 @@ class _DashBoardState extends State<DashBoard> {
     page++;
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    getPosts(page.toString());
+    getNotifications(page.toString());
     if(mounted)
       setState(() {});
     _refreshController.loadComplete();
@@ -112,7 +111,7 @@ class _DashBoardState extends State<DashBoard> {
               valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
             ))
             : ListView(children: <Widget>[
-          posts(),
+          notifications(),
         ]),
 
       ),
@@ -120,9 +119,16 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  getNotifications() async {
+  Widget notifications() {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: myNotifications);
+  }
+
+  getNotifications(String p) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var url = Uri.parse(AppUrl.Get_Notifications);
+    var url = Uri.parse(AppUrl.Get_Notifications + "?page=" + p);
     var token = sharedPreferences.getString("token");
     var jsonResponse;
     var response;
@@ -135,12 +141,8 @@ class _DashBoardState extends State<DashBoard> {
         print(jsonResponse["results"]);
         if (jsonResponse != null) {
           setState(() {
-            int counter = 0;
             for (var i in jsonResponse["results"]) {
-              if( counter <= 4) {
-                getPost(sharedPreferences, i["post"], i);
-              }
-              counter++;
+              getPost(sharedPreferences, i["post"], i);
             }
           });
         }
@@ -151,15 +153,15 @@ class _DashBoardState extends State<DashBoard> {
     } catch (e) {
       print(e);
       log("error");
-    }
-
-    if ( myNotifications.isNotEmpty ) {
       setState(() {
-        myNotifications.add(SizedBox(
-          height: 200,
-        ));
+        if(jsonResponse["detail"] == "Invalid page.")
+          page--;
       });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   getPost(SharedPreferences sharedPreferences, int postID, var i) async {
@@ -199,9 +201,6 @@ class _DashBoardState extends State<DashBoard> {
               jsonResponse["exchange_book_publisher"],
             )));
             myNotifications.add(Divider(thickness: 3,));
-            if( !i["is_seen"] ) {
-              alert = true;
-            }
           });
         }
       } else {
