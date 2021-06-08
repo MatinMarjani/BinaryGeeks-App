@@ -13,6 +13,16 @@ class ChatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    String date = "";
+    String time2 = "";
+    String time = "";
+    try {
+      date = Utilities().replaceFarsiNumber(myChat.message["created_at"].split('T')[0] ?? "");
+      time2 = myChat.message["created_at"].split('T')[1] ?? "";
+      time = Utilities().replaceFarsiNumber(time2.split(".")[0] ?? "");
+    } catch (e) {}
+
     return InkWell(
       onTap: () {},
       child: Padding(
@@ -41,7 +51,7 @@ class ChatCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 3),
+                        border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 1),
                       ),
                     ),
                   )
@@ -70,10 +80,18 @@ class ChatCard extends StatelessWidget {
                 ),
               ),
             ),
-            Opacity(
-              opacity: 0.64,
-              child: Text(myChat.message["created_at"]),
-            ),
+            Column(
+              children: <Widget>[
+                Opacity(
+                  opacity: 0.64,
+                  child: Text(date),
+                ),
+                Opacity(
+                  opacity: 0.64,
+                  child: Text(time),
+                ),
+              ],
+            )
           ],
         ),
       ),
