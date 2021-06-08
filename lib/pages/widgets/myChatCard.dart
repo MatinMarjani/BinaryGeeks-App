@@ -5,10 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:application/util/Utilities.dart';
 import 'package:application/util/Chats.dart';
 
-
 // ignore: must_be_immutable
 class ChatCard extends StatelessWidget {
-
   Chats myChat;
 
   ChatCard(this.myChat);
@@ -16,18 +14,23 @@ class ChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){},
+      onTap: () {},
       child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: 0, vertical: 0),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: Row(
           children: [
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(myChat.user["profile_image"]),
-                ),
+                if (myChat.user["profile_image"] != null)
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundImage: NetworkImage('http://37.152.176.11' + myChat.user["profile_image"]),
+                  )
+                else
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.grey,
+                  ),
                 if (!myChat.message["is_read"])
                   Positioned(
                     right: 0,
@@ -38,9 +41,7 @@ class ChatCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            width: 3),
+                        border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 3),
                       ),
                     ),
                   )
@@ -48,15 +49,13 @@ class ChatCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 0),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       myChat.user["username"],
-                      style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(height: 8),
                     Opacity(

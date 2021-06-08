@@ -10,22 +10,11 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
-import 'package:application/pages/widgets/myPostCard.dart';
+import 'package:application/pages/widgets/myChatCard.dart';
 
 import 'package:application/util/app_url.dart';
-import 'package:application/util/Post.dart';
-import 'package:application/util/User.dart';
 import 'package:application/util/Utilities.dart';
-
-
-class Chats {
-  var threadId;
-  var user;
-  var message;
-
-  Chats(this.threadId, this.user, this.message);
-}
-
+import 'package:application/util/Chats.dart';
 
 class ChatList extends StatefulWidget {
   final Color mainColor = Utilities().mainColor;
@@ -105,9 +94,14 @@ class _ChatListState extends State<ChatList> {
                 child: CircularProgressIndicator(
                 valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
               ))
-            : ListView(children: <Widget>[
-                Text("Negro"),
-              ]),
+            : myChats.isNotEmpty
+                ? ListView.builder(
+                    itemCount: myChats.length,
+                    itemBuilder: (context, index) => ChatCard(
+                      myChats[index],
+                    ),
+                  )
+                : Text("SADfadfsdfgdgsa gsdsgd aa gs"),
       ),
       drawer: MyDrawer(),
     );
@@ -120,20 +114,16 @@ class _ChatListState extends State<ChatList> {
     var url = Uri.parse(AppUrl.Get_User_Chats);
     var token = sharedPreferences.getString("token");
 
-    try{
-      response = await http.get(url,headers: {'Authorization': 'Token $token'});
+    try {
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('CHAT List : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           if (jsonResponse != null) {
             setState(() {
-              for (var i in jsonResponse["results"]) {
-                myChats.add(Chats(
-                    i["thread_id"],
-                    i["user"],
-                    i["message"]
-                ));
+              for (var i in jsonResponse) {
+                myChats.add(Chats(i["thread_id"], i["user"], i["message"]));
               }
             });
           }
@@ -144,11 +134,11 @@ class _ChatListState extends State<ChatList> {
         log(jsonResponse);
       }
     } catch (e) {
+      print(e);
       log("error");
     }
     setState(() {
       _isLoading = false;
     });
   }
-
 }
