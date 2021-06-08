@@ -42,4 +42,7 @@ class AppUrl {
   //Notifications
   static const String Get_Notifications = baseURL + "/api/notifications/getmynotifications"; //Headers token //Get
 
+  //chat
+  static const String Get_User_Chats = baseURL + "/api/users/chats"; //Headers token //Get
+
 }
