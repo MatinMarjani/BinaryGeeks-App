@@ -31,6 +31,7 @@ class _ChatListState extends State<ChatList> {
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   void initState() {
+    myChats.clear();
     super.initState();
     log("ChatList init");
     setState(() {
@@ -42,7 +43,9 @@ class _ChatListState extends State<ChatList> {
   }
 
   void _onRefresh() async {
+    myChats.clear();
 // monitor network fetch
+    getChatLists();
     await Future.delayed(Duration(milliseconds: 1000));
 // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
