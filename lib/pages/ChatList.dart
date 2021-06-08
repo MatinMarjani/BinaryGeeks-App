@@ -14,7 +14,18 @@ import 'package:application/pages/widgets/myPostCard.dart';
 
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
+import 'package:application/util/User.dart';
 import 'package:application/util/Utilities.dart';
+
+
+class Chats {
+  var threadId;
+  var user;
+  var message;
+
+  Chats(this.threadId, this.user, this.message);
+}
+
 
 class ChatList extends StatefulWidget {
   final Color mainColor = Utilities().mainColor;
@@ -26,7 +37,7 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
   bool _isLoading = false;
-  int page;
+  List<Chats> myChats = [];
 
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
@@ -35,23 +46,21 @@ class _ChatListState extends State<ChatList> {
     log("ChatList init");
     setState(() {
       _isLoading = true;
-      page = 1;
       MyAppBar.appBarTitle = Text("چت ها", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
+    getChatLists();
   }
 
   void _onRefresh() async {
 // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
-    for (int i = 1; i <= page; i++) {}
 // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
 // monitor network fetch
-    page++;
     await Future.delayed(Duration(milliseconds: 1000));
 // if failed,use loadFailed(),if no data return,use LoadNodata()
     if (mounted) setState(() {});
