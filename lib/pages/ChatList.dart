@@ -104,5 +104,42 @@ class _ChatListState extends State<ChatList> {
     );
   }
 
-  getChatLists() async {}
+  getChatLists() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse;
+    var response;
+    var url = Uri.parse(AppUrl.Get_User_Chats);
+    var token = sharedPreferences.getString("token");
+
+    try{
+      response = await http.get(url,headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log('CHAT List : 200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        setState(() {
+          if (jsonResponse != null) {
+            setState(() {
+              for (var i in jsonResponse["results"]) {
+                myChats.add(Chats(
+                    i["thread_id"],
+                    i["user"],
+                    i["message"]
+                ));
+              }
+            });
+          }
+        });
+      } else {
+        log('Chat List : !200');
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        log(jsonResponse);
+      }
+    } catch (e) {
+      log("error");
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
 }
