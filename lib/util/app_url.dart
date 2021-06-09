@@ -44,5 +44,6 @@ class AppUrl {
 
   //chat
   static const String Get_User_Chats = baseURL + "/api/users/chats"; //Headers token //Get
+  static const String Get_Chat_Messages = baseURL + "/api/chat/"; //Headers token //threadID //Get
 
 }
