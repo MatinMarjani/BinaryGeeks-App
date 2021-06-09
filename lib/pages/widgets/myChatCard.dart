@@ -25,7 +25,7 @@ class ChatCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => ChatPage(myChat.threadId)));
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => ChatPage(myChat)));
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -41,7 +41,8 @@ class ChatCard extends StatelessWidget {
                 else
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: Colors.grey,
+                    child: Text(myChat.user['email'][0], style: TextStyle(color: Colors.white),),
+                    backgroundColor: Colors.orange,
                   ),
                 if (!myChat.message["is_read"])
                   Positioned(

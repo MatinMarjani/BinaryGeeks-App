@@ -8,6 +8,8 @@ class Chats {
 
 class Messages {
   var message;
+  var senderID;
+  bool isSender;
 
-  Messages(this.message);
+  Messages(this.message, this.senderID, this.isSender);
 }
