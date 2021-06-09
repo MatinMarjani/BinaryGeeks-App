@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:application/util/Utilities.dart';
 import 'package:application/util/Chats.dart';
+import 'package:application/pages/ChatPage.dart';
 
 // ignore: must_be_immutable
 class ChatCard extends StatelessWidget {
@@ -13,7 +14,6 @@ class ChatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     String date = "";
     String time2 = "";
     String time = "";
@@ -24,7 +24,9 @@ class ChatCard extends StatelessWidget {
     } catch (e) {}
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => ChatPage(myChat.threadId)));
+      },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: Row(
