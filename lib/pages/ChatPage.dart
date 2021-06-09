@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
 import 'package:application/pages/widgets/myAppBar.dart';
+import 'package:application/pages/widgets/myMessageCard.dart';
 
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Utilities.dart';
@@ -15,9 +16,11 @@ import 'package:application/util/Chats.dart';
 class ChatPage extends StatefulWidget {
   final Color mainColor = Utilities().mainColor;
   final String myFont = Utilities().myFont;
-  final int threadID;
 
-  ChatPage(this.threadID);
+  Chats myChat;
+
+  ChatPage(this.myChat);
+
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -36,7 +39,7 @@ class _ChatPageState extends State<ChatPage> {
       MyAppBar.appBarTitle = Text("چت", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
-    getMessages(widget.threadID);
+    getMessages(widget.myChat.threadId);
   }
 
   @override
@@ -51,9 +54,11 @@ class _ChatPageState extends State<ChatPage> {
           child: CircularProgressIndicator(
             valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
           ))
-          : ListView(children: <Widget>[
-        Text(widget.threadID.toString()),
-      ]),
+          : ListView.builder(
+        itemCount: messages.length,
+        itemBuilder: (context, index) =>
+            MessageCard(messages[index], widget.myChat),
+      ),
       drawer: MyDrawer(),
     );
   }
@@ -62,6 +67,7 @@ class _ChatPageState extends State<ChatPage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
     var response;
+    var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Get_Chat_Messages + threadID.toString());
     var token = sharedPreferences.getString("token");
 
@@ -74,7 +80,12 @@ class _ChatPageState extends State<ChatPage> {
           if (jsonResponse != null) {
             setState(() {
               for (var i in jsonResponse) {
-                messages.add(Messages(i));
+                bool isSender;
+                if(i["sender"].toString() == id)
+                  isSender = true;
+                else
+                  isSender = false;
+                messages.add(Messages(i, id, isSender));
               }
             });
           }
