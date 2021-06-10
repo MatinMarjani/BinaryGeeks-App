@@ -14,6 +14,7 @@ import 'package:application/util/app_url.dart';
 import 'package:application/util/Utilities.dart';
 import 'package:application/util/Chats.dart';
 
+// ignore: must_be_immutable
 class ChatPage extends StatefulWidget {
   final Color mainColor = Utilities().mainColor;
   final String myFont = Utilities().myFont;
@@ -29,11 +30,14 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   bool _isLoading = false;
   List<Messages> messages = [];
+  static ScrollController _scrollController = new ScrollController();
+
 
   void initState() {
     super.initState();
     log("ChatPage init");
     setState(() {
+      messages.clear();
       _isLoading = true;
       MyAppBar.appBarTitle =
           Text(widget.myChat.user["email"], style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
@@ -51,23 +55,27 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: _isLoading
           ? Center(
-              child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(widget.mainColor),
-            ))
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(widget.mainColor),
+          ))
           : Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) => MessageCard(messages[index], widget.myChat),
-                  ),
-                ),
-                ChatInputField(),
-              ],
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              // reverse: true,
+              shrinkWrap: true,
+              itemCount: messages.length,
+              itemBuilder: (context, index) => MessageCard(messages[index], widget.myChat),
             ),
+          ),
+          ChatInputField(sendMessage, widget.myChat.threadId),
+        ],
+      ),
       drawer: MyDrawer(),
     );
   }
+
   getMessages(int threadID) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
@@ -109,11 +117,59 @@ class _ChatPageState extends State<ChatPage> {
       _isLoading = false;
     });
   }
+
+  sendMessage(int threadID, String text) async {
+    _scrollController.animateTo(
+      100000000000000000,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Send_Messages + threadID.toString());
+    var response;
+    var jsonResponse;
+    var headers = {'Authorization': 'Token $token', 'Content-Type': 'application/json'};
+    var body;
+
+    if(text.isNotEmpty) {
+      body = jsonEncode(<String, dynamic>{
+        "message": text,
+      });
+    }
+
+    try {
+      response = await http.post(url, body: body.toString(), headers: headers);
+      if (response.statusCode == 200) {
+        log("Send Message : 200");
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
+        setState(() {
+          messages.add(Messages(jsonResponse, id, true));
+        });
+      } else {
+        log("Send Message : !200");
+        print(response.body);
+      }
+    } catch (e) {
+      log(e);
+    }
+
+  }
 }
 
+// ignore: must_be_immutable
 class ChatInputField extends StatelessWidget {
   final Color mainColor = Utilities().mainColor;
   final String myFont = Utilities().myFont;
+  static final TextEditingController textEditingController = new TextEditingController();
+
+  dynamic acceptBid;
+  final int threadId;
+
+  ChatInputField(this.acceptBid, this.threadId);
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +179,9 @@ class ChatInputField extends StatelessWidget {
         vertical: 15,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: Theme
+            .of(context)
+            .scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 4),
@@ -147,18 +205,23 @@ class ChatInputField extends StatelessWidget {
                 child: Row(
                   children: [
                     Transform.rotate(
-                      angle: 180* math.pi / 180,
+                      angle: 180 * math.pi / 180,
                       child: IconButton(
                         icon: Icon(
                           Icons.send,
                           color: Colors.white,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          // ignore: unnecessary_statements
+                          acceptBid(threadId, textEditingController.text);
+                          textEditingController.text = "";
+                        },
                       ),
                     ),
                     SizedBox(width: 10),
                     Expanded(
                       child: TextField(
+                        controller:textEditingController,
                         maxLines: null,
                         textInputAction: TextInputAction.newline,
                         decoration: InputDecoration(
@@ -167,7 +230,7 @@ class ChatInputField extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 10  ),
+                    SizedBox(width: 10),
                   ],
                 ),
               ),
