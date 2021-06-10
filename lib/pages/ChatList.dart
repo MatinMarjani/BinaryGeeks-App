@@ -104,7 +104,9 @@ class _ChatListState extends State<ChatList> {
                       myChats[index],
                     ),
                   )
-                : Text("SADfadfsdfgdgsa gsdsgd aa gs"),
+                : Center(
+          child: Text("هیچ چتی ندارید", style: TextStyle( fontSize: 30, fontFamily: widget.myFont, color: Colors.red),),
+        ),
       ),
       drawer: MyDrawer(),
     );
@@ -122,6 +124,7 @@ class _ChatListState extends State<ChatList> {
       if (response.statusCode == 200) {
         log('CHAT List : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
         setState(() {
           if (jsonResponse != null) {
             setState(() {

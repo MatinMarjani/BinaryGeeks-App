@@ -7,13 +7,16 @@ import 'package:application/util/User.dart';
 class MessageCard extends StatelessWidget {
   final Messages message;
   final Chats myChat;
+  final int index;
+  final int length;
 
-  MessageCard(this.message, this.myChat);
+  MessageCard(this.message, this.myChat, this.index, this.length);
 
   @override
   Widget build(BuildContext context) {
     bool _noImage;
     bool _noImage2;
+    bool _isRead;
 
     if (User.profileImage == null)
       _noImage = true;
@@ -24,6 +27,11 @@ class MessageCard extends StatelessWidget {
       _noImage2 = true;
     else
       _noImage2 = false;
+
+    if (myChat.message["is_read"])
+      _isRead = true;
+    else
+      _isRead = false;
 
     String date2 = "";
     String date = "";
@@ -45,11 +53,11 @@ class MessageCard extends StatelessWidget {
           if (message.isSender) ...[
             !_noImage
                 ? CircleAvatar(
-                    radius: 30,
+                    radius: 20,
                     backgroundImage: NetworkImage('http://37.152.176.11' + User.profileImage),
                   )
                 : CircleAvatar(
-                    radius: 30,
+                    radius: 20,
                     child: Text(
                       User.email[0],
                       style: TextStyle(color: Colors.white),
@@ -74,6 +82,9 @@ class MessageCard extends StatelessWidget {
               children: [
                 Text(time),
                 Text(date),
+                if (index == length-1) ...[
+                  _isRead ? Text("خوانده شده") : Text("خوانده نشده"),
+                ]
               ],
             ),
           ],
@@ -81,11 +92,11 @@ class MessageCard extends StatelessWidget {
             SizedBox(width: 5),
             !_noImage2
                 ? CircleAvatar(
-                    radius: 30,
+                    radius: 20,
                     backgroundImage: NetworkImage('http://37.152.176.11' + myChat.user["profile_image"]),
                   )
                 : CircleAvatar(
-                    radius: 30,
+                    radius: 20,
                     child: Text(
                       myChat.user['email'][0],
                       style: TextStyle(color: Colors.white),
@@ -113,11 +124,11 @@ class TextMessage extends StatelessWidget {
         child: Container(
       padding: EdgeInsets.symmetric(
         horizontal: 20,
-        vertical: 20,
+        vertical: 23,
       ),
       decoration: BoxDecoration(
         color: mainColor.withOpacity(message.isSender ? 1 : 0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Text(
         message.message["message"],

@@ -30,8 +30,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   bool _isLoading = false;
   List<Messages> messages = [];
-  static ScrollController _scrollController = new ScrollController();
 
+  static ScrollController _scrollController = new ScrollController();
 
   void initState() {
     super.initState();
@@ -43,6 +43,7 @@ class _ChatPageState extends State<ChatPage> {
           Text(widget.myChat.user["email"], style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
     });
+    sendIsRead(widget.myChat.threadId);
     getMessages(widget.myChat.threadId);
   }
 
@@ -55,25 +56,45 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: _isLoading
           ? Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(widget.mainColor),
-          ))
+              child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(widget.mainColor),
+            ))
           : Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              // reverse: true,
-              shrinkWrap: true,
-              itemCount: messages.length,
-              itemBuilder: (context, index) => MessageCard(messages[index], widget.myChat),
+              children: <Widget>[
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) => MessageCard(messages[index], widget.myChat, index, messages.length),
+                  ),
+                ),
+                ChatInputField(sendMessage, widget.myChat.threadId),
+              ],
             ),
-          ),
-          ChatInputField(sendMessage, widget.myChat.threadId),
-        ],
-      ),
       drawer: MyDrawer(),
     );
+  }
+
+  sendIsRead(int threadID) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Send_Is_Read + threadID.toString());
+    var response;
+    var jsonResponse;
+    var headers = {'Authorization': 'Token $token'};
+
+    try {
+      response = await http.put(url, headers: headers);
+      if (response.statusCode == 200) {
+        log("Send Is_Read Message : 200");
+      } else {
+        log("Send Is_Read Message : !200");
+      }
+    } catch (e) {
+      log("error Is_Read : e");
+    }
   }
 
   getMessages(int threadID) async {
@@ -134,7 +155,7 @@ class _ChatPageState extends State<ChatPage> {
     var headers = {'Authorization': 'Token $token', 'Content-Type': 'application/json'};
     var body;
 
-    if(text.isNotEmpty) {
+    if (text.isNotEmpty) {
       body = jsonEncode(<String, dynamic>{
         "message": text,
       });
@@ -156,7 +177,6 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e) {
       log(e);
     }
-
   }
 }
 
@@ -179,9 +199,7 @@ class ChatInputField extends StatelessWidget {
         vertical: 15,
       ),
       decoration: BoxDecoration(
-        color: Theme
-            .of(context)
-            .scaffoldBackgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 4),
@@ -221,7 +239,7 @@ class ChatInputField extends StatelessWidget {
                     SizedBox(width: 10),
                     Expanded(
                       child: TextField(
-                        controller:textEditingController,
+                        controller: textEditingController,
                         maxLines: null,
                         textInputAction: TextInputAction.newline,
                         decoration: InputDecoration(
