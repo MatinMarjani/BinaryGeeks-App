@@ -54,20 +54,6 @@ class ChatCard extends StatelessWidget {
                       child: Text(myChat.user['email'][0], style: TextStyle(color: Colors.white),),
                       backgroundColor: Colors.orange,
                     ),
-                  if (!myChat.message["is_read"])
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        height: 16,
-                        width: 16,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 1),
-                        ),
-                      ),
-                    )
                 ],
               ),
               Expanded(

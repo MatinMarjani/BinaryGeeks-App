@@ -90,7 +90,6 @@ class _ChatPageState extends State<ChatPage> {
   sendIsRead(int threadID) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString("token");
-    var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Send_Is_Read + threadID.toString());
     var response;
     var headers = {'Authorization': 'Token $token'};
@@ -193,6 +192,7 @@ class _ChatPageState extends State<ChatPage> {
   repeat() {
     messages.clear();
     getMessages(widget.myChat.threadId);
+    sendIsRead(widget.myChat.threadId);
   }
 }
 

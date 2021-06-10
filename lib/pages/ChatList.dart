@@ -124,7 +124,6 @@ class _ChatListState extends State<ChatList> {
       if (response.statusCode == 200) {
         log('CHAT List : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse);
         setState(() {
           if (jsonResponse != null) {
             setState(() {
