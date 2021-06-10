@@ -18,84 +18,95 @@ class ChatCard extends StatelessWidget {
     String time2 = "";
     String time = "";
     try {
-      date = Utilities().replaceFarsiNumber(myChat.message["created_at"].split('T')[0] ?? "");
+      date = Utilities().replaceFarsiNumber(myChat.message["created_at"].split('T')[0] ?? "").replaceAll("-", "/");
       time2 = myChat.message["created_at"].split('T')[1] ?? "";
       time = Utilities().replaceFarsiNumber(time2.split(".")[0] ?? "");
     } catch (e) {}
 
-    return InkWell(
-      onTap: () {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => ChatPage(myChat)));
-      },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        child: Row(
-          children: [
-            Stack(
-              children: [
-                if (myChat.user["profile_image"] != null)
-                  CircleAvatar(
-                    radius: 24,
-                    backgroundImage: NetworkImage('http://37.152.176.11' + myChat.user["profile_image"]),
-                  )
-                else
-                  CircleAvatar(
-                    radius: 24,
-                    child: Text(myChat.user['email'][0], style: TextStyle(color: Colors.white),),
-                    backgroundColor: Colors.orange,
+    bool isRead;
+
+    if(myChat.message["is_read"] || myChat.message["sender"] != myChat.user["id"])
+      isRead = true;
+    else
+      isRead = false;
+
+    return Container(
+      color: isRead ? Colors.lightBlueAccent : Colors.redAccent ,
+      child: InkWell(
+        highlightColor: Colors.red,
+        onTap: () {
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => ChatPage(myChat)));
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          child: Row(
+            children: [
+              Stack(
+                children: [
+                  if (myChat.user["profile_image"] != null)
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundImage: NetworkImage('http://37.152.176.11' + myChat.user["profile_image"]),
+                    )
+                  else
+                    CircleAvatar(
+                      radius: 24,
+                      child: Text(myChat.user['email'][0], style: TextStyle(color: Colors.white),),
+                      backgroundColor: Colors.orange,
+                    ),
+                  if (!myChat.message["is_read"])
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        height: 16,
+                        width: 16,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 1),
+                        ),
+                      ),
+                    )
+                ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        myChat.user["username"],
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(height: 8),
+                      Opacity(
+                        opacity: 0.64,
+                        child: Text(
+                          myChat.message["message"],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-                if (!myChat.message["is_read"])
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      height: 16,
-                      width: 16,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 1),
-                      ),
-                    ),
-                  )
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      myChat.user["username"],
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(height: 8),
-                    Opacity(
-                      opacity: 0.64,
-                      child: Text(
-                        myChat.message["message"],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
                 ),
               ),
-            ),
-            Column(
-              children: <Widget>[
-                Opacity(
-                  opacity: 0.64,
-                  child: Text(date),
-                ),
-                Opacity(
-                  opacity: 0.64,
-                  child: Text(time),
-                ),
-              ],
-            )
-          ],
+              Column(
+                children: <Widget>[
+                  Opacity(
+                    opacity: 0.64,
+                    child: Text(date),
+                  ),
+                  Opacity(
+                    opacity: 0.64,
+                    child: Text(time),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
