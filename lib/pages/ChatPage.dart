@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:application/pages/widgets/myDrawer.dart';
@@ -29,6 +31,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   bool _isLoading = false;
+  Timer timer;
   List<Messages> messages = [];
 
   static ScrollController _scrollController = new ScrollController();
@@ -45,6 +48,8 @@ class _ChatPageState extends State<ChatPage> {
     });
     sendIsRead(widget.myChat.threadId);
     getMessages(widget.myChat.threadId);
+    const oneSec = const Duration(seconds:3);
+    timer =  Timer.periodic(oneSec, (Timer t) => repeat());
   }
 
   @override
@@ -76,13 +81,18 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
   sendIsRead(int threadID) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString("token");
     var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Send_Is_Read + threadID.toString());
     var response;
-    var jsonResponse;
     var headers = {'Authorization': 'Token $token'};
 
     try {
@@ -110,6 +120,7 @@ class _ChatPageState extends State<ChatPage> {
       if (response.statusCode == 200) {
         log('Chat : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        // print(jsonResponse);
         setState(() {
           if (jsonResponse != null) {
             setState(() {
@@ -177,6 +188,11 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e) {
       log(e);
     }
+  }
+
+  repeat() {
+    messages.clear();
+    getMessages(widget.myChat.threadId);
   }
 }
 
