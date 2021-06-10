@@ -25,6 +25,18 @@ class MessageCard extends StatelessWidget {
     else
       _noImage2 = false;
 
+    String date2 = "";
+    String date = "";
+    String time2 = "";
+    String time3 = "";
+    String time = "";
+
+    date2 = Utilities().replaceFarsiNumber(message.message["created_at"].split('T')[0] ?? "");
+    date = date2.split("-")[1] + "/" + date2.split("-")[2];
+    time2 = message.message["created_at"].split('T')[1] ?? "";
+    time3 = Utilities().replaceFarsiNumber(time2.split(".")[0] ?? "");
+    time = time3.split(":")[0] + ":" + time3.split(":")[1];
+
     return Padding(
       padding: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 8),
       child: Row(
@@ -46,7 +58,25 @@ class MessageCard extends StatelessWidget {
                   ),
             SizedBox(width: 5),
           ],
+          if (!message.isSender) ...[
+            Column(
+              children: [
+                Text(time),
+                Text(date),
+              ],
+            ),
+            SizedBox(width: 5),
+          ],
           TextMessage(message),
+          if (message.isSender) ...[
+            SizedBox(width: 5),
+            Column(
+              children: [
+                Text(time),
+                Text(date),
+              ],
+            ),
+          ],
           if (!message.isSender) ...[
             SizedBox(width: 5),
             !_noImage2
