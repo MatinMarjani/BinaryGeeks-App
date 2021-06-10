@@ -167,7 +167,7 @@ class BidCard extends StatelessWidget {
                         color: Colors.green,
                       ),
                       onPressed: () {
-                        acceptBid(bidID);
+                        acceptBid(bidID, bidOwner);
                       },
                     ),
                   )

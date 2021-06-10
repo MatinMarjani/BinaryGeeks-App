@@ -1631,7 +1631,7 @@ class _PostPageState extends State<PostPage> {
         ),
         child: Text("چت", style: TextStyle(fontFamily: myFont, fontSize: 20, color: mainColor),),
         onPressed: () {
-          getChatThreadId();
+          getChatThreadId(widget.post.ownerId);
         },
       ),
     );
@@ -2047,7 +2047,7 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
-  Future acceptBid(int bidID) async {
+  Future acceptBid(int bidID, var ownerID) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String token = sharedPreferences.getString("token");
 
@@ -2062,6 +2062,7 @@ class _PostPageState extends State<PostPage> {
           widget.post.isActive = false;
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("با موفقیت قبول شد", style: TextStyle(color: Colors.green))));
+          getChatThreadId(ownerID);
         });
       } else {
         print(response.body);
@@ -2139,11 +2140,11 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
-  getChatThreadId() async {
+  getChatThreadId(var other) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
     var response;
-    var url = Uri.parse(AppUrl.Get_Chat_ThreadId + widget.post.ownerId.toString());
+    var url = Uri.parse(AppUrl.Get_Chat_ThreadId + other.toString());
     var token = sharedPreferences.getString("token");
     Chats myChat;
 
