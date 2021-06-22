@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:application/util/Utilities.dart';
 import 'package:application/util/Post.dart';
 
-
 //ignore: must_be_immutable
 class NotificationCard extends StatelessWidget {
   final Color mainColor = Utilities().mainColor;
@@ -30,18 +29,26 @@ class NotificationCard extends StatelessWidget {
         leading: seen
             ? Text(
                 "اعلان قدیمی",
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14, fontFamily: Utilities().myFont),
               )
             : Text(
                 "اعلان جدید",
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.red, fontSize: 14, fontFamily: Utilities().myFont),
               ),
         title: Text(
           "درخواست جدید",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, fontFamily: Utilities().myFont),
         ),
-        subtitle: Text("پست $postIDfarsi"),
-        trailing: Text("$notificationIDfarsi"),
+        subtitle: Text(
+          "پست $postIDfarsi",
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, fontFamily: Utilities().myFont),
+        ),
+        trailing: Text(
+          "$notificationIDfarsi",
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, fontFamily: Utilities().myFont),
+        ),
         isThreeLine: true,
         onTap: () {
           Navigator.push(context, new MaterialPageRoute(builder: (context) => PostPage(post)));
