@@ -15,11 +15,11 @@ import 'package:application/pages/widgets/myPostCard.dart';
 import 'package:application/util/app_url.dart';
 import 'package:application/util/Post.dart';
 import 'package:application/util/Utilities.dart';
+import 'package:application/util/User.dart';
 
 class DashBoard extends StatefulWidget {
   final Color mainColor = Utilities().mainColor;
   final String myFont = Utilities().myFont;
-
 
   @override
   _DashBoardState createState() => _DashBoardState();
@@ -38,33 +38,32 @@ class _DashBoardState extends State<DashBoard> {
     setState(() {
       _isLoading = true;
       page = 1;
-      MyAppBar.appBarTitle =
-          Text("داشبورد", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
+      MyAppBar.appBarTitle = Text("داشبورد", style: TextStyle(color: Colors.white, fontFamily: 'myfont'));
       MyAppBar.actionIcon = Icon(Icons.search, color: Colors.white);
       myPost.clear();
     });
     getPosts(page.toString());
+    getProfile();
   }
 
-  void _onRefresh() async{
+  void _onRefresh() async {
     myPost.clear();
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
-    for ( int i = 1; i <= page; i++) {
+    for (int i = 1; i <= page; i++) {
       getPosts(page.toString());
     }
     // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
   }
 
-  void _onLoading() async{
+  void _onLoading() async {
     // monitor network fetch
     page++;
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
     getPosts(page.toString());
-    if(mounted)
-      setState(() {});
+    if (mounted) setState(() {});
     _refreshController.loadComplete();
   }
 
@@ -79,26 +78,22 @@ class _DashBoardState extends State<DashBoard> {
         enablePullDown: true,
         enablePullUp: true,
         footer: CustomFooter(
-          builder: (BuildContext context,LoadStatus mode){
-            Widget body ;
-            if(mode==LoadStatus.idle){
-              body =  Text("بار گذاری شد");
-            }
-            else if(mode==LoadStatus.loading){
-              body =  CupertinoActivityIndicator();
-            }
-            else if(mode == LoadStatus.failed){
+          builder: (BuildContext context, LoadStatus mode) {
+            Widget body;
+            if (mode == LoadStatus.idle) {
+              body = Text("بار گذاری شد");
+            } else if (mode == LoadStatus.loading) {
+              body = CupertinoActivityIndicator();
+            } else if (mode == LoadStatus.failed) {
               body = Text("Load Failed!Click retry!");
-            }
-            else if(mode == LoadStatus.canLoading){
+            } else if (mode == LoadStatus.canLoading) {
               body = Text("release to load more");
-            }
-            else{
+            } else {
               body = Text("No more Data");
             }
             return Container(
               height: 55.0,
-              child: Center(child:body),
+              child: Center(child: body),
             );
           },
         ),
@@ -106,21 +101,22 @@ class _DashBoardState extends State<DashBoard> {
         onRefresh: _onRefresh,
         onLoading: _onLoading,
         child: _isLoading
-              ? Center(
-              child: CircularProgressIndicator(
+            ? Center(
+                child: CircularProgressIndicator(
                 valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
               ))
-              : ListView(children: <Widget>[
-            posts(),
-          ]),
-
+            : ListView(children: <Widget>[
+                posts(),
+              ]),
       ),
       drawer: MyDrawer(),
     );
   }
 
   Widget posts() {
-    if (myPost.length == 0) return Text("nothing");
+    if (myPost.length == 0) return Center(
+      child: Text("هیچ پستی ندارید", style: TextStyle( fontSize: 30, fontFamily: widget.myFont, color: Colors.red),),
+    );
     List<Widget> list = [];
     for (var i = 0; i < myPost.length; i++) {
       if (myPost[i].title == null) myPost[i].title = " ";
@@ -136,7 +132,6 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   getPosts(String p) async {
-
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
     var response;
@@ -144,11 +139,10 @@ class _DashBoardState extends State<DashBoard> {
     var token = sharedPreferences.getString("token");
 
     try {
-      response = await http.get(url,headers: {'Authorization': 'Token $token'});
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
-        log('200');
+        log('Dashboard getPost :200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse);
         if (jsonResponse != null) {
           setState(() {
             for (var i in jsonResponse["results"]) {
@@ -179,19 +173,47 @@ class _DashBoardState extends State<DashBoard> {
           });
         }
       } else {
-        log('!200');
+        log('Dashboard getPost : !200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
-          if(jsonResponse["detail"] == "Invalid page.")
-            page--;
+          if (jsonResponse["detail"] == "Invalid page.") page--;
         });
       }
     } catch (e) {
-      log("error");
+      log("Dashboard getPost : error");
     }
 
     setState(() {
       _isLoading = false;
     });
+  }
+
+  getProfile() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jsonResponse;
+    var response;
+
+    var token = sharedPreferences.getString("token");
+    var id = sharedPreferences.getInt("id").toString();
+    var url = Uri.parse(AppUrl.Get_Profile + id);
+
+    try {
+      response = await http.get(url, headers: {'Authorization': 'Token $token'});
+      if (response.statusCode == 200) {
+        log("Dashboard getProfile : 200");
+        print(response.body);
+        jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        setState(() {
+          User.firstName = jsonResponse['first_name'];
+          User.lastName = jsonResponse['last_name'];
+          User.email = jsonResponse['email'];
+          User.profileImage = jsonResponse['profile_image'];
+        });
+      } else {
+        log("Dashboard getProfile : !200");
+      }
+    } catch (e) {
+      log("Dashboard getProfile : error");
+    }
   }
 }

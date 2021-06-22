@@ -71,11 +71,11 @@ class BidCard extends StatelessWidget {
       _noImage = false;
     }
 
-    bool _BidImage = true;
+    bool _bidImage = true;
     if (exchangeImage == null)
-      _BidImage = false;
+      _bidImage = false;
     else {
-      _BidImage = true;
+      _bidImage = true;
     }
 
 
@@ -102,7 +102,7 @@ class BidCard extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: isExchange
-            ? _BidImage
+            ? _bidImage
                 ? Column(
                     children: <Widget>[
                       Text(description),
@@ -120,7 +120,7 @@ class BidCard extends StatelessWidget {
                   )
                 : Text(description)
             : isBuy
-                ? _BidImage
+                ? _bidImage
                     ? Column(
                         children: <Widget>[
                           Text(description),

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:application/util/Post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -114,9 +113,7 @@ class _MyAppBarState extends State<MyAppBar> {
     try {
       response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
-        log('200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse["results"]);
         if (jsonResponse != null) {
           setState(() {
             int counter = 0;
@@ -129,13 +126,9 @@ class _MyAppBarState extends State<MyAppBar> {
           });
         }
       } else {
-        log('!200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       }
-    } catch (e) {
-      print(e);
-      log("error");
-    }
+    } catch (e) {}
 
     if ( myNotifications.isNotEmpty ) {
       setState(() {
@@ -155,7 +148,6 @@ class _MyAppBarState extends State<MyAppBar> {
     try {
       response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
-        log('200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         if (jsonResponse != null) {
           setState(() {
@@ -189,12 +181,8 @@ class _MyAppBarState extends State<MyAppBar> {
           });
         }
       } else {
-        log('!200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       }
-    } catch (e) {
-      print(e);
-      log("error");
-    }
+    } catch (e) {}
   }
 }

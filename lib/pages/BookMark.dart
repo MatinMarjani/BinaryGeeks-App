@@ -108,7 +108,7 @@ class _BookMarksState extends State<BookMarks> {
         child: _isLoading
             ? Center(
             child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(widget.mainColor),
+              valueColor: AlwaysStoppedAnimation<Color>(widget.mainColor),
             ))
             : ListView(children: <Widget>[
           posts(),
@@ -155,7 +155,7 @@ class _BookMarksState extends State<BookMarks> {
     try {
       response = await http.get(url,headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
-        log('200');
+        log('getPosts : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         print(jsonResponse["results"]);
         if (jsonResponse != null) {
@@ -188,7 +188,7 @@ class _BookMarksState extends State<BookMarks> {
           });
         }
       } else {
-        log('!200');
+        log('getPosts : !200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           if(jsonResponse["detail"] == "Invalid page.")
@@ -197,7 +197,7 @@ class _BookMarksState extends State<BookMarks> {
       }
     } catch (e) {
       print(e);
-      log("error");
+      log("getPosts : error = " + e);
     }
 
     setState(() {
