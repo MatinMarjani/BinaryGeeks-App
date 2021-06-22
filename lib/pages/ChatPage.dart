@@ -256,6 +256,7 @@ class ChatInputField extends StatelessWidget {
                     Expanded(
                       child: TextField(
                         controller: textEditingController,
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: Utilities().myFont),
                         maxLines: null,
                         textInputAction: TextInputAction.newline,
                         decoration: InputDecoration(
