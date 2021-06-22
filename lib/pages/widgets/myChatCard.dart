@@ -30,7 +30,7 @@ class ChatCard extends StatelessWidget {
       isRead = false;
 
     return Container(
-      color: isRead ? Colors.lightBlueAccent : Colors.redAccent,
+      color: isRead ? Colors.white : Colors.redAccent[100],
       child: InkWell(
         highlightColor: Colors.red,
         onTap: () {
