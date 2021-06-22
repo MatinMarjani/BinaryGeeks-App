@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:application/pages/PostPage.dart';
 import 'package:application/util/Post.dart';
 import 'package:application/util/Utilities.dart';
+import 'package:test/test.dart';
 
 //ignore: must_be_immutable
 class PostCard extends StatelessWidget {
@@ -14,6 +15,7 @@ class PostCard extends StatelessWidget {
   bool isExchange = false;
   bool isBuy = false;
   bool isDonation = false;
+  bool isActive = false;
 
   PostCard(this.post);
 
@@ -33,6 +35,11 @@ class PostCard extends StatelessWidget {
     else {
       _noImage = false;
     }
+
+    if (post.isActive == null || !post.isActive)
+      isActive = false;
+    else
+      isActive = true;
 
     if (post.status == "مبادله") {
       isExchange = true;
@@ -64,7 +71,7 @@ class PostCard extends StatelessWidget {
           color: Colors.white70,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Padding(
-            padding: const EdgeInsets.all(3),
+            padding: EdgeInsets.all(3),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -122,26 +129,54 @@ class PostCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                isExchange
+                isActive
+                    ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        child: TextButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
+                          ),
+                          child: Text(
+                            "غیرفعال",
+                            style: TextStyle(color: Colors.red, fontFamily: Utilities().myFont),
+                          ),
+                        )),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      child: Text(
+                        post.province,
+                        key: _province,
+                        style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
+                      ),
+                    ),
+                  ],
+                )
+                    : isExchange
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           Padding(
-                              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                               child: TextButton(
                                 onPressed: () {},
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
                                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
+                                      borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.orange))),
                                 ),
                                 child: Text(
                                   "مبادله",
-                                  style: TextStyle(color: Colors.red, fontFamily: Utilities().myFont),
+                                  style: TextStyle(color: Colors.orange, fontFamily: Utilities().myFont),
                                 ),
                               )),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                            padding: EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
                             child: Text(
                               post.province,
                               key: _province,
@@ -155,7 +190,7 @@ class PostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                         child: TextButton(
                           onPressed: () {},
                           style: ButtonStyle(
@@ -169,7 +204,7 @@ class PostCard extends StatelessWidget {
                           ),
                         )),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      padding: EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
                       child: Text(
                         post.province,
                         key: _province,
@@ -183,7 +218,7 @@ class PostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                         child: TextButton(
                           onPressed: () {},
                           style: ButtonStyle(
@@ -197,7 +232,7 @@ class PostCard extends StatelessWidget {
                           ),
                         )),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      padding: EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
                       child: Text(
                         post.province,
                         key: _province,
@@ -210,7 +245,7 @@ class PostCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 0.0),
+                            padding: EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 0.0),
                             child: Text(
                               Utilities().replaceFarsiNumber(formatter.format(post.price)),
                               key: _price,
@@ -218,7 +253,7 @@ class PostCard extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 2.0, 2.0),
+                            padding: EdgeInsets.fromLTRB(12.0, 0.0, 2.0, 2.0),
                             child: Text(
                               "تومان",
                               key: _currency,
