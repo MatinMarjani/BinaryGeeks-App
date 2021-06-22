@@ -36,7 +36,7 @@ class PostCard extends StatelessWidget {
       _noImage = false;
     }
 
-    if (post.isActive == null || !post.isActive)
+    if (post.isActive == null || post.isActive == false)
       isActive = false;
     else
       isActive = true;
@@ -129,7 +129,7 @@ class PostCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                isActive
+                !isActive
                     ? Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
