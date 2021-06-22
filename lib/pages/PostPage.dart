@@ -290,7 +290,7 @@ class _PostPageState extends State<PostPage> {
                                 color: mainColor,
                               ),
                         onPressed: () {
-                          setMark();
+                          !_isMarked ? setMark() : deleteMark();
                         },
                       ),
                     ),
@@ -1623,13 +1623,15 @@ class _PostPageState extends State<PostPage> {
     return Container(
       padding: EdgeInsets.only(left: 50, right: 50, bottom: 100),
       child: TextButton(
-
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: mainColor))),
         ),
-        child: Text("چت", style: TextStyle(fontFamily: myFont, fontSize: 20, color: mainColor),),
+        child: Text(
+          "چت",
+          style: TextStyle(fontFamily: myFont, fontSize: 20, color: mainColor),
+        ),
         onPressed: () {
           getChatThreadId(widget.post.ownerId);
         },
@@ -2140,6 +2142,34 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+  deleteMark() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var token = sharedPreferences.getString("token");
+    var postID = widget.post.id.toString();
+    var url = Uri.parse(AppUrl.Delete_BookMarks + postID);
+    var headers = {'Authorization': 'Token $token'};
+    log(url.toString());
+    log(token);
+    var response;
+    try {
+      response = await http.delete(url, headers: headers);
+      if (response.statusCode == 200) {
+        setState(() {
+          _isMarked = false;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("نشان پاک شد", style: TextStyle(color: Colors.green))));
+        });
+      } else {
+        setState(() {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.red))));
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+
   getChatThreadId(var other) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
@@ -2155,8 +2185,8 @@ class _PostPageState extends State<PostPage> {
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           if (jsonResponse != null) {
-              myChat = Chats(jsonResponse["thread_id"], jsonResponse["user"], null);
-              Navigator.push(context, new MaterialPageRoute(builder: (context) => ChatPage(myChat)));
+            myChat = Chats(jsonResponse["thread_id"], jsonResponse["user"], null);
+            Navigator.push(context, new MaterialPageRoute(builder: (context) => ChatPage(myChat)));
           }
         });
       } else {
@@ -2169,5 +2199,4 @@ class _PostPageState extends State<PostPage> {
       log("getChatThreadId : error");
     }
   }
-
 }
