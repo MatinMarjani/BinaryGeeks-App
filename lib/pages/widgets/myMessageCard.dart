@@ -60,7 +60,11 @@ class MessageCard extends StatelessWidget {
                     radius: 20,
                     child: Text(
                       User.email[0],
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: Utilities().myFont),
                     ),
                     backgroundColor: Colors.green,
                   ),
@@ -69,8 +73,14 @@ class MessageCard extends StatelessWidget {
           if (!message.isSender) ...[
             Column(
               children: [
-                Text(time),
-                Text(date),
+                Text(
+                  time,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w100, fontFamily: Utilities().myFont),
+                ),
+                Text(
+                  date,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w100, fontFamily: Utilities().myFont),
+                ),
               ],
             ),
             SizedBox(width: 5),
@@ -80,9 +90,15 @@ class MessageCard extends StatelessWidget {
             SizedBox(width: 5),
             Column(
               children: [
-                Text(time),
-                Text(date),
-                if (index == length-1) ...[
+                Text(
+                  time,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w100, fontFamily: Utilities().myFont),
+                ),
+                Text(
+                  date,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w100, fontFamily: Utilities().myFont),
+                ),
+                if (index == length - 1) ...[
                   _isRead ? Text("خوانده شده") : Text("خوانده نشده"),
                 ]
               ],
@@ -99,7 +115,11 @@ class MessageCard extends StatelessWidget {
                     radius: 20,
                     child: Text(
                       myChat.user['email'][0],
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w100,
+                          fontFamily: Utilities().myFont),
                     ),
                     backgroundColor: Colors.orange,
                   ),
@@ -134,8 +154,10 @@ class TextMessage extends StatelessWidget {
         message.message["message"],
         // "sadddddddddddddddddddddd asdaasd asdasd asd sadddddddddddddddddddddd asdaasd asdasd asd sadddddddddddddddddddddd asdaasd asdasd asd sadddddddddddddddddddddd asdaasd asdasd asd ",
         style: TextStyle(
-          color: message.isSender ? Colors.white : mainColor,
-        ),
+            color: message.isSender ? Colors.white : mainColor,
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            fontFamily: Utilities().myFont),
       ),
     ));
   }
