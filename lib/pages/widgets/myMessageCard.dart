@@ -140,8 +140,7 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-        child: Container(
+    return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 23,
@@ -159,6 +158,6 @@ class TextMessage extends StatelessWidget {
             fontWeight: FontWeight.w400,
             fontFamily: Utilities().myFont),
       ),
-    ));
+    );
   }
 }
