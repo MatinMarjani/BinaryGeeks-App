@@ -48,8 +48,8 @@ class _ChatPageState extends State<ChatPage> {
     });
     sendIsRead(widget.myChat.threadId);
     getMessages(widget.myChat.threadId);
-    const oneSec = const Duration(seconds:3);
-    timer =  Timer.periodic(oneSec, (Timer t) => repeat());
+    const oneSec = const Duration(seconds:5);
+    timer =  Timer.periodic(oneSec, (Timer timer) => repeat());
   }
 
   @override
@@ -119,21 +119,23 @@ class _ChatPageState extends State<ChatPage> {
       if (response.statusCode == 200) {
         log('Chat : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        if(mounted) {
+          setState(() {
+            if (jsonResponse != null) {
+              setState(() {
+                for (var i in jsonResponse) {
+                  bool isSender;
+                  if (i["sender"].toString() == id)
+                    isSender = true;
+                  else
+                    isSender = false;
+                  messages.add(Messages(i, id, isSender));
+                }
+              });
+            }
+          });
+        }
         // print(jsonResponse);
-        setState(() {
-          if (jsonResponse != null) {
-            setState(() {
-              for (var i in jsonResponse) {
-                bool isSender;
-                if (i["sender"].toString() == id)
-                  isSender = true;
-                else
-                  isSender = false;
-                messages.add(Messages(i, id, isSender));
-              }
-            });
-          }
-        });
       } else {
         log('Chat : !200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
