@@ -23,6 +23,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.1
+  shared_preferences: ^2.0.5
+  flutter_localizations:
+    sdk: flutter
+#  fluttertoast: ^8.0.3
+  image_picker: ^0.6.6+5
+  test: ^1.5.1
+  intl: ^0.17.0
+  modal_bottom_sheet: ^2.0.0
+  filter_list: ^0.0.9
+  cached_network_image: ^3.0.0
+  pull_to_refresh: ^2.0.0
+  mockito: ^5.0.8
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -60,10 +74,15 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+     - family: myfont
+       fonts:
+         - asset: fonts/IRANSansWeb_Light.ttf
+         - asset: fonts/IRANSansWeb_Medium.ttf
+         - asset: fonts/IRANSansWeb_UltraLight.ttf
+         - asset: fonts/IRANSansWeb.ttf
+         - asset: fonts/IRANSansWeb_Black.ttf
+         - asset: fonts/IRANSansWeb_Bold.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
