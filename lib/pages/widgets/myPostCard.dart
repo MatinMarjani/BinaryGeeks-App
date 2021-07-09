@@ -49,7 +49,7 @@ class PostCard extends StatelessWidget {
       isExchange = false;
       isBuy = true;
       isDonation = false;
-    } else if ( post.status == "اهدا") {
+    } else if (post.status == "اهدا") {
       isExchange = false;
       isBuy = false;
       isDonation = true;
@@ -62,14 +62,16 @@ class PostCard extends StatelessWidget {
     return GestureDetector(
         key: _cardTap,
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(post)));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => PostPage(post)));
         },
         child: Card(
           borderOnForeground: true,
           elevation: 1,
           margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
-          color: Colors.white70,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          color: isActive ? Colors.white70 : Colors.white70,
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Padding(
             padding: EdgeInsets.all(3),
             child: Row(
@@ -77,26 +79,34 @@ class PostCard extends StatelessWidget {
               children: <Widget>[
                 _noImage
                     ? Container(
-                        decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(15)),
-                        width: 100,
-                        height: 120,
-                        child: Icon(
-                          Icons.flip_camera_ios_outlined,
-                          color: Colors.grey[800],
-                        ),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: Image.network(
-                          post.image,
-                          loadingBuilder: (context, child, progress) {
-                            return progress == null ? child : LinearProgressIndicator();
-                          },
-                          width: 100,
-                          height: 120,
-                          fit: BoxFit.fitHeight,
-                        ),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.white70, Colors.grey],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
                       ),
+                      borderRadius: BorderRadius.circular(15)),
+                  width: 100,
+                  height: 120,
+                  child: Icon(
+                    Icons.flip_camera_ios_outlined,
+                    color: Colors.grey[800],
+                  ),
+                )
+                    : ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: Image.network(
+                    post.image,
+                    loadingBuilder: (context, child, progress) {
+                      return progress == null
+                          ? child
+                          : LinearProgressIndicator();
+                    },
+                    width: 100,
+                    height: 120,
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
                 SizedBox(width: 15),
                 Expanded(
                   child: Column(
@@ -107,7 +117,8 @@ class PostCard extends StatelessWidget {
                         child: Text(
                           post.title,
                           key: _title,
-                          style: TextStyle(fontSize: 18.0, fontFamily: 'myfont'),
+                          style:
+                          TextStyle(fontSize: 18.0, fontFamily: 'myfont'),
                         ),
                       ),
                       Padding(
@@ -115,7 +126,8 @@ class PostCard extends StatelessWidget {
                         child: Text(
                           post.author,
                           key: _author,
-                          style: TextStyle(fontSize: 15.0, fontFamily: 'myfont'),
+                          style:
+                          TextStyle(fontSize: 15.0, fontFamily: 'myfont'),
                         ),
                       ),
                       Padding(
@@ -123,7 +135,8 @@ class PostCard extends StatelessWidget {
                         child: Text(
                           post.categories,
                           key: _categories,
-                          style: TextStyle(fontSize: 13.0, fontFamily: 'myfont'),
+                          style:
+                          TextStyle(fontSize: 13.0, fontFamily: 'myfont'),
                         ),
                       ),
                     ],
@@ -138,13 +151,21 @@ class PostCard extends StatelessWidget {
                         child: TextButton(
                           onPressed: () {},
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
+                            backgroundColor:
+                            MaterialStateProperty.all<Color>(
+                                Colors.white38),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(60),
+                                    side: BorderSide(color: Colors.red))),
                           ),
                           child: Text(
                             "غیرفعال",
-                            style: TextStyle(color: Colors.red, fontFamily: Utilities().myFont),
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontFamily: Utilities().myFont),
                           ),
                         )),
                     Padding(
@@ -152,63 +173,88 @@ class PostCard extends StatelessWidget {
                       child: Text(
                         post.province,
                         key: _province,
-                        style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
+                        style: TextStyle(
+                            fontSize: 14.0, fontFamily: 'myfont'),
                       ),
                     ),
                   ],
                 )
                     : isExchange
                     ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                              child: TextButton(
-                                onPressed: () {},
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.orange))),
-                                ),
-                                child: Text(
-                                  "مبادله",
-                                  style: TextStyle(color: Colors.orange, fontFamily: Utilities().myFont),
-                                ),
-                              )),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
-                            child: Text(
-                              post.province,
-                              key: _province,
-                              style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
-                            ),
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                        padding:
+                        EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        child: TextButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                            backgroundColor:
+                            MaterialStateProperty.all<Color>(
+                                Colors.white38),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(60),
+                                    side: BorderSide(
+                                        color: Colors.orange))),
                           ),
-                        ],
-                      )
+                          child: Text(
+                            "مبادله",
+                            style: TextStyle(
+                                color: Colors.orange,
+                                fontFamily: Utilities().myFont),
+                          ),
+                        )),
+                    Padding(
+                      padding:
+                      EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      child: Text(
+                        post.province,
+                        key: _province,
+                        style: TextStyle(
+                            fontSize: 14.0, fontFamily: 'myfont'),
+                      ),
+                    ),
+                  ],
+                )
                     : isBuy
                     ? Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        padding: EdgeInsets.fromLTRB(
+                            0.0, 0.0, 0.0, 0.0),
                         child: TextButton(
                           onPressed: () {},
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.teal))),
+                            backgroundColor:
+                            MaterialStateProperty.all<Color>(
+                                Colors.white38),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(60),
+                                    side: BorderSide(
+                                        color: Colors.teal))),
                           ),
                           child: Text(
                             "خرید",
-                            style: TextStyle(color: Colors.teal, fontFamily: Utilities().myFont),
+                            style: TextStyle(
+                                color: Colors.teal,
+                                fontFamily: Utilities().myFont),
                           ),
                         )),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      padding: EdgeInsets.fromLTRB(
+                          12.0, 5.0, 2.0, 2.0),
                       child: Text(
                         post.province,
                         key: _province,
-                        style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
+                        style: TextStyle(
+                            fontSize: 14.0, fontFamily: 'myfont'),
                       ),
                     ),
                   ],
@@ -218,58 +264,86 @@ class PostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                        padding: EdgeInsets.fromLTRB(
+                            0.0, 0.0, 0.0, 0.0),
                         child: TextButton(
                           onPressed: () {},
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.white38),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.cyanAccent))),
+                            backgroundColor:
+                            MaterialStateProperty.all<
+                                Color>(Colors.white38),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(
+                                        60),
+                                    side: BorderSide(
+                                        color: Colors
+                                            .cyanAccent))),
                           ),
                           child: Text(
                             "اهدا",
-                            style: TextStyle(color: Colors.cyanAccent, fontFamily: Utilities().myFont),
+                            style: TextStyle(
+                                color: Colors.cyanAccent,
+                                fontFamily:
+                                Utilities().myFont),
                           ),
                         )),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
+                      padding: EdgeInsets.fromLTRB(
+                          12.0, 5.0, 2.0, 2.0),
                       child: Text(
                         post.province,
                         key: _province,
-                        style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            fontFamily: 'myfont'),
                       ),
                     ),
                   ],
                 )
                     : Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(12.0, 2.0, 2.0, 0.0),
-                            child: Text(
-                              Utilities().replaceFarsiNumber(formatter.format(post.price)),
-                              key: _price,
-                              style: TextStyle(fontSize: 15.0, color: Colors.green, fontFamily: 'myfont'),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(12.0, 0.0, 2.0, 2.0),
-                            child: Text(
-                              "تومان",
-                              key: _currency,
-                              style: TextStyle(fontSize: 13.0, color: Colors.green, fontFamily: 'myfont'),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(12.0, 5.0, 2.0, 2.0),
-                            child: Text(
-                              post.province,
-                              key: _province,
-                              style: TextStyle(fontSize: 14.0, fontFamily: 'myfont'),
-                            ),
-                          ),
-                        ],
-                      )
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          12.0, 2.0, 2.0, 0.0),
+                      child: Text(
+                        Utilities().replaceFarsiNumber(
+                            formatter.format(post.price)),
+                        key: _price,
+                        style: TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.green,
+                            fontFamily: 'myfont'),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          12.0, 0.0, 2.0, 2.0),
+                      child: Text(
+                        "تومان",
+                        key: _currency,
+                        style: TextStyle(
+                            fontSize: 13.0,
+                            color: Colors.green,
+                            fontFamily: 'myfont'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          12.0, 5.0, 2.0, 2.0),
+                      child: Text(
+                        post.province,
+                        key: _province,
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            fontFamily: 'myfont'),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
