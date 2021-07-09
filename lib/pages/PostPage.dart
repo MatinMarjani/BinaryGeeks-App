@@ -59,6 +59,7 @@ class _PostPageState extends State<PostPage> {
   bool isExchange = false;
   bool isBuy = false;
   bool isDonation = false;
+  bool isActive;
 
   List<Widget> myBids = [];
 
@@ -74,6 +75,7 @@ class _PostPageState extends State<PostPage> {
   void initState() {
     super.initState();
     isMarked();
+    isActive = widget.post.isActive ?? false;
 
     if (widget.post.status == "مبادله") {
       isExchange = true;
@@ -101,19 +103,19 @@ class _PostPageState extends State<PostPage> {
     checkOwner();
     getBids();
 
-    author.text = widget.post.author;
-    publisher.text = widget.post.publisher;
-    price.text = widget.post.price.toString();
-    province.text = widget.post.province;
-    city.text = widget.post.city;
-    zone.text = widget.post.zone;
-    description.text = widget.post.description;
+    author.text = widget.post.author ?? "-";
+    publisher.text = widget.post.publisher ?? "-";
+    price.text = widget.post.price.toString() ?? "-";
+    province.text = widget.post.province ?? "-";
+    city.text = widget.post.city ?? "-";
+    zone.text = widget.post.zone ?? "-";
+    description.text = widget.post.description ?? "-";
 
-    exchangeTitleController.text = widget.post.exchangeTitle;
-    exchangeAuthorController.text = widget.post.exchangeAuthor;
-    exchangePublisherController.text = widget.post.exchangePublisher;
+    exchangeTitleController.text = widget.post.exchangeTitle ?? "-";
+    exchangeAuthorController.text = widget.post.exchangeAuthor ?? "-";
+    exchangePublisherController.text = widget.post.exchangePublisher ?? "-";
 
-    userImage = User.profileImage;
+    userImage = User.profileImage ?? "";
   }
 
   checkOwner() async {
@@ -148,7 +150,7 @@ class _PostPageState extends State<PostPage> {
                 child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(mainColor),
               ))
-            : widget.post.isActive
+            : isActive
                 ? ListView(
                     shrinkWrap: true,
                     children: <Widget>[
@@ -183,6 +185,7 @@ class _PostPageState extends State<PostPage> {
                     ],
                   )
                 : ListView(shrinkWrap: true, children: <Widget>[
+                    SizedBox(height: 30),
                     bannerImage(),
                     header(),
                     mainBody(),
@@ -191,7 +194,8 @@ class _PostPageState extends State<PostPage> {
                         "این آگهی غیر فعال است",
                         style: TextStyle(color: Colors.red, fontFamily: myFont, fontSize: 30),
                       ),
-                    )
+                    ),
+                    SizedBox(height: 20),
                   ]),
       ),
       drawer: MyDrawer(),
@@ -199,6 +203,15 @@ class _PostPageState extends State<PostPage> {
   }
 
   Container header() {
+    final TextEditingController title = new TextEditingController();
+    final TextEditingController author = new TextEditingController();
+    final TextEditingController publisher = new TextEditingController();
+
+    title.text = widget.post.title ?? "-";
+    author.text = widget.post.author ?? "-";
+    publisher.text = widget.post.publisher ?? "-";
+
+
     String date = "";
     String time2 = "";
     String time = "";
@@ -231,7 +244,7 @@ class _PostPageState extends State<PostPage> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        widget.post.title,
+                        title.text,
                         style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
                       ),
                     ),
@@ -266,7 +279,7 @@ class _PostPageState extends State<PostPage> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        widget.post.title,
+                        title.text,
                         style: TextStyle(fontSize: 30.0, fontFamily: 'myfont'),
                       ),
                     ),
@@ -297,11 +310,11 @@ class _PostPageState extends State<PostPage> {
                   ],
                 ),
           Text(
-            widget.post.author,
+            author.text,
             style: TextStyle(fontSize: 20.0, fontFamily: 'myfont'),
           ),
           Text(
-            widget.post.publisher,
+            publisher.text,
             style: TextStyle(fontSize: 15.0, fontFamily: 'myfont'),
           ),
           isExchange
@@ -310,11 +323,11 @@ class _PostPageState extends State<PostPage> {
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.red))),
+                        borderRadius: BorderRadius.circular(60), side: BorderSide(color: Colors.orange))),
                   ),
                   child: Text(
                     "مبادله",
-                    style: TextStyle(color: Colors.red, fontFamily: Utilities().myFont),
+                    style: TextStyle(color: Colors.orange, fontFamily: Utilities().myFont),
                   ),
                 )
               : isBuy
@@ -398,7 +411,7 @@ class _PostPageState extends State<PostPage> {
 
     setState(() {
       priceH.text = "قیمت :";
-      price.text = Utilities().replaceFarsiNumber(formatter.format(widget.post.price));
+      price.text = Utilities().replaceFarsiNumber(formatter.format(widget.post.price)) ?? "-";
       provinceH.text = "استان :";
       province.text = widget.post.province ?? "-";
       cityH.text = "شهر :";
@@ -798,7 +811,6 @@ class _PostPageState extends State<PostPage> {
   Container postBidField() {
     return Container(
       child: ListTile(
-        // tileColor: Colors.white,
         leading: Container(
           height: 40.0,
           width: 40.0,
@@ -1175,11 +1187,12 @@ class _PostPageState extends State<PostPage> {
                       hintStyle: TextStyle(color: Colors.black, fontFamily: myFont),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 30),
                   Text(
                     "کتابی که میخواهید با آن مبادله کنید :",
                     style: TextStyle(fontFamily: myFont, color: mainColor, fontSize: 20),
                   ),
+                  SizedBox(height: 20),
                   TextFormField(
                     controller: exchangeTitleController,
                     validator: (value) {
@@ -1599,7 +1612,7 @@ class _PostPageState extends State<PostPage> {
 
   Container deleteSubmit() {
     return Container(
-      margin: EdgeInsets.only(top: 30.0, bottom: 00),
+      margin: EdgeInsets.only(top: 30.0, bottom: 30),
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 00.0),
       child: TextButton(
         onPressed: () {},
@@ -1705,7 +1718,6 @@ class _PostPageState extends State<PostPage> {
     try {
       response = await http.put(url, body: data, headers: headers);
       if (response.statusCode == 200) {
-        log('200');
         setState(() {
           widget.post.image = null;
           ScaffoldMessenger.of(context)
@@ -1791,9 +1803,7 @@ class _PostPageState extends State<PostPage> {
           Navigator.of(context).pop();
         });
       }
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
 
     setState(() {
       _isLoading = false;
@@ -1819,9 +1829,7 @@ class _PostPageState extends State<PostPage> {
       if (response.statusCode == 200) {
         getImage();
       } else {}
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
   }
 
   deletePost() async {
@@ -1841,7 +1849,7 @@ class _PostPageState extends State<PostPage> {
     };
 
     try {
-      response = await http.put(url, headers: headers);
+      response = await http.delete(url, headers: headers);
       if (response.statusCode == 200) {
         setState(() {
           ScaffoldMessenger.of(context)
@@ -1854,9 +1862,7 @@ class _PostPageState extends State<PostPage> {
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.green))));
         });
       }
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
 
     setState(() {
       _isLoading = false;
@@ -1939,6 +1945,10 @@ class _PostPageState extends State<PostPage> {
           style: TextStyle(fontFamily: myFont, color: Colors.red, fontSize: 20),
         ),
       ));
+
+      myBids.add(
+        SizedBox(height: 30,)
+      );
     }
   }
 
@@ -1987,9 +1997,7 @@ class _PostPageState extends State<PostPage> {
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.red))));
         });
       }
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
   }
 
   postBidImage(var bidID) async {
@@ -2044,9 +2052,7 @@ class _PostPageState extends State<PostPage> {
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.red))));
         });
       }
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
   }
 
   Future acceptBid(int bidID, var ownerID) async {
@@ -2073,9 +2079,7 @@ class _PostPageState extends State<PostPage> {
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.red))));
         });
       }
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
   }
 
   isMarked() async {
@@ -2090,9 +2094,6 @@ class _PostPageState extends State<PostPage> {
     var response;
     var jsonResponse;
 
-    log(AppUrl.Is_BookMarks + postID.toString());
-    log(token);
-
     try {
       response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
@@ -2101,9 +2102,7 @@ class _PostPageState extends State<PostPage> {
           _isMarked = jsonResponse;
         });
       } else {}
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
     setState(() {
       _isLoading = false;
     });
@@ -2136,9 +2135,7 @@ class _PostPageState extends State<PostPage> {
                 .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.red))));
           });
         }
-      } catch (e) {
-        log(e);
-      }
+      } catch (e) {}
     }
   }
 
@@ -2148,8 +2145,6 @@ class _PostPageState extends State<PostPage> {
     var postID = widget.post.id.toString();
     var url = Uri.parse(AppUrl.Delete_BookMarks + postID);
     var headers = {'Authorization': 'Token $token'};
-    log(url.toString());
-    log(token);
     var response;
     try {
       response = await http.delete(url, headers: headers);
@@ -2165,9 +2160,7 @@ class _PostPageState extends State<PostPage> {
               .showSnackBar(SnackBar(content: Text("مشکلی به وجود آمد", style: TextStyle(color: Colors.red))));
         });
       }
-    } catch (e) {
-      log(e);
-    }
+    } catch (e) {}
   }
 
   getChatThreadId(var other) async {
@@ -2192,7 +2185,6 @@ class _PostPageState extends State<PostPage> {
       } else {
         log('getChatThreadId : !200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        log(jsonResponse);
       }
     } catch (e) {
       print(e);
