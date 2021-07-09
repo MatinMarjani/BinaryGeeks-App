@@ -50,7 +50,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     color: widget.mainColor,
                   ),
                   accountName: Text(
-                    firstNameController.text + " " + lastNameController.text ,
+                    firstNameController.text ?? " " + " " + lastNameController.text ?? " ",
                     style: TextStyle(fontFamily: 'myfont'),
                   ),
                   accountEmail: Text(
@@ -154,13 +154,13 @@ class _MyDrawerState extends State<MyDrawer> {
 
   void initState() {
     super.initState();
-    getProfile();
     setState(() {
       firstNameController.text = User.firstName;
       lastNameController.text = User.lastName;
       emailController.text = User.email;
       imageController.text = User.profileImage;
     });
+    getProfile();
   }
 
   getProfile() async {
@@ -175,9 +175,8 @@ class _MyDrawerState extends State<MyDrawer> {
     try {
       response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
-        log('200');
-        print(response.body);
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print(jsonResponse);
         if (jsonResponse != null) {
           setState(() {
             User.firstName = jsonResponse['first_name'];
@@ -191,13 +190,8 @@ class _MyDrawerState extends State<MyDrawer> {
             }
           });
         }
-      } else {
-        log('!200');
-        print(response.body);
-      }
-    } catch (e) {
-      print(e);
-    }
+      } else {}
+    } catch (e) {}
   }
 
   logout() async {
