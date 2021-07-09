@@ -136,9 +136,9 @@ class _NotificationPageState extends State<NotificationPage> {
     try {
       response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
-        log('200');
+        log('getNotifications : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-        print(jsonResponse["results"]);
+        // print(jsonResponse["results"]);
         if (jsonResponse != null) {
           setState(() {
             for (var i in jsonResponse["results"]) {
@@ -147,12 +147,12 @@ class _NotificationPageState extends State<NotificationPage> {
           });
         }
       } else {
-        log('!200');
+        log('getNotifications : !200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       }
     } catch (e) {
       print(e);
-      log("error");
+      log("getNotifications error");
       setState(() {
         if(jsonResponse["detail"] == "Invalid page.")
           page--;
@@ -173,7 +173,7 @@ class _NotificationPageState extends State<NotificationPage> {
     try {
       response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
-        log('200');
+        log('getPost : 200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         if (jsonResponse != null) {
           setState(() {
@@ -200,16 +200,17 @@ class _NotificationPageState extends State<NotificationPage> {
               jsonResponse["exchange_book_author"],
               jsonResponse["exchange_book_publisher"],
             )));
+            log("1");
             myNotifications.add(Divider(thickness: 3,));
           });
         }
       } else {
-        log('!200');
+        log('getPost : !200');
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       }
     } catch (e) {
-      print(e);
-      log("error");
+      log("getPost : error");
+      log(e);
     }
   }
 }
