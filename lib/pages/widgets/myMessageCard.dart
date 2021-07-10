@@ -98,7 +98,7 @@ class MessageCard extends StatelessWidget {
                   date,
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w100, fontFamily: Utilities().myFont),
                 ),
-                if (index == length - 1) ...[
+                if (index == 0) ...[
                   _isRead ? Text("خوانده شده") : Text("خوانده نشده"),
                 ]
               ],

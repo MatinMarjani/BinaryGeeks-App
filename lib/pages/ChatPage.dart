@@ -31,7 +31,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   bool _isLoading = false;
-  Timer timer;
+  bool waiting = true;
   List<Messages> messages = [];
 
   static ScrollController _scrollController = new ScrollController();
@@ -48,8 +48,6 @@ class _ChatPageState extends State<ChatPage> {
     });
     sendIsRead(widget.myChat.threadId);
     getMessages(widget.myChat.threadId);
-    const oneSec = const Duration(seconds:5);
-    timer =  Timer.periodic(oneSec, (Timer timer) => repeat());
   }
 
   @override
@@ -69,9 +67,10 @@ class _ChatPageState extends State<ChatPage> {
                 Expanded(
                   child: ListView.builder(
                     controller: _scrollController,
+                    reverse: true,
                     shrinkWrap: true,
                     itemCount: messages.length,
-                    itemBuilder: (context, index) => MessageCard(messages[index], widget.myChat, index, messages.length),
+                    itemBuilder: (context, index) => MessageCard(messages[messages.length - index -1], widget.myChat, index, messages.length),
                   ),
                 ),
                 ChatInputField(sendMessage, widget.myChat.threadId),
@@ -83,7 +82,9 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    timer.cancel();
+    setState(() {
+      waiting = false;
+    });
     super.dispose();
   }
 
@@ -113,14 +114,17 @@ class _ChatPageState extends State<ChatPage> {
     var id = sharedPreferences.getInt("id").toString();
     var url = Uri.parse(AppUrl.Get_Chat_Messages + threadID.toString());
     var token = sharedPreferences.getString("token");
+    waiting = true;
 
     try {
       response = await http.get(url, headers: {'Authorization': 'Token $token'});
       if (response.statusCode == 200) {
         log('Chat : 200');
+        waiting = false;
         jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         if(mounted) {
           setState(() {
+            messages.clear();
             if (jsonResponse != null) {
               setState(() {
                 for (var i in jsonResponse) {
@@ -149,15 +153,14 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       _isLoading = false;
     });
+
+    if ( !waiting ) {
+      await sendIsRead(widget.myChat.threadId);
+      await getMessages(widget.myChat.threadId);
+    }
   }
 
   sendMessage(int threadID, String text) async {
-    _scrollController.animateTo(
-      100000000000000000,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 500),
-    );
-
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString("token");
     var id = sharedPreferences.getInt("id").toString();
@@ -181,6 +184,11 @@ class _ChatPageState extends State<ChatPage> {
         print(jsonResponse);
         setState(() {
           messages.add(Messages(jsonResponse, id, true));
+          _scrollController.animateTo(
+            0.0,
+            curve: Curves.easeOut,
+            duration: Duration(milliseconds: 100),
+          );
         });
       } else {
         log("Send Message : !200");
@@ -189,12 +197,6 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e) {
       log(e);
     }
-  }
-
-  repeat() {
-    messages.clear();
-    getMessages(widget.myChat.threadId);
-    sendIsRead(widget.myChat.threadId);
   }
 }
 
